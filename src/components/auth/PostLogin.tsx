@@ -7,9 +7,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { messages } from '@/lib/messages'
 
 /**
- * REQ-125: runs once after each sign-in (credentials or Google). Calls the idempotent
- * POST /api/cart/merge — the HttpOnly cart_session cookie is invisible to the client, so it always
- * calls — then refreshes the user state and goes to the validated redirect.
+ * REQ-125: runs once after each sign-in. Merges guest cart, refreshes user state,
+ * then sends ADMIN users to /admin/dashboard and everyone else to the validated redirect.
  */
 export function PostLogin({ redirect }: { redirect: string }) {
   const router = useRouter()
@@ -29,9 +28,13 @@ export function PostLogin({ redirect }: { redirect: string }) {
       } catch {
         /* merge is best-effort; continue */
       }
-      await refresh()
-      // Admins go straight to the dashboard; everyone else goes to the validated redirect.
-      const state = await fetch('/api/me/state', { cache: 'no-store' }).then((r) => r.json())
+
+      // Refresh user state and fetch role in parallel
+      const [, state] = await Promise.all([
+        refresh(),
+        fetch('/api/me/state', { cache: 'no-store' }).then((r) => r.json()).catch(() => null),
+      ])
+
       if (state?.user?.role === 'ADMIN') {
         router.replace('/admin/dashboard')
       } else {

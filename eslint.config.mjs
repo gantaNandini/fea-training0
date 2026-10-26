@@ -13,6 +13,7 @@ const prismaAllowList = [
   'src/lib/orders/complete-order.ts',
   'src/lib/rate-limit/postgres.ts',
   'src/lib/auth/auth.ts',
+  'src/lib/admin/queries.ts',
   'prisma/seed.ts',
   'tests/**',
 ]

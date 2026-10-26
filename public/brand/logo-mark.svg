@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 56" role="img" aria-label="Pythagoras">
+  <polygon points="32,2 62,54 2,54" fill="#27C4C8"/>
+  <g fill="none" stroke="#0B2A5B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M23 24 H37 L30 36 H20"/>
+    <path d="M30 36 L40 36 L34 46 H24"/>
+    <path d="M44 38 L50 46"/>
+  </g>
+</svg>

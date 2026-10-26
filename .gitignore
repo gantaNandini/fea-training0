@@ -1,0 +1,28 @@
+# dependencies
+node_modules
+.pnpm-store
+
+# next
+.next
+out
+next-env.d.ts.bak
+
+# env
+.env
+.env.local
+.env.*.local
+
+# testing
+coverage
+playwright-report
+test-results
+
+# local storage
+storage/
+public/uploads/avatars/*
+!public/uploads/avatars/.gitkeep
+
+# misc
+.DS_Store
+*.log
+*.tsbuildinfo

@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:16
+    container_name: pythagoras-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pythagoras
+      POSTGRES_PASSWORD: pythagoras
+      POSTGRES_DB: pythagoras
+    ports:
+      - "5434:5432"
+    volumes:
+      - pythagoras_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pythagoras -d pythagoras"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  db-test:
+    image: postgres:16
+    container_name: pythagoras-db-test
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pythagoras
+      POSTGRES_PASSWORD: pythagoras
+      POSTGRES_DB: pythagoras_test
+    ports:
+      - "5433:5432"
+    volumes:
+      - pythagoras_db_test_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pythagoras -d pythagoras_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pythagoras_db_data:
+  pythagoras_db_test_data:

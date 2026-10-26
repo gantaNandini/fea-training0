@@ -1,0 +1,507 @@
+// PYTHAGORAS Learning Platform — Prisma schema (requirements.md §22)
+// Money columns are Int paise (REQ-009). Derived aggregates live in the CourseStats view
+// (prisma/raw/raw_constraints.sql), never in columns.
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [pg_trgm]
+}
+
+// ───────────────────────── Enums ─────────────────────────
+
+enum Role {
+  STUDENT
+  INSTRUCTOR
+  ADMIN
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+  UPCOMING
+}
+
+enum LessonType {
+  VIDEO
+  DOCUMENT
+  QUIZ
+}
+
+enum DiscountType {
+  PERCENT
+  FLAT
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum GstMode {
+  INCLUSIVE
+  EXCLUSIVE
+}
+
+enum PaymentStatus {
+  SUCCESS
+  FAILED
+}
+
+// ───────────────────────── Users & auth ─────────────────────────
+
+model User {
+  id               String    @id @default(cuid())
+  email            String    @unique
+  emailVerified    DateTime?
+  passwordHash     String?
+  name             String?
+  role             Role      @default(STUDENT)
+  /// Auth.js calls the avatar field `image`; this is the user's avatar (REQ-240 "avatar").
+  image            String?
+  phone            String?
+  bio              String?
+  sessionVersion   Int       @default(1)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  accounts          Account[]
+  passwordResets    PasswordResetToken[]
+  instructorProfile InstructorProfile?
+  coursesTaught     Course[]             @relation("CourseInstructor")
+  cartItems         CartItem[]
+  wishlistItems     WishlistItem[]
+  orders            Order[]
+  enrollments       Enrollment[]
+  lessonProgress    LessonProgress[]
+  reviews           Review[]
+  auditLogs         AuditLog[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([tokenHash])
+  @@index([userId])
+}
+
+model InstructorProfile {
+  id             String  @id @default(cuid())
+  userId         String  @unique
+  title          String?
+  bio            String? @db.Text
+  socialLinkedIn String?
+  socialTwitter  String?
+  socialWebsite  String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ───────────────────────── Catalogue ─────────────────────────
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  icon      String?
+  parentId  String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  parent   Category?        @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children Category[]       @relation("CategoryTree")
+  courses  CourseCategory[]
+
+  @@index([parentId])
+}
+
+model Course {
+  id               String       @id @default(cuid())
+  slug             String       @unique
+  title            String
+  subtitle         String?
+  shortDescription String       @db.Text
+  description      String       @db.Text
+  level            CourseLevel
+  language         String       @default("English")
+  price            Int
+  discountPrice    Int?
+  isFree           Boolean      @default(false)
+  thumbnail        String?
+  previewVideoUrl  String?
+  status           CourseStatus @default(DRAFT)
+  featured         Boolean      @default(false)
+  featuredOrder    Int?
+  instructorId     String
+  requirements     String[]
+  outcomes         String[]
+  tags             String[]
+  seoTitle         String?
+  seoDescription   String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  instructor  User             @relation("CourseInstructor", fields: [instructorId], references: [id])
+  categories  CourseCategory[]
+  sections    Section[]
+  cartItems   CartItem[]
+  wishlist    WishlistItem[]
+  orderItems  OrderItem[]
+  enrollments Enrollment[]
+  reviews     Review[]
+
+  @@index([slug])
+  @@index([status])
+  @@index([featured])
+  @@index([instructorId])
+  @@index([title(ops: raw("gin_trgm_ops"))], type: Gin)
+}
+
+model CourseCategory {
+  courseId   String
+  categoryId String
+  isPrimary  Boolean @default(false)
+
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([courseId, categoryId])
+  @@index([categoryId])
+}
+
+model Section {
+  id       String @id @default(cuid())
+  courseId String
+  title    String
+  order    Int
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+
+  @@index([courseId])
+}
+
+model Lesson {
+  id              String     @id @default(cuid())
+  sectionId       String
+  title           String
+  type            LessonType @default(VIDEO)
+  videoUrl        String?
+  fileUrl         String?
+  durationSeconds Int        @default(0)
+  isFreePreview   Boolean    @default(false)
+  order           Int
+
+  section  Section          @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  progress LessonProgress[]
+
+  @@index([sectionId])
+}
+
+// ───────────────────────── Commerce ─────────────────────────
+
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String?
+  sessionId String?
+  courseId  String
+  createdAt DateTime @default(now())
+
+  user   User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@unique([sessionId, courseId])
+  @@index([userId])
+  @@index([sessionId])
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+model Coupon {
+  id            String       @id @default(cuid())
+  code          String       @unique
+  discountType  DiscountType
+  /// paise for FLAT, basis points for PERCENT (CHECK in raw migration)
+  discountValue Int
+  maxUses       Int?
+  usedCount     Int          @default(0)
+  expiresAt     DateTime?
+  active        Boolean      @default(true)
+
+  orders Order[]
+}
+
+model Order {
+  id                 String      @id @default(cuid())
+  orderNumber        String      @unique
+  userId             String
+  status             OrderStatus @default(PENDING)
+  subtotal           Int
+  discount           Int         @default(0)
+  gst                Int         @default(0)
+  total              Int
+  gstMode            GstMode
+  couponId           String?
+  couponCodeSnapshot String?
+  razorpayOrderId    String?     @unique
+  cartFingerprint    String?
+  billingName        String?
+  billingEmail       String?
+  billingState       String?
+  billingGstin       String?
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id])
+  coupon      Coupon?      @relation(fields: [couponId], references: [id])
+  items       OrderItem[]
+  payments    Payment[]
+  enrollments Enrollment[]
+
+  @@index([userId])
+  @@index([orderNumber])
+  @@index([status])
+}
+
+model OrderItem {
+  id            String @id @default(cuid())
+  orderId       String
+  courseId      String
+  price         Int
+  titleSnapshot String
+
+  order  Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@index([orderId])
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  orderId           String
+  razorpayPaymentId String        @unique
+  razorpaySignature String?
+  method            String?
+  amount            Int
+  status            PaymentStatus
+  createdAt         DateTime      @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model Enrollment {
+  id             String    @id @default(cuid())
+  userId         String
+  courseId       String
+  orderId        String?
+  enrolledAt     DateTime  @default(now())
+  lastLessonId   String?
+  lastAccessedAt DateTime?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  order  Order? @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+}
+
+// ───────────────────────── Learning & social ─────────────────────────
+
+model LessonProgress {
+  id          String    @id @default(cuid())
+  userId      String
+  lessonId    String
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  rating    Int
+  comment   String   @db.Text
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([courseId])
+  @@index([approved, courseId])
+}
+
+// ───────────────────────── Content ─────────────────────────
+
+model Testimonial {
+  id      String  @id @default(cuid())
+  name    String
+  role    String
+  company String?
+  quote   String  @db.Text
+  photo   String?
+  order   Int     @default(0)
+  active  Boolean @default(true)
+}
+
+model ClientLogo {
+  id     String  @id @default(cuid())
+  name   String
+  image  String
+  url    String?
+  order  Int     @default(0)
+  active Boolean @default(true)
+}
+
+model HeroSlide {
+  id                String  @id @default(cuid())
+  heading           String
+  subheading        String
+  image             String
+  ctaLabel          String
+  ctaUrl            String
+  secondaryCtaLabel String?
+  secondaryCtaUrl   String?
+  order             Int     @default(0)
+  active            Boolean @default(true)
+}
+
+model Webinar {
+  id          String   @id @default(cuid())
+  title       String
+  date        DateTime
+  link        String
+  description String?
+  active      Boolean  @default(true)
+}
+
+model Announcement {
+  id       String   @id @default(cuid())
+  title    String
+  body     String
+  link     String?
+  startsAt DateTime
+  endsAt   DateTime
+  active   Boolean  @default(true)
+}
+
+model Page {
+  id    String @id @default(cuid())
+  slug  String @unique
+  title String
+  body  String @db.Text
+}
+
+model SiteSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String @db.Text
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String   @db.Text
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model NewsletterSubscriber {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  subscribedAt DateTime @default(now())
+}
+
+model RateLimit {
+  id       String   @id @default(cuid())
+  key      String   @unique
+  attempts Int
+  resetAt  DateTime
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  action    String
+  entity    String
+  entityId  String
+  meta      Json?
+  createdAt DateTime @default(now())
+
+  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([entity, entityId])
+  @@index([actorId])
+}

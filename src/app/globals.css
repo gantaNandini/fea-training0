@@ -1,0 +1,223 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ───────────────────────── Design tokens (REQ-020) ─────────────────────────
+   Hex values mirror src/lib/design/tokens.ts (verified by tests/unit/contrast.test.ts). */
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --color-slate-50: #F8FAFC;
+  --color-slate-100: #F1F5F9;
+  --color-slate-200: #E2E8F0;
+  --color-slate-300: #CBD5E1;
+  --color-slate-400: #94A3B8;
+  --color-slate-500: #64748B;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1E293B;
+  --color-slate-900: #0F172A;
+  --color-slate-950: #020617;
+
+  --color-plum-50: #EEF4FB;
+  --color-plum-100: #DCE8F7;
+  --color-plum-200: #B9D0EF;
+  --color-plum-300: #8DB1E3;
+  --color-plum-400: #5A8AD1;
+  --color-plum-500: #2F63B5;
+  --color-plum-600: #1E4C96;
+  --color-plum-700: #123A78;
+  --color-plum-800: #0B2A5B;
+  --color-plum-900: #071B3F;
+
+  --color-coral-400: #2DD4BF;
+  --color-coral-500: #14B8A6;
+  --color-coral-600: #0F766E;
+  --color-coral-700: #115E59;
+
+  --color-success: #22C55E;
+  --color-success-text: #15803D;
+  --color-warning: #F59E0B;
+  --color-warning-text: #B45309;
+  --color-danger: #EF4444;
+  --color-danger-text: #B91C1C;
+
+  /* Admin console palette (matches the existing fea-training.com admin look) */
+  --color-adm-header: #313A46;
+  --color-adm-bg: #F7F8FC;
+  --color-adm-accent: #6C7AE0;
+  --color-adm-accent-dark: #4F5FD0;
+  --color-adm-accent-soft: #EEF0FD;
+  --color-adm-info: #2F9DBF;
+  --color-adm-text: #4B5563;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.06);
+  --shadow-md: 0 4px 10px -2px rgb(15 23 42 / 0.10), 0 2px 4px -2px rgb(15 23 42 / 0.06);
+  --shadow-lg: 0 14px 28px -6px rgb(15 23 42 / 0.16), 0 6px 10px -6px rgb(15 23 42 / 0.10);
+  --shadow-card-hover: 0 18px 32px -10px rgb(61 11 46 / 0.28), 0 6px 12px -6px rgb(15 23 42 / 0.12);
+
+  --animate-marquee: marquee 45s linear infinite;
+  --animate-accordion-down: accordion-down 150ms ease-out;
+  --animate-accordion-up: accordion-up 150ms ease-out;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
+  }
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
+  }
+}
+
+/* Semantic (theme-aware) tokens. */
+:root {
+  --background: #FFFFFF;
+  --foreground: var(--color-slate-900);
+  --surface-alt: var(--color-slate-50);
+  --muted: var(--color-slate-100);
+  --muted-foreground: var(--color-slate-600);
+  --card: #FFFFFF;
+  --border: var(--color-slate-200);
+  --ring: var(--color-plum-500);
+  --link: var(--color-plum-700);
+  --primary: var(--color-plum-700);
+  --primary-foreground: #FFFFFF;
+}
+
+.dark {
+  --background: var(--color-slate-950);
+  --foreground: var(--color-slate-50);
+  --surface-alt: var(--color-slate-900);
+  --muted: var(--color-slate-800);
+  --muted-foreground: var(--color-slate-400);
+  --card: var(--color-slate-900);
+  --border: var(--color-slate-800);
+  --ring: var(--color-coral-400);
+  --link: var(--color-plum-300);
+  --primary: var(--color-plum-600);
+  --primary-foreground: #FFFFFF;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface-alt: var(--surface-alt);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-link: var(--link);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+@layer base {
+  * { border-color: var(--border); }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+  /* defined typographic scale (fluid) */
+  h1 { font-size: clamp(2rem, 1.35rem + 2.6vw, 3.25rem); }
+  h2 { font-size: clamp(1.625rem, 1.25rem + 1.4vw, 2.25rem); }
+  h3 { font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem); }
+  h4 { font-size: 1.125rem; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: var(--radius-sm); }
+  button, [role="button"], a { -webkit-tap-highlight-color: transparent; }
+  main:focus { outline: none; }
+}
+
+/* ───────────────────────── Layout utilities ───────────────────────── */
+@utility container-page {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 24px;
+  @media (width >= 64rem) { padding-inline: 32px; }
+}
+
+@utility section-y {
+  padding-block: 48px;
+  @media (width >= 48rem) { padding-block: 80px; }
+}
+
+/* The brand gradient: used ONLY for hero scrim, value strip, primary button, CTA band and
+   footer top border (REQ-021). */
+@utility gradient-brand {
+  background-image: linear-gradient(135deg, #123A78 0%, #0F766E 100%);
+}
+
+@utility card-lift {
+  transition: transform 200ms ease, box-shadow 200ms ease;
+  &:hover, &:focus-within { transform: translateY(-4px); box-shadow: var(--shadow-card-hover); }
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    &:hover, &:focus-within { transform: none; }
+  }
+}
+
+/* Course card thumbnails: fixed 16:9 container (REQ-023). */
+@utility aspect-card { aspect-ratio: 16 / 9; }
+
+/* ───────────────────────── Marquee (REQ-072) ───────────────────────── */
+.marquee-track { display: flex; width: max-content; animation: var(--animate-marquee); }
+.marquee[data-paused="true"] .marquee-track { animation-play-state: paused; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+
+/* ───────────────────────── Rich text (sanitised HTML) ───────────────────────── */
+.prose-content { color: var(--foreground); line-height: 1.7; overflow-wrap: anywhere; }
+.prose-content > * + * { margin-top: 1rem; }
+.prose-content h1, .prose-content h2, .prose-content h3, .prose-content h4 { margin-top: 1.75rem; }
+.prose-content h2 { font-size: 1.5rem; }
+.prose-content h3 { font-size: 1.25rem; }
+.prose-content ul { list-style: disc; padding-left: 1.5rem; }
+.prose-content ol { list-style: decimal; padding-left: 1.5rem; }
+.prose-content a { color: var(--link); text-decoration: underline; text-underline-offset: 3px; }
+.prose-content img { max-width: 100%; height: auto; border-radius: var(--radius-lg); }
+.prose-content blockquote { border-left: 4px solid var(--color-plum-300); padding-left: 1rem; color: var(--muted-foreground); }
+.prose-content table { width: 100%; border-collapse: collapse; display: block; overflow-x: auto; }
+.prose-content th, .prose-content td { border: 1px solid var(--border); padding: 0.5rem 0.75rem; text-align: left; }
+.prose-content th { background: var(--muted); }
+.prose-content code { background: var(--muted); padding: 0.1rem 0.3rem; border-radius: var(--radius-sm); font-size: 0.9em; }
+
+/* ───────────────────────── Motion preferences (REQ-026) ───────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  .no-print { display: none !important; }
+  header.site-header, footer.site-footer, .skip-link { display: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+  body { background: #fff; color: #000; }
+}

@@ -30,7 +30,13 @@ export function PostLogin({ redirect }: { redirect: string }) {
         /* merge is best-effort; continue */
       }
       await refresh()
-      router.replace(redirect)
+      // Admins go straight to the dashboard; everyone else goes to the validated redirect.
+      const state = await fetch('/api/me/state', { cache: 'no-store' }).then((r) => r.json())
+      if (state?.user?.role === 'ADMIN') {
+        router.replace('/admin/dashboard')
+      } else {
+        router.replace(redirect)
+      }
     })()
   }, [redirect, refresh, router])
 

@@ -25,6 +25,6 @@ export async function GET() {
     getCartCourseIds({ userId: user.id }),
     getEnrolledCourseIds(user.id),
   ])
-  const body: MeState = { wishlistIds, cartIds, enrolledIds, user: { name: user.name, image: user.image } }
+  const body: MeState = { wishlistIds, cartIds, enrolledIds, user: { name: user.name, image: user.image, role: user.role } }
   return ok(body)
 }

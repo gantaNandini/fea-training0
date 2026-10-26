@@ -188,7 +188,7 @@ export interface MeState {
   wishlistIds: string[]
   cartIds: string[]
   enrolledIds: string[]
-  user: { name: string | null; image: string | null; role: string } | null
+  user: { name: string | null; image: string | null; role?: 'STUDENT' | 'INSTRUCTOR' | 'ADMIN' } | null
 }
 
 export interface CartResponse {

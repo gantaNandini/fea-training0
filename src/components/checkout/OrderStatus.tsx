@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { CheckCircle2, Loader } from 'lucide-react'
 import { ButtonLink } from '@/components/ui/button'
 import { formatINR } from '@/lib/utils/pricing'
@@ -43,36 +44,7 @@ export function OrderStatus({ order }: { order: OrderSummaryDTO }) {
   }, [order.id, status])
 
   if (status === 'COMPLETED') {
-    return (
-      <div className="mx-auto max-w-xl text-center" data-testid="order-confirmed">
-        <CheckCircle2 className="mx-auto h-16 w-16 text-success-text dark:text-green-400" aria-hidden="true" />
-        <h1 className="mt-4 text-3xl">{messages.checkout.successTitle}</h1>
-        <p className="mt-2 text-muted-foreground">{messages.checkout.successBody}</p>
-        <p className="mt-4 text-sm">
-          {messages.checkout.orderNumber}: <strong data-testid="order-number">{order.orderNumber}</strong>
-        </p>
-        <ul className="mt-6 divide-y divide-border rounded-xl border border-border text-left">
-          {order.items.map((i) => (
-            <li key={i.courseId} className="flex items-center justify-between gap-4 p-4 text-sm">
-              {i.slug ? (
-                <Link href={`/courses/${i.slug}`} className="font-semibold text-link underline-offset-4 hover:underline">
-                  {i.title}
-                </Link>
-              ) : (
-                <span className="font-semibold">{i.title}</span>
-              )}
-              <span>{formatINR(i.price)}</span>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <ButtonLink href="/my-courses" size="lg">{messages.checkout.goToMyCourses}</ButtonLink>
-          <ButtonLink href={`/orders/${order.id}/receipt`} variant="outline" size="lg">
-            {messages.checkout.viewReceipt}
-          </ButtonLink>
-        </div>
-      </div>
-    )
+    return <Confirmed order={order} />
   }
 
   if (status === 'PENDING') {
@@ -80,6 +52,7 @@ export function OrderStatus({ order }: { order: OrderSummaryDTO }) {
       <div className="mx-auto max-w-xl text-center" role="status">
         <Loader className="mx-auto h-12 w-12 animate-spin text-plum-700 motion-reduce:animate-none" aria-hidden="true" />
         <h1 className="mt-4 text-3xl">{messages.checkout.pendingTitle}</h1>
+        <p className="mt-2 text-muted-foreground">Confirming your payment and unlocking your course…</p>
         {gaveUp ? <p className="mt-2 text-muted-foreground">{messages.checkout.pendingBody}</p> : null}
         {gaveUp ? (
           <div className="mt-6">
@@ -98,5 +71,60 @@ export function OrderStatus({ order }: { order: OrderSummaryDTO }) {
         <ButtonLink href="/cart" size="lg">{messages.cart.title}</ButtonLink>
       </div>
     </div>
+  )
+}
+
+/** Paid and enrolled: access is already live. A single-course order opens the course after 4 s. */
+function Confirmed({ order }: { order: OrderSummaryDTO }) {
+  const router = useRouter()
+  const first = order.items.find((i) => i.slug)
+  const single = order.items.length === 1 && !!first?.slug
+  const [seconds, setSeconds] = React.useState(single ? 4 : 0)
+
+  React.useEffect(() => {
+    if (!single || !first?.slug) return
+    if (seconds <= 0) {
+      router.push(`/learn/${first.slug}`)
+      return
+    }
+    const t = setTimeout(() => setSeconds((s) => s - 1), 1000)
+    return () => clearTimeout(t)
+  }, [seconds, single, first?.slug, router])
+
+  return (
+      <div className="mx-auto max-w-xl text-center" data-testid="order-confirmed">
+        <CheckCircle2 className="mx-auto h-16 w-16 text-success-text dark:text-green-400" aria-hidden="true" />
+        <h1 className="mt-4 text-3xl">{messages.checkout.successTitle}</h1>
+        <p className="mt-2 text-muted-foreground">{messages.checkout.successBody}</p>
+        <p className="mt-1 text-muted-foreground">Your course access is active now — no approval needed.</p>
+        <p className="mt-4 text-sm">
+          {messages.checkout.orderNumber}: <strong data-testid="order-number">{order.orderNumber}</strong>
+        </p>
+        <ul className="mt-6 divide-y divide-border rounded-xl border border-border text-left">
+          {order.items.map((i) => (
+            <li key={i.courseId} className="flex items-center justify-between gap-4 p-4 text-sm">
+              {i.slug ? (
+                <Link href={`/courses/${i.slug}`} className="font-semibold text-link underline-offset-4 hover:underline">
+                  {i.title}
+                </Link>
+              ) : (
+                <span className="font-semibold">{i.title}</span>
+              )}
+              <span>{formatINR(i.price)}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          {first?.slug ? (
+            <ButtonLink href={`/learn/${first.slug}`} size="lg" data-testid="start-learning">
+              Start learning{single && seconds > 0 ? ` (opening in ${seconds}s)` : ''}
+            </ButtonLink>
+          ) : null}
+          <ButtonLink href="/my-courses" variant="outline" size="lg">{messages.checkout.goToMyCourses}</ButtonLink>
+          <ButtonLink href={`/orders/${order.id}/receipt`} variant="outline" size="lg">
+            {messages.checkout.viewReceipt}
+          </ButtonLink>
+        </div>
+      </div>
   )
 }

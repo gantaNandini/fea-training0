@@ -73,6 +73,9 @@ export function CheckoutView({ initialCoupon }: { initialCoupon: string | null }
     })
     // REQ-142A: 409 ALREADY_PROCESSED is a success
     if (res.ok || res.status === 409) return goSuccess(orderId)
+    // The money may already have left the account (server hiccup / network): never strand the buyer on
+    // an error. The confirmation page keeps checking with the gateway and enrols automatically.
+    if (res.status >= 500) return goSuccess(orderId)
     toast.error(messages.checkout.errorGeneric)
     setBusy(false)
   }

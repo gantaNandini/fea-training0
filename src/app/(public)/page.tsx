@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
-import { getHeroSlides, getTestimonials, getClientLogos, getUpcomingWebinar } from '@/lib/data/content'
+import { getHeroSlides } from '@/lib/data/content'
 import { getSettings } from '@/lib/data/settings'
-import { getFeaturedCourses, getPublishedCourseCount } from '@/lib/data/courses'
-import { getCategoriesWithCourses } from '@/lib/data/categories'
 import { HeroSlider } from '@/components/home/HeroSlider'
 import { ValueStrip } from '@/components/home/ValueStrip'
 import { TopCourses } from '@/components/home/TopCourses'
@@ -11,6 +9,10 @@ import { StatsBlock } from '@/components/home/StatsBlock'
 import { TestimonialsBlock } from '@/components/home/TestimonialsBlock'
 import { ClientLogos } from '@/components/home/ClientLogos'
 import { WebinarBanner } from '@/components/home/WebinarBanner'
+import { HowItWorks } from '@/components/home/HowItWorks'
+import { ShowcaseBand } from '@/components/home/ShowcaseBand'
+import { WhyChoose } from '@/components/home/WhyChoose'
+import { Faq } from '@/components/home/Faq'
 import { CtaBand } from '@/components/home/CtaBand'
 import { buildMetadata } from '@/lib/utils/seo'
 
@@ -28,40 +30,21 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  // Kick off all home-page data in parallel instead of letting each async child
-  // component fetch sequentially on a cold cache. All functions are cache-backed
-  // so on a warm cache this is effectively free; on a cold cache it saves ~6
-  // sequential round-trips to the DB.
-  const [
-    slides,
-    featuredCourses,
-    categories,
-    settings,
-    courseCount,
-    testimonials,
-    logos,
-    webinar,
-  ] = await Promise.all([
-    getHeroSlides(),
-    getFeaturedCourses(),
-    getCategoriesWithCourses(),
-    getSettings(),
-    getPublishedCourseCount(),
-    getTestimonials(),
-    getClientLogos(),
-    getUpcomingWebinar(),
-  ])
-
+  const slides = await getHeroSlides()
   return (
     <>
       <HeroSlider slides={slides} />
       <ValueStrip />
-      <WebinarBanner webinar={webinar} />
-      <TopCourses courses={featuredCourses} />
-      <BrowseCategories categories={categories} />
-      <StatsBlock settings={settings} courseCount={courseCount} />
-      <TestimonialsBlock testimonials={testimonials} />
-      <ClientLogos logos={logos} />
+      <WebinarBanner />
+      <TopCourses />
+      <HowItWorks />
+      <BrowseCategories />
+      <ShowcaseBand />
+      <WhyChoose />
+      <StatsBlock />
+      <TestimonialsBlock />
+      <ClientLogos />
+      <Faq />
       <CtaBand />
     </>
   )

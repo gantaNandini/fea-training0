@@ -33,6 +33,7 @@ export function Footer({ settings }: { settings: SettingsMap }) {
             <li><Link className={link} href="/privacy-policy">{messages.footer.privacy}</Link></li>
             <li><Link className={link} href="/terms">{messages.footer.terms}</Link></li>
             <li><Link className={link} href="/login">{messages.footer.login}</Link></li>
+            <li><Link className={link} href="/admin-login" data-testid="admin-login-link">Admin login</Link></li>
           </ul>
         </nav>
         <div>

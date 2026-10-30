@@ -12,8 +12,8 @@ export const metadata: Metadata = { title: { default: 'Admin', template: '%s | A
 /** REQ-190: the middleware only checks the JWT; this re-checks the role in the DB on every admin request. */
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getFreshUser()
-  if (!user) redirect('/login?redirect=/admin')
-  if (user.role !== 'ADMIN') redirect('/')
+  if (!user) redirect('/admin-login')
+  if (user.role !== 'ADMIN') redirect('/admin-login')
   const [profile, siteName, unread] = await Promise.all([
     getProfile(user.id),
     getSetting('company_name', 'PYTHAGORAS'),

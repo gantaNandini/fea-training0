@@ -50,6 +50,10 @@ export class MockPaymentProvider implements PaymentProvider {
     return verifyBodySignature(mockSecret(), rawBody, signature)
   }
 
+  async fetchOrderPayments(): Promise<(ProviderPayment & { paymentId: string })[]> {
+    return [] // the mock gateway keeps no records; its payment is verified instantly by the client
+  }
+
   async fetchPayment(
     _paymentId: string,
     hint: { expectedAmount: number },

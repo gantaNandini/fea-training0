@@ -85,6 +85,28 @@ function glyph(key: string, color: string): string {
   return `<path d="M250 230 L320 120 L390 230 Z" ${stroke}/><circle cx="320" cy="190" r="14" ${stroke}/>`
 }
 
+const RAMP = ['#1E3A8A', '#2563EB', '#06B6D4', '#10B981', '#FACC15', '#F97316']
+
+/** FEA-style stress contour: a quad mesh whose cells take colours from a smooth two-peak field. */
+function contour(rand: () => number, opacity: number, cols = 16, rows = 9): string {
+  const peaks = [0, 1].map(() => ({ x: rand() * cols, y: rand() * rows, r: 3 + rand() * 4 }))
+  const w = 640 / cols
+  const h = 360 / rows
+  let out = ''
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      let v = 0
+      for (const q of peaks) {
+        const d2 = (i + 0.5 - q.x) ** 2 + (j + 0.5 - q.y) ** 2
+        v += Math.exp(-d2 / (2 * q.r * q.r))
+      }
+      const c = RAMP[Math.min(RAMP.length - 1, Math.floor(Math.min(v, 0.999) * RAMP.length))]
+      out += `<rect x="${(i * w).toFixed(1)}" y="${(j * h).toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="${c}" fill-opacity="${opacity}" stroke="#FFFFFF" stroke-opacity="0.12"/>`
+    }
+  }
+  return out
+}
+
 export function buildPlaceholderSvg(key: string, label?: string): string {
   const k = key.replace(/^placeholder:/, '')
 
@@ -115,6 +137,8 @@ export function buildPlaceholderSvg(key: string, label?: string): string {
 
   const p = pickPalette(k)
   const rand = rng(hash(k))
+  const mesh = contour(rand, k.startsWith('hero') ? 0.28 : 0.5)
+  const badge = k.startsWith('hero') ? '' : `<circle cx="320" cy="180" r="84" fill="#071B3F" fill-opacity="0.62"/>`
   const circles = Array.from({ length: 7 }, () => {
     const cx = Math.round(rand() * 640)
     const cy = Math.round(rand() * 360)
@@ -130,7 +154,7 @@ export function buildPlaceholderSvg(key: string, label?: string): string {
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" role="img">` +
     `<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${p.from}"/><stop offset="1" stop-color="${p.to}"/></linearGradient></defs>` +
-    `<rect width="640" height="360" fill="url(#g)"/>${circles}${lines}${k.startsWith('hero') ? '' : glyph(k, p.accent)}` +
+    `<rect width="640" height="360" fill="url(#g)"/>${mesh}${circles}${lines}${badge}${k.startsWith('hero') ? '' : glyph(k, '#FFFFFF')}` +
     `</svg>`
   )
 }

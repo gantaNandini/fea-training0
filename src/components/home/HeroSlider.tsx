@@ -4,6 +4,7 @@ import * as React from 'react'
 import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
 import type { HeroSlideDTO } from '@/lib/types'
 import { ButtonLink } from '@/components/ui/button'
+import { FeaVisual } from './FeaVisual'
 import { PlaceholderArt } from '@/components/shared/PlaceholderArt'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { messages } from '@/lib/messages'
@@ -106,6 +107,9 @@ export function HeroSlider({ slides }: { slides: HeroSlideDTO[] }) {
                       </ButtonLink>
                     ) : null}
                   </div>
+                </div>
+                <div className="ml-auto hidden w-full max-w-sm pl-8 text-white lg:block xl:max-w-md" aria-hidden="true">
+                  {active ? <FeaVisual /> : null}
                 </div>
               </div>
             </div>

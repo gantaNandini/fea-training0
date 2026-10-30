@@ -13,9 +13,7 @@ function isProtected(pathname: string): boolean {
   return PROTECTED.some((p) => pathname === p || pathname.startsWith(`${p}/`))
 }
 
-// Build the CSP string once at module load — env vars are fixed at startup so
-// there is no need to re-derive the string on every request.
-const _cspString = (() => {
+function csp(): string {
   const imageDomains = (process.env.IMAGE_DOMAINS ?? '')
     .split(',')
     .map((s) => s.trim())
@@ -39,10 +37,6 @@ const _cspString = (() => {
     `object-src 'none'`,
   ]
   return directives.join('; ')
-})()
-
-function csp(): string {
-  return _cspString
 }
 
 function withHeaders(res: NextResponse): NextResponse {
@@ -80,12 +74,13 @@ export default auth((req) => {
 
   if (isProtected(pathname)) {
     if (!req.auth) {
-      const url = new URL('/login', req.nextUrl.origin)
-      url.searchParams.set('redirect', `${pathname}${search}`)
+      const isAdminArea = pathname === '/admin' || pathname.startsWith('/admin/')
+      const url = new URL(isAdminArea ? '/admin-login' : '/login', req.nextUrl.origin)
+      if (!isAdminArea) url.searchParams.set('redirect', `${pathname}${search}`)
       return withHeaders(NextResponse.redirect(url))
     }
     if (pathname.startsWith('/admin') && req.auth.user?.role !== 'ADMIN') {
-      return withHeaders(NextResponse.redirect(new URL('/login', req.nextUrl.origin)))
+      return withHeaders(NextResponse.redirect(new URL('/admin-login', req.nextUrl.origin)))
     }
   }
 

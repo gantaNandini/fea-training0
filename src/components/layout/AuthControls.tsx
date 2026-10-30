@@ -3,7 +3,7 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { signOut } from 'next-auth/react'
-import { BookOpen, Heart, LogOut, User as UserIcon } from 'lucide-react'
+import { BookOpen, Heart, LayoutDashboard, LogOut, User as UserIcon } from 'lucide-react'
 import { useUserState } from '@/hooks/useUserState'
 import { ButtonLink } from '@/components/ui/button'
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -53,6 +53,14 @@ export function AuthControls() {
       </PopoverTrigger>
       <PopoverContent align="end" className="w-56 p-2">
         <p className="truncate px-3 py-2 text-sm font-semibold">{user.name}</p>
+        {user.role === 'ADMIN' ? (
+          <PopoverClose asChild>
+            <Link href="/admin/dashboard" className={item} data-testid="admin-link">
+              <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
+              Admin dashboard
+            </Link>
+          </PopoverClose>
+        ) : null}
         <PopoverClose asChild>
           <Link href="/my-courses" className={item}>
             <BookOpen className="h-4 w-4" aria-hidden="true" />

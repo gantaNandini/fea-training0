@@ -4,6 +4,7 @@
  * REMOVE ALL DEMO ACCOUNTS BEFORE LAUNCH.
  */
 import { PrismaClient, type CourseLevel, type CourseStatus, type LessonType } from '@prisma/client'
+import { buildDescription } from './course-content'
 import bcrypt from 'bcryptjs'
 
 const db = new PrismaClient()
@@ -170,9 +171,9 @@ const PAGES: [string, string, string][] = [
 const SETTINGS: Record<string, string> = {
   company_name: 'PYTHAGORAS Engineering Consultancy',
   footer_blurb: 'Practical FEA and engineering training from industry experts.',
-  address: 'Placeholder address, City, State, India',
-  email: 'info@example.com',
-  phone: '+91 00000 00000',
+  address: 'Inspire Workplace, #134 & 135, Karthik Nagar, LRDE Layout, Doddanekundi Post, Bangalore 560037, India',
+  email: 'info@fea-training.com',
+  phone: '+91 70422 43776',
   social_linkedin: 'https://www.linkedin.com/',
   social_youtube: 'https://www.youtube.com/',
   social_twitter: 'https://x.com/',
@@ -240,11 +241,12 @@ async function main() {
   // courses
   const courseId: Record<number, string> = {}
   for (const c of COURSES) {
+    const rich = buildDescription(c.slug, { lessons: c.lessons, hours: c.hours, upcoming: c.status === 'UPCOMING' })
     const data = {
       title: c.title,
       subtitle: c.subtitle,
-      shortDescription: `${c.subtitle}. Hands-on training with ANSYS taught by an industry expert.`,
-      description: `<p>${c.title} is a practical, example-driven course. You will work through complete ANSYS models and learn how to interpret results against the relevant code or theory.</p><h3>Who is this for?</h3><p>Mechanical and design engineers, stress analysts and graduate engineers who want dependable analysis workflows.</p>`,
+      shortDescription: rich?.short ?? `${c.subtitle}. Hands-on training with ANSYS taught by an industry expert.`,
+      description: rich?.description ?? `<p>${c.title} is a practical, example-driven course. You will work through complete ANSYS models and learn how to interpret results against the relevant code or theory.</p><h3>Who is this for?</h3><p>Mechanical and design engineers, stress analysts and graduate engineers who want dependable analysis workflows.</p>`,
       level: c.level,
       language: 'English',
       price: c.price * 100,
@@ -255,8 +257,8 @@ async function main() {
       featured: c.n <= 6,
       featuredOrder: c.n <= 6 ? c.n : null,
       instructorId: instructor.id,
-      requirements: REQUIREMENTS,
-      outcomes: OUTCOMES,
+      requirements: rich?.requirements ?? REQUIREMENTS,
+      outcomes: rich?.outcomes ?? OUTCOMES,
       tags: c.topics.map((t) => t.toLowerCase()),
       seoTitle: null,
       seoDescription: null,
@@ -305,8 +307,18 @@ async function main() {
   })
 
   // settings, pages
+  // Contact details replace the old placeholders on an already-seeded database, but never overwrite
+  // anything the admin has since typed into Settings.
+  const OLD_PLACEHOLDERS: Record<string, string> = {
+    address: 'Placeholder address, City, State, India',
+    email: 'info@example.com',
+    phone: '+91 00000 00000',
+  }
   for (const [key, value] of Object.entries(SETTINGS)) {
-    await db.siteSetting.upsert({ where: { key }, update: {}, create: { key, value } })
+    const old = OLD_PLACEHOLDERS[key]
+    const existing = old ? await db.siteSetting.findUnique({ where: { key } }) : null
+    const replace = !!old && existing?.value === old
+    await db.siteSetting.upsert({ where: { key }, update: replace ? { value } : {}, create: { key, value } })
   }
   for (const [slug, title, body] of PAGES) {
     await db.page.upsert({ where: { slug }, update: {}, create: { slug, title, body } })

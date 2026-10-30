@@ -33,6 +33,11 @@ export interface PaymentProvider {
   verifySignature(orderId: string, paymentId: string, signature: string): boolean
   verifyWebhookSignature(rawBody: string, signature: string): boolean
   fetchPayment(paymentId: string, hint: { expectedAmount: number }): Promise<ProviderPayment>
+  /**
+   * Lists the payments the gateway holds for one gateway order. Used to recover automatically when
+   * the browser closed before /api/payments/verify ran and the webhook has not arrived yet.
+   */
+  fetchOrderPayments(providerOrderId: string): Promise<(ProviderPayment & { paymentId: string })[]>
 }
 
 let cached: PaymentProvider | null = null

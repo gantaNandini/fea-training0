@@ -51,6 +51,18 @@ export class RazorpayProvider implements PaymentProvider {
     return verifyBodySignature(secret, rawBody, signature)
   }
 
+  async fetchOrderPayments(providerOrderId: string): Promise<(ProviderPayment & { paymentId: string })[]> {
+    const res = await this.client.orders.fetchPayments(providerOrderId)
+    return (res.items ?? []).map((p) => ({
+      paymentId: String(p.id),
+      status:
+        p.status === 'captured' || p.status === 'authorized' || p.status === 'failed' ? p.status : 'other',
+      method: p.method ? String(p.method) : null,
+      amount: Number(p.amount),
+      orderId: p.order_id ? String(p.order_id) : null,
+    }))
+  }
+
   async fetchPayment(paymentId: string): Promise<ProviderPayment> {
     const p = await this.client.payments.fetch(paymentId)
     const status =

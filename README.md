@@ -94,3 +94,21 @@ The partial unique index, CHECK constraints, `order_number_seq` and the `CourseS
 
 ## Structure
 `src/app` routes · `src/components` UI · `src/lib/data` cached DB reads · `src/lib/orders` + `src/lib/payments` commerce · `src/lib/security` Origin/CSP helpers · `prisma/` schema, raw SQL, seed · `tests/` unit, integration, e2e.
+
+## Enrolment automation, admin login, content (round 3)
+
+- **Automatic enrolment.** Payment success → `completeOrder` creates the enrolment in the same database
+  transaction → the course is available immediately. Three independent triggers, none needing an admin:
+  1. `/api/payments/verify` (browser, instant), 2. the Razorpay webhook (`payment.captured`), 3. self-healing
+  `reconcileOrder` (src/lib/orders/reconcile.ts) which asks the gateway whether a PENDING order was paid; it runs
+  while the confirmation page polls and in the nightly `/api/orders/cleanup` cron. The success page shows
+  **Start learning** and opens a single-course order automatically after 4 s.
+  For real payments set `PAYMENT_PROVIDER=razorpay`, the keys, and register the webhook
+  `https://<your-domain>/api/payments/webhook` with event `payment.captured` and `RAZORPAY_WEBHOOK_SECRET`.
+- **No course limit.** There is no cap anywhere in the admin or public code; the admin list is a searchable table,
+  the public catalogue is paginated, the home page only features the courses flagged "featured".
+- **Admin login.** `/admin-login` (also linked in the footer). Only ADMIN accounts get through; anything under
+  `/admin` redirects there when not signed in.
+- **Content.** `prisma/course-content.ts` holds the full course write-ups; `pnpm seed` (or `pnpm db:seed`) refreshes
+  them on an existing database, and replaces the old placeholder address/email/phone only if still unchanged.
+  Courses an admin has edited keep their edits only for non-seeded slugs: seeded slugs are overwritten by the seed.

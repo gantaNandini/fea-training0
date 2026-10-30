@@ -1,0 +1,127 @@
+{
+  "hero": [
+    "/imported/hero/35e253435fd1f1506bc5b96e27aedf3e.jpg",
+    "/imported/hero/4f7a60f5b11570565d67df2d0c4135c7.jpg",
+    "/imported/hero/a5ccbf4f58f04a814f80a12e703d7c34.jpg",
+    "/imported/hero/e71a19dede1686a40e8fddb2e0aa24ae.jpg"
+  ],
+  "courses": {
+    "full-course-pressure-vessel-design-dba": "/imported/courses/course_thumbnail_default_11.jpg",
+    "fatigue-ratchetting-creep-assessment": "/imported/courses/course_thumbnail_default_22.jpg",
+    "3d-fracture-mechanics-simulation": "/imported/courses/course_thumbnail_default_23.jpg",
+    "protection-against-local-failure": "/imported/courses/course_thumbnail_default_20.jpg",
+    "protection-against-global-failure": "/imported/courses/course_thumbnail_default_19.jpg",
+    "basic-fea-ahead-of-pressure-vessel-design": "/imported/courses/course_thumbnail_default_18.jpg",
+    "ansys-training-mechanical-vibrations": "/imported/courses/course_thumbnail_default_17.jpg",
+    "basic-fea-training-for-beginners": "/imported/courses/course_thumbnail_default_15.jpg",
+    "rotordynamics-analysis": "/imported/courses/course_thumbnail_default_10.jpg",
+    "advanced-fea-ansys-workbench-apdl": "/imported/courses/course_thumbnail_default_9.jpg"
+  },
+  "testimonials": [
+    {
+      "name": "Rohith Pradeep Kongot",
+      "role": "Senior Engineer (NPD) at Alpha Design Technologies",
+      "company": "",
+      "quote": "I have attended worth sessions on FEA along with industrial examples conducted by trusted trainer Dr. Joel Daniel. His teaching methodology helped me in learning from scratch to complex industrial problems. He has sound knowledge on FEA theory, ansys workbench, apdl. Apart from training, his qualities like, helping & down to earth nature, mentoring to boost the career are really appreciable. He assisted me in learning structural design which includes linear and nonlinear, structural vibrations and rotor dynamics etc. I strongly recommend his training for fresher as well as experienced one who really wants to rule the FEA world.",
+      "photo": "placeholder:avatar-testimonial"
+    },
+    {
+      "name": "Prasanna Tale",
+      "role": "Design & Analyst Engineer",
+      "company": "",
+      "quote": "I have taken training from Dr. Joel Daniel, after my graduation for 8 weeks. He explained me each and every topic using practical examples. He is very patient in explaining the concepts in different ways, so that we can understand it easily. He covered topics like Linear, Non-Linear, Rotor Dynamics, Fracture Mechanics & Fluid Structure Interaction. I highly recommend this training for everyone in the CAE field.",
+      "photo": "placeholder:avatar-testimonial"
+    },
+    {
+      "name": "Aravind kumar Gottimukkhala",
+      "role": "Engineer 1 at Safran Engineering Services",
+      "company": "",
+      "quote": "I have undergone FEA training course formulated by Dr. Joel daniel. He has in depth knowledge in FEA and have drafted an easy to understand syllabus on FEA. The use of real time industrial problems, makes the course engaging and interesting. Even after completion of the course, he made himself available for clarifying my queries. I personally recommend this training course for engineering graduates aspiring to get in to the mechanical industry.",
+      "photo": "placeholder:avatar-testimonial"
+    },
+    {
+      "name": "KP Harishankar",
+      "role": "CAE Engineer at DSI Technologies",
+      "company": "",
+      "quote": "Training is worth and bridges gap between industry needs and theoretical knowledge.",
+      "photo": "placeholder:avatar-testimonial"
+    },
+    {
+      "name": "Deepak Verma",
+      "role": "R&D Engineer at ABB",
+      "company": "",
+      "quote": "Dr,Joel Daniel is one of the best faculty for learning FEA.His way of teaching and involving student into a live projects is excellent. The course structured is well described and very much useful for the R&D industry. His approach to teaching is totally different than other trainers. After training, his support towards students is very excellent which I never found at other FEA faculty. I highly recommended Dr. Joel for FEA training. Moreover, his expertise in APDL is excellent.",
+      "photo": "placeholder:avatar-testimonial"
+    },
+    {
+      "name": "Shaheed Hossain",
+      "role": "FEA Engineer",
+      "company": "",
+      "quote": "I got an opportunity for a valuable session of ANSYS learning and training with industrial examples by Dr. Joel Daniel. His methods and technical competency were significant for me in learning/completing the concepts on schedule. Apart from his way of mentoring, he took initiative in documenting my work enabling a smooth learning process. He assisted me in learning structural design which includes linear and nonlinear, structural vibrations and rotor dynamics etc.",
+      "photo": "placeholder:avatar-testimonial"
+    },
+    {
+      "name": "Vishal Sinha",
+      "role": "CAE Engineer - Renault Nissan (Visvesvaraya Technological University)",
+      "company": "",
+      "quote": "Class are well structured and the explanation was more towards practical approach, which makes easy to understand. Different kinds of problem solving approaches were explained using WB & APDL.",
+      "photo": "placeholder:avatar-testimonial"
+    },
+    {
+      "name": "Harish Kolla",
+      "role": "Simulation Engineer (Hiwi) at Fraunhofer IPA (SRM University)",
+      "company": "",
+      "quote": "Dr.Joel's training is good and will be clean and crystal clear, both in concepts and application — a good place to learn and can get the projects done. If you want to learn basics and to get a reliable result with minimal effort Joel's training is definitely recommended.",
+      "photo": "placeholder:avatar-testimonial"
+    },
+    {
+      "name": "Satish Kumar A",
+      "role": "R&D - FEA - ANSYS",
+      "company": "",
+      "quote": "Dr.Joel is a highly experienced FEA Consultant and his training classes involve a practical approach towards strength analysis. The most interesting part is that he covers a variety of industry case studies giving exposure to non-linearities, linear dynamics, and fracture mechanics, encompassing analytical and FEA predictions supported by testing data.",
+      "photo": "placeholder:avatar-testimonial"
+    },
+    {
+      "name": "Abhilash Gulhane",
+      "role": "MAPDL Software Testing at ANSYS (Purdue University Indianapolis)",
+      "company": "",
+      "quote": "Pythagoras Engineering offers the best possible course coordinator on the ANSYS / FEA with very good course content important for understanding of ANSYS Tool along with knowledge of Finite Element Analysis. I strongly recommend Dr. Joel Daniel for any kind of FEA training.",
+      "photo": "placeholder:avatar-testimonial"
+    },
+    {
+      "name": "Baljeet Singh",
+      "role": "Civil & Structural Engineering Professional at McDermott International Inc. (IIT-Delhi)",
+      "company": "",
+      "quote": "Dr. Joel Daniel conducted One-week workshop on Advanced Finite Element Analysis simulation in Engineering applications for NAVAJO TECHNICAL UNIVERSITY, USA, during May 24 to May 28-2021. From the start of the day, right until the end, Dr. Joel Daniel created an interactive learning environment that kept the students enthusiastic about the FEA. He covered topics on Linear stress analysis, thermal analysis, vibration analysis, and fracture mechanics. Feedback from the students has been great. I would highly recommend Dr. Joel Daniel both for his real-world practical knowledge and insights and his overall theoretical knowledge in Finite Element Analysis.",
+      "photo": "placeholder:avatar-testimonial"
+    },
+    {
+      "name": "Navajo Technical University, USA",
+      "role": "Navajo Technical University, USA",
+      "company": "",
+      "quote": "Sir, The success I've had in my career is due to your support and encouragement. I appreciate you so much and value everything that I have learned from you. I truly appreciate your sound technical knowledge and the way you impart it to us.",
+      "photo": "placeholder:avatar-testimonial"
+    },
+    {
+      "name": "Yogeshwararao J",
+      "role": "CAE analyst, Webasto / Satyam Ventures, Hyderabad",
+      "company": "",
+      "quote": "I had undergone a training under Dr. Joel for FEA in Ansys for around 60 hours. He taught Linear and nonlinear static structural analysis, vibration analysis, rotor dynamics, contacts, submodelling techniques, fracture mechanics brilliantly. After this training I am confident that I can do the real time projects. I will definitely recommend this training to my friends and colleagues.",
+      "photo": "placeholder:avatar-testimonial"
+    },
+    {
+      "name": "Roopesh Kumar",
+      "role": "Simulation Engineer PDE PDS, Micron Technology, Hyderabad",
+      "company": "",
+      "quote": "I had undergone Ansys training from Dr Joel during my engineering. The training was wonderfully engaging with pure industry-oriented problems. The course content was so good, and the content was presented in an enthusiastic way. I love Dr Joel's way of teaching and the approach he used to explain each and every content. I strongly recommend Ansys training from Dr Joel to every CAE job aspirants.",
+      "photo": "placeholder:avatar-testimonial"
+    },
+    {
+      "name": "Sanju A K",
+      "role": "CAE Engineer, Valeo, Chennai",
+      "company": "",
+      "quote": "PYTHAGORAS Engineering and Consultancy offers high-quality instruction in the field of finite element analysis with the Ansys software. The course is designed using real-time examples to understand CAE/CFD/CAD tools easily and efficiently. A significant majority of students successfully get positions inside esteemed firms using the knowledge acquired via this training program.",
+      "photo": "placeholder:avatar-testimonial"
+    }
+  ]
+}

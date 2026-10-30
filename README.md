@@ -112,3 +112,11 @@ The partial unique index, CHECK constraints, `order_number_seq` and the `CourseS
 - **Content.** `prisma/course-content.ts` holds the full course write-ups; `pnpm seed` (or `pnpm db:seed`) refreshes
   them on an existing database, and replaces the old placeholder address/email/phone only if still unchanged.
   Courses an admin has edited keep their edits only for non-seeded slugs: seeded slugs are overwritten by the seed.
+
+## Real pictures from the existing site (round 4)
+
+`pnpm import:fea` downloads the hero, course posters, client logos and testimonial photos/text from
+fea-training.com into `public/imported/**` and writes `prisma/site-content.json`; `pnpm db:seed` then uses them.
+Commit `public/imported` and `prisma/site-content.json`. Matching is heuristic: read the printed report and fix
+anything unmatched by editing the JSON. The "Fatigue Analysis for Pressure Vessels" block on the home page is the
+page `featured-programme`, editable in Admin → Settings → pages.

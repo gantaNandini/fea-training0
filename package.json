@@ -20,7 +20,8 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "import:fea": "tsx scripts/fetch-fea-assets.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

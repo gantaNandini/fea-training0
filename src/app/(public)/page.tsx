@@ -12,6 +12,7 @@ import { WebinarBanner } from '@/components/home/WebinarBanner'
 import { HowItWorks } from '@/components/home/HowItWorks'
 import { ShowcaseBand } from '@/components/home/ShowcaseBand'
 import { WhyChoose } from '@/components/home/WhyChoose'
+import { FeaturedProgramme } from '@/components/home/FeaturedProgramme'
 import { Faq } from '@/components/home/Faq'
 import { CtaBand } from '@/components/home/CtaBand'
 import { buildMetadata } from '@/lib/utils/seo'
@@ -37,6 +38,7 @@ export default async function HomePage() {
       <ValueStrip />
       <WebinarBanner />
       <TopCourses />
+      <FeaturedProgramme />
       <HowItWorks />
       <BrowseCategories />
       <ShowcaseBand />

@@ -4,7 +4,6 @@ import * as React from 'react'
 import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
 import type { HeroSlideDTO } from '@/lib/types'
 import { ButtonLink } from '@/components/ui/button'
-import { FeaVisual } from './FeaVisual'
 import { PlaceholderArt } from '@/components/shared/PlaceholderArt'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { messages } from '@/lib/messages'
@@ -72,7 +71,7 @@ export function HeroSlider({ slides }: { slides: HeroSlideDTO[] }) {
               aria-roledescription="slide"
               aria-label={`${messages.home.slide} ${i + 1} / ${count}`}
               hidden={!active}
-              className="relative min-h-[30rem] md:min-h-[34rem]"
+              className="relative min-h-[20rem] md:min-h-[26rem]"
             >
               <PlaceholderArt
                 src={s.image}
@@ -83,11 +82,10 @@ export function HeroSlider({ slides }: { slides: HeroSlideDTO[] }) {
                 sizes="100vw"
                 className="object-cover"
               />
-              {/* decorative brand-gradient scrim (REQ-021) */}
-              <div className="gradient-brand absolute inset-0 opacity-50" aria-hidden="true" />
-              <div className="container-page relative flex min-h-[30rem] items-center py-12 md:min-h-[34rem]">
-                {/* solid plum-900 >= 75% opacity text panel (REQ-063) */}
-                <div data-testid="hero-panel" className="max-w-2xl rounded-xl bg-plum-900/85 p-6 text-white md:p-10">
+              {/* left-to-right navy scrim keeps the heading readable on any photo while the picture stays visible */}
+              <div className="absolute inset-0 bg-gradient-to-r from-plum-900/85 via-plum-900/45 to-transparent" aria-hidden="true" />
+              <div className="container-page relative flex min-h-[20rem] items-center py-10 md:min-h-[26rem]">
+                <div data-testid="hero-panel" className="max-w-2xl text-white">
                   <Heading className="text-white">{s.heading}</Heading>
                   <p data-testid="hero-sub" className="mt-4 text-lg text-white">
                     {s.subheading}
@@ -107,9 +105,6 @@ export function HeroSlider({ slides }: { slides: HeroSlideDTO[] }) {
                       </ButtonLink>
                     ) : null}
                   </div>
-                </div>
-                <div className="ml-auto hidden w-full max-w-sm pl-8 text-white lg:block xl:max-w-md" aria-hidden="true">
-                  {active ? <FeaVisual /> : null}
                 </div>
               </div>
             </div>

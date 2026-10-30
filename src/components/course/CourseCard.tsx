@@ -69,7 +69,8 @@ export function CourseCard({
           fill
           priority={priority}
           sizes={list ? '(min-width: 640px) 288px, 100vw' : '(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw'}
-          className="object-cover"
+          // real course posters are shown whole on white (like the original site); generated art fills the frame
+          className={!course.thumbnail || course.thumbnail.startsWith('placeholder:') ? 'object-cover' : 'object-contain bg-white'}
         />
         <div className="absolute right-2 top-2 z-20 flex flex-col gap-2">
           <Tip label={wished ? messages.course.removeFromWishlist : messages.course.addToWishlist} side="left">

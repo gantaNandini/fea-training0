@@ -4,10 +4,33 @@
  * REMOVE ALL DEMO ACCOUNTS BEFORE LAUNCH.
  */
 import { PrismaClient, type CourseLevel, type CourseStatus, type LessonType } from '@prisma/client'
+import fs from 'node:fs'
+import path from 'node:path'
 import { buildDescription } from './course-content'
+import { ABOUT_BODY, PROGRAMME_BODY, PROGRAMME_TITLE } from './programme-content'
 import bcrypt from 'bcryptjs'
 
 const db = new PrismaClient()
+
+/**
+ * Optional real content scraped from the client's existing site (see scripts/fetch-fea-assets.ts).
+ * When prisma/site-content.json exists it replaces the generated placeholder images, the demo
+ * testimonials and the demo client logos. Keeping it in the seed means re-seeding never loses it.
+ */
+interface SiteContent {
+  hero?: string[]
+  courses?: Record<string, string>
+  testimonials?: { name: string; role?: string; company?: string; quote: string; photo?: string }[]
+  logos?: { name: string; image: string }[]
+}
+function loadSiteContent(): SiteContent {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(process.cwd(), 'prisma', 'site-content.json'), 'utf8')) as SiteContent
+  } catch {
+    return {}
+  }
+}
+const SITE = loadSiteContent()
 const DAY = 24 * 60 * 60 * 1000
 
 // ───────────────────────── categories (REQ-340) ─────────────────────────
@@ -153,11 +176,14 @@ const TESTIMONIALS: [string, string, string, string][] = [
   ['Lakshmi Venkat', 'Mechanical Engineer', 'Wood Group (placeholder)', 'Lifetime access means I keep going back to the worked examples whenever a new project needs them.'],
 ]
 const LOGOS = ['Alpha Industries', 'Beta Energy', 'Gamma Engineering', 'Delta Power', 'Epsilon Marine', 'Zeta Systems', 'Eta Fabrication', 'Theta Turbines', 'Iota Offshore', 'Kappa Process', 'Lambda Steel', 'Mu Aerospace']
+const HERO_HEADING = 'Engineering Design And Finite Element Analysis Training'
+const HERO_SUB = 'Based on industrial best practices'
+// The client's live site uses the same heading on all four slides; only the picture changes.
 const HEROES: [string, string, string, string][] = [
-  ['Master FEA with industry experts', 'Practical ANSYS training in pressure vessels, fracture mechanics, vibrations and more.', 'Browse courses', '/courses'],
-  ['Design pressure vessels by analysis', 'Learn ASME Section VIII Div 2 Part 5 the practical way.', 'View the full course', '/courses/full-course-pressure-vessel-design-dba'],
-  ['Understand 3D fracture mechanics', 'Model cracks, extract SIFs and predict growth with confidence.', 'Explore fracture courses', '/courses?category=fracture-mechanics'],
-  ['Learn at your own pace, for life', 'Lifetime access to every course you enrol in.', 'Start learning', '/courses'],
+  [HERO_HEADING, HERO_SUB, 'Browse courses', '/courses'],
+  [HERO_HEADING, HERO_SUB, 'Browse courses', '/courses'],
+  [HERO_HEADING, HERO_SUB, 'Browse courses', '/courses'],
+  [HERO_HEADING, HERO_SUB, 'Browse courses', '/courses'],
 ]
 const PAGES: [string, string, string][] = [
   ['about', 'About us', '<p><strong>[PLACEHOLDER]</strong> PYTHAGORAS Engineering Consultancy provides FEA consultancy and training to engineers worldwide. Final copy to be supplied by the client.</p>'],
@@ -251,7 +277,7 @@ async function main() {
       language: 'English',
       price: c.price * 100,
       isFree: false,
-      thumbnail: `placeholder:${c.primary}-${String(c.n).padStart(2, '0')}`,
+      thumbnail: SITE.courses?.[c.slug] ?? `placeholder:${c.primary}-${String(c.n).padStart(2, '0')}`,
       previewVideoUrl: null,
       status: c.status,
       featured: c.n <= 6,
@@ -286,18 +312,22 @@ async function main() {
   // testimonials, logos, heroes
   await db.testimonial.deleteMany()
   await db.testimonial.createMany({
-    data: TESTIMONIALS.map(([name, role, company, quote], i) => ({ name, role, company, quote, photo: 'placeholder:avatar-testimonial', order: i })),
+    data: SITE.testimonials?.length
+      ? SITE.testimonials.map((t, i) => ({ name: t.name, role: t.role ?? '', company: t.company ?? '', quote: t.quote, photo: t.photo ?? 'placeholder:avatar-testimonial', order: i }))
+      : TESTIMONIALS.map(([name, role, company, quote], i) => ({ name, role, company, quote, photo: 'placeholder:avatar-testimonial', order: i })),
   })
   await db.clientLogo.deleteMany()
   await db.clientLogo.createMany({
-    data: LOGOS.map((name, i) => ({ name, image: `placeholder:logo-${String(i + 1).padStart(2, '0')}`, order: i })),
+    data: SITE.logos?.length
+      ? SITE.logos.map((l, i) => ({ name: l.name, image: l.image, order: i }))
+      : LOGOS.map((name, i) => ({ name, image: `placeholder:logo-${String(i + 1).padStart(2, '0')}`, order: i })),
   })
   await db.heroSlide.deleteMany()
   await db.heroSlide.createMany({
     data: HEROES.map(([heading, subheading, ctaLabel, ctaUrl], i) => ({
       heading,
       subheading,
-      image: `placeholder:hero-${String(i + 1).padStart(2, '0')}`,
+      image: SITE.hero?.[i] ?? `placeholder:hero-${String(i + 1).padStart(2, '0')}`,
       ctaLabel,
       ctaUrl,
       secondaryCtaLabel: 'Talk to us',
@@ -323,6 +353,17 @@ async function main() {
   for (const [slug, title, body] of PAGES) {
     await db.page.upsert({ where: { slug }, update: {}, create: { slug, title, body } })
   }
+  // The featured programme shown on the home page (editable in Admin → Settings → pages).
+  await db.page.upsert({
+    where: { slug: 'featured-programme' },
+    update: {},
+    create: { slug: 'featured-programme', title: PROGRAMME_TITLE, body: PROGRAMME_BODY },
+  })
+  // Replace the placeholder About text only if nobody has edited it yet.
+  const about = await db.page.findUnique({ where: { slug: 'about' } })
+  if (about && about.body.includes('[PLACEHOLDER]')) {
+    await db.page.update({ where: { slug: 'about' }, data: { body: ABOUT_BODY } })
+  }
 
   // webinar & announcement (REQ-349/350)
   await db.webinar.deleteMany()
@@ -337,9 +378,9 @@ async function main() {
   await db.announcement.deleteMany()
   await db.announcement.create({
     data: {
-      title: 'New courses added',
-      body: 'Explore the latest ANSYS training courses.',
-      link: '/courses',
+      title: 'Fatigue Analysis for Pressure Vessels, ASME Section VIII Division 2 Part 5',
+      body: '24 Sessions | 45 Minutes Each | Practical + Code-Oriented',
+      link: '/featured-programme',
       startsAt: new Date(Date.now() - DAY),
       endsAt: new Date(Date.now() + 30 * DAY),
     },

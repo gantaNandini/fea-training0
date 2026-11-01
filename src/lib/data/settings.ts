@@ -8,7 +8,7 @@ export const getSettings = unstable_cache(
     const rows = await db.siteSetting.findMany()
     return Object.fromEntries(rows.map((r) => [r.key, r.value]))
   },
-  ['site-settings'],
+  ['site-settings-v2'],
   { tags: ['settings'], revalidate: 3600 },
 )
 

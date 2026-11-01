@@ -22,7 +22,7 @@ export const getHeroSlides = unstable_cache(
       secondaryCtaUrl: r.secondaryCtaUrl,
     }))
   },
-  ['hero-slides'],
+  ['hero-slides-v2'],
   { tags: ['content'], revalidate: 3600 },
 )
 
@@ -38,7 +38,7 @@ export const getTestimonials = unstable_cache(
       photo: r.photo,
     }))
   },
-  ['testimonials'],
+  ['testimonials-v2'],
   { tags: ['content'], revalidate: 3600 },
 )
 
@@ -47,7 +47,7 @@ export const getClientLogos = unstable_cache(
     const rows = await db.clientLogo.findMany({ where: { active: true }, orderBy: { order: 'asc' } })
     return rows.map((r) => ({ id: r.id, name: r.name, image: r.image, url: r.url }))
   },
-  ['client-logos'],
+  ['client-logos-v2'],
   { tags: ['content'], revalidate: 3600 },
 )
 

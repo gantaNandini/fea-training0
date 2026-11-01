@@ -5,7 +5,7 @@ import { messages } from '@/lib/messages'
 
 /** REQ-065: exactly the featured + PUBLISHED courses, ordered by featuredOrder; 3-column grid, 12 cards = 4 even rows. */
 export async function TopCourses() {
-  const courses = (await getFeaturedCourses()).slice(0, 12)
+  const courses = await getFeaturedCourses(12)
   if (courses.length === 0) return null
   return (
     <section className="section-y" aria-labelledby="top-courses-heading">

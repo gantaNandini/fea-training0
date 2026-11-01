@@ -97,7 +97,7 @@ const getAllRecords = unstable_cache(
     const byId = new Map(stats.map((s) => [s.courseId, s]))
     return courses.map((c) => toRecord(c, byId.get(c.id)))
   },
-  ['course-records'],
+  ['course-records-v2'],
   { tags: ['courses'], revalidate: 3600 },
 )
 
@@ -170,7 +170,7 @@ export const getFeaturedCourses = unstable_cache(
     const byId = new Map(stats.map((s) => [s.courseId, s]))
     return rows.map((c) => toCard(toRecord(c, byId.get(c.id))))
   },
-  ['featured-courses'],
+  ['featured-courses-v2'],
   { tags: ['courses'], revalidate: 3600 },
 )
 
@@ -237,7 +237,7 @@ export async function getInstructorStats(instructorId: string): Promise<{
   courses: number
   avgRating: number | null
 }> {
-  const [students, agg, courses] = await Promise.all([
+  const [students, agg] = await Promise.all([
     db.enrollment.findMany({
       where: { course: { instructorId, status: 'PUBLISHED' } },
       distinct: ['userId'],
@@ -248,8 +248,8 @@ export async function getInstructorStats(instructorId: string): Promise<{
       _avg: { rating: true },
       _count: { _all: true },
     }),
-    db.course.count({ where: { instructorId, status: 'PUBLISHED' } }),
   ])
+  const courses = await db.course.count({ where: { instructorId, status: 'PUBLISHED' } })
   return {
     students: students.length,
     reviews: agg._count._all,
@@ -306,12 +306,11 @@ async function loadCourseDetail(slug: string): Promise<CourseDetailDTO | null> {
     },
   })
   if (!c || c.status === 'DRAFT') return null
-  const [statsRows, instructor] = await Promise.all([
-    db.$queryRaw<StatRow[]>`SELECT * FROM "CourseStats" WHERE "courseId" = ${c.id}`,
-    loadInstructor(c.instructorId),
-  ])
-  const stats = statsRows[0]
+  const stats = (
+    await db.$queryRaw<StatRow[]>`SELECT * FROM "CourseStats" WHERE "courseId" = ${c.id}`
+  )[0]
   const record = toRecord(c, stats)
+  const instructor = await loadInstructor(c.instructorId)
   if (!instructor) return null
 
   // REQ-181: video/file URLs are deliberately NOT part of this DTO.

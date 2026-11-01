@@ -26,13 +26,20 @@ interface SiteContent {
   instructor?: { name?: string; title?: string; bio?: string; linkedin?: string; image?: string }
 }
 function loadSiteContent(): SiteContent {
+  const file = path.join(process.cwd(), 'prisma', 'site-content.json')
+  if (!fs.existsSync(file)) return {}
   try {
-    return JSON.parse(fs.readFileSync(path.join(process.cwd(), 'prisma', 'site-content.json'), 'utf8')) as SiteContent
-  } catch {
-    return {}
+    const buf = fs.readFileSync(file)
+    // Windows PowerShell's ">" writes UTF-16 with a BOM; accept that and a UTF-8 BOM too.
+    const text = buf[0] === 0xff && buf[1] === 0xfe ? buf.toString('utf16le') : buf.toString('utf8')
+    return JSON.parse(text.replace(/^\uFEFF/, '')) as SiteContent
+  } catch (e) {
+    // Loud on purpose: silently falling back to placeholder art hid a bad file once.
+    throw new Error(`prisma/site-content.json exists but cannot be read: ${(e as Error).message}`)
   }
 }
 const SITE = loadSiteContent()
+console.log(`site-content.json: hero ${SITE.hero?.length ?? 0}, courses ${Object.keys(SITE.courses ?? {}).length}, testimonials ${SITE.testimonials?.length ?? 0}, logos ${SITE.logos?.length ?? 0}`)
 const DAY = 24 * 60 * 60 * 1000
 
 // ───────────────────────── categories (REQ-340) ─────────────────────────

@@ -29,9 +29,11 @@ const BLOCK_NAMES: Record<Exclude<PayChoice, 'razorpay'>, string> = {
   wallet: 'Pay using a Wallet',
 }
 
-/** Razorpay Checkout `config` for the chosen category. `hide` is the admin policy, used by the generic option. */
-export function checkoutConfig(choice: PayChoice, hide: { method: string }[] = []): Record<string, unknown> {
-  if (choice === 'razorpay') return { display: { hide } }
+/** Razorpay Checkout `config` for the chosen category (undefined = Razorpay's own default, all methods). */
+export function checkoutConfig(choice: PayChoice): Record<string, unknown> | undefined {
+  // The generic Razorpay option opens the FULL checkout: every method enabled on the merchant account
+  // (UPI incl. a per-order QR, cards, net banking, wallets). Nothing is hidden.
+  if (choice === 'razorpay') return undefined
   const instrument =
     choice === 'debit'
       ? { method: 'card', types: ['debit'] }

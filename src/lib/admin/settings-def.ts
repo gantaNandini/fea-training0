@@ -45,7 +45,7 @@ export const SETTING_GROUPS: SettingGroup[] = [
       },
       {
         key: 'payment_methods',
-        label: 'Payment methods shown at checkout (Razorpay)',
+        label: 'Payment methods policy (legacy, no longer used)',
         type: 'select',
         options: [
           { value: 'standard', label: 'Cards, Net Banking and Wallets (no UPI)' },
@@ -53,7 +53,7 @@ export const SETTING_GROUPS: SettingGroup[] = [
           { value: 'cards_upi', label: 'Credit card + Debit card + UPI' },
           { value: 'all', label: 'All methods enabled in Razorpay (cards, UPI, netbanking, wallets)' },
         ],
-        help: 'Applies to the generic "Razorpay" option. The Debit, Credit, Net Banking and Wallets options always open that method. Methods must also be enabled in your Razorpay dashboard.',
+        help: 'No longer limits the Razorpay option, which now shows every method enabled in the Razorpay dashboard (Account & Settings > Payment Methods).',
       },
       { key: 'max_order_paise', label: 'Maximum order value (paise)', type: 'number', help: '100000000 = ₹10,00,000' },
     ],

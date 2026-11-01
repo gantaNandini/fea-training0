@@ -129,7 +129,7 @@ export function CheckoutView({ initialCoupon, tiles = ['razorpay'] }: { initialC
         order_id: body.razorpayOrderId,
         prefill: { name: user?.name ?? '' },
         // the chosen category restricts what the Razorpay window shows; the server verifies every payment
-        config: checkoutConfig(selected, body.hideMethods ?? []),
+        ...(checkoutConfig(selected) ? { config: checkoutConfig(selected) } : {}),
         theme: { color: '#123A78' },
         handler: (r: RazorpayResponse) => void verify(body.orderId, r),
         modal: {

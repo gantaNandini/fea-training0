@@ -36,6 +36,17 @@ export const SETTING_GROUPS: SettingGroup[] = [
         ],
       },
       { key: 'gst_percent', label: 'GST %', type: 'number' },
+      {
+        key: 'payment_methods',
+        label: 'Payment methods shown at checkout (Razorpay)',
+        type: 'select',
+        options: [
+          { value: 'cards', label: 'Credit card + Debit card only' },
+          { value: 'cards_upi', label: 'Credit card + Debit card + UPI' },
+          { value: 'all', label: 'All methods enabled in Razorpay (cards, UPI, netbanking, wallets)' },
+        ],
+        help: 'Methods must also be enabled in your Razorpay dashboard.',
+      },
       { key: 'max_order_paise', label: 'Maximum order value (paise)', type: 'number', help: '100000000 = ₹10,00,000' },
     ],
   },

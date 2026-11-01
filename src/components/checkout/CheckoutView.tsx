@@ -48,6 +48,7 @@ type CreateOrderResponse =
       amount: number
       key: string
       provider: 'razorpay' | 'mock'
+      hideMethods?: { method: string }[]
       mock?: { paymentId: string; signature: string }
     }
 
@@ -120,6 +121,8 @@ export function CheckoutView({ initialCoupon }: { initialCoupon: string | null }
         name: 'PYTHAGORAS',
         order_id: body.razorpayOrderId,
         prefill: { name: user?.name ?? '' },
+        // credit + debit cards (UPI optional via Admin → Settings → System); other methods hidden
+        config: { display: { hide: body.hideMethods ?? [] } },
         theme: { color: '#123A78' },
         handler: (r: RazorpayResponse) => void verify(body.orderId, r),
         modal: {

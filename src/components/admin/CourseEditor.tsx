@@ -8,6 +8,8 @@ import { AInput, ASelect, ATextarea, Card, FieldRow, btn } from './ui'
 import { ImageField } from './ImageField'
 import { Tabs } from './Tabs'
 import { saveCourse } from '@/app/(admin)/admin/actions'
+import { uploadLessonFile } from '@/lib/admin/upload-client'
+import { displayFileName, isHostedFile } from '@/lib/lesson-file'
 
 export interface LessonState { key: string; id?: string; title: string; type: 'VIDEO' | 'DOCUMENT' | 'QUIZ'; minutes: string; isFreePreview: boolean; videoUrl: string; fileUrl: string }
 export interface SectionState { key: string; id?: string; title: string; lessons: LessonState[] }
@@ -56,14 +58,16 @@ export function CourseEditor({
   const setLesson = (si: number, li: number, patch: Partial<LessonState>) =>
     setSection(si, (s) => ({ ...s, lessons: s.lessons.map((l, i) => (i === li ? { ...l, ...patch } : l)) }))
 
-  async function uploadPdf(si: number, li: number, file: File | undefined) {
+  const [uploading, setUploading] = React.useState<Record<string, number>>({})
+
+  /** Any file type: video, audio, PDF, Word/Excel/PowerPoint, ANSYS Workbench archives, CAD, ZIP… */
+  async function uploadAny(si: number, li: number, file: File | undefined, field: 'fileUrl' | 'videoUrl') {
     if (!file) return
-    const form = new FormData()
-    form.append('file', file)
-    form.append('kind', 'document')
-    const res = await fetch('/api/admin/upload', { method: 'POST', body: form })
-    const body = (await res.json().catch(() => ({}))) as { key?: string; error?: { message?: string } }
-    if (res.ok && body.key) { setLesson(si, li, { fileUrl: body.key }); toast.success('PDF uploaded.') } else toast.error(body.error?.message ?? 'Upload failed.')
+    const k = `${si}-${li}`
+    setUploading((u) => ({ ...u, [k]: 0 }))
+    const res = await uploadLessonFile(file, (pct) => setUploading((u) => ({ ...u, [k]: pct })))
+    setUploading((u) => { const { [k]: _gone, ...rest } = u; return rest })
+    if ('ref' in res) { setLesson(si, li, field === 'fileUrl' ? { fileUrl: res.ref } : { videoUrl: res.ref }); toast.success(`${file.name} uploaded. Remember to save the course.`) } else toast.error(res.error)
   }
 
   function submit(status?: CourseState['status']) {
@@ -171,7 +175,7 @@ export function CourseEditor({
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="w-6 text-sm text-slate-500">{li + 1}.</span>
                   <AInput aria-label={`Lesson ${li + 1} title`} className="min-w-48 flex-1" value={l.title} onChange={(e) => setLesson(si, li, { title: e.target.value })} placeholder="Lesson title" />
-                  <ASelect aria-label="Lesson type" className="w-32" value={l.type} onChange={(e) => setLesson(si, li, { type: e.target.value as LessonState['type'] })}><option value="VIDEO">Video</option><option value="DOCUMENT">Document</option><option value="QUIZ">Quiz</option></ASelect>
+                  <ASelect aria-label="Lesson type" className="w-32" value={l.type} onChange={(e) => setLesson(si, li, { type: e.target.value as LessonState['type'] })}><option value="VIDEO">Video</option><option value="DOCUMENT">Document / file</option><option value="QUIZ">Quiz</option></ASelect>
                   {l.type !== 'DOCUMENT' ? <AInput aria-label="Duration in minutes" type="number" min={0} step="0.5" className="w-24" value={l.minutes} onChange={(e) => setLesson(si, li, { minutes: e.target.value })} title="Duration (minutes)" /> : null}
                   <label className="flex items-center gap-1.5 text-xs"><input type="checkbox" className="h-4 w-4" checked={l.isFreePreview} onChange={(e) => setLesson(si, li, { isFreePreview: e.target.checked })} /> Free preview</label>
                   <button type="button" aria-label="Move lesson up" className={btn('outline', 'sm')} onClick={() => setSection(si, (x) => ({ ...x, lessons: move(x.lessons, li, -1) }))}><ArrowUp className="h-4 w-4" aria-hidden="true" /></button>
@@ -179,12 +183,18 @@ export function CourseEditor({
                   <button type="button" aria-label="Delete lesson" className={btn('danger', 'sm')} onClick={() => setSection(si, (x) => ({ ...x, lessons: x.lessons.filter((_, i) => i !== li) }))}><Trash2 className="h-4 w-4" aria-hidden="true" /></button>
                 </div>
                 {l.type === 'VIDEO' ? (
-                  <AInput aria-label="Video URL" className="mt-2" value={l.videoUrl} onChange={(e) => setLesson(si, li, { videoUrl: e.target.value })} placeholder="Video embed URL (https://www.youtube.com/embed/… or player.vimeo.com/video/…) — empty shows a demo player" />
+                  <div className="mt-2 space-y-2 text-sm">
+                    <AInput aria-label="Video URL" value={isHostedFile(l.videoUrl) ? '' : l.videoUrl} onChange={(e) => setLesson(si, li, { videoUrl: e.target.value })} placeholder="Paste a YouTube / Vimeo link — or upload a video file below" />
+                    <div className="flex flex-wrap items-center gap-3">
+                      <label className={`${btn('outline', 'sm')} cursor-pointer`}><FileUp className="h-4 w-4" aria-hidden="true" /> Upload video / audio file<input type="file" accept="video/*,audio/*,.mp4,.mov,.webm,.mkv,.avi,.mp3,.wav,.m4a" className="sr-only" onChange={(e) => { void uploadAny(si, li, e.target.files?.[0], 'videoUrl'); e.target.value = '' }} /></label>
+                      <span className="text-slate-500">{uploading[`${si}-${li}`] !== undefined ? `Uploading… ${uploading[`${si}-${li}`]}%` : isHostedFile(l.videoUrl) ? `Uploaded: ${displayFileName(l.videoUrl)}` : 'No uploaded file'}</span>
+                    </div>
+                  </div>
                 ) : null}
                 {l.type === 'DOCUMENT' ? (
                   <div className="mt-2 flex flex-wrap items-center gap-3 text-sm">
-                    <label className={`${btn('outline', 'sm')} cursor-pointer`}><FileUp className="h-4 w-4" aria-hidden="true" /> Upload PDF<input type="file" accept="application/pdf" className="sr-only" onChange={(e) => { void uploadPdf(si, li, e.target.files?.[0]); e.target.value = '' }} /></label>
-                    <span className="text-slate-500">{l.fileUrl && !l.fileUrl.startsWith('placeholder:') ? `Uploaded: ${l.fileUrl.split('/').pop()}` : 'No file yet (placeholder shown to students)'}</span>
+                    <label className={`${btn('outline', 'sm')} cursor-pointer`}><FileUp className="h-4 w-4" aria-hidden="true" /> Upload any file<input type="file" className="sr-only" onChange={(e) => { void uploadAny(si, li, e.target.files?.[0], 'fileUrl'); e.target.value = '' }} /></label>
+                    <span className="text-slate-500">{uploading[`${si}-${li}`] !== undefined ? `Uploading… ${uploading[`${si}-${li}`]}%` : l.fileUrl && !l.fileUrl.startsWith('placeholder:') ? `Uploaded: ${displayFileName(l.fileUrl)}` : 'No file yet (placeholder shown to students). Any type: PDF, Word, Excel, PowerPoint, video, audio, ANSYS Workbench (.wbpz / .zip), CAD, text…'}</span>
                   </div>
                 ) : null}
               </div>

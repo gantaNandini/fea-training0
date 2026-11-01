@@ -4,6 +4,7 @@ import { getLessonAccess, touchEnrollment } from '@/lib/data/progress'
 import { videoProvider } from '@/lib/video'
 import { storage } from '@/lib/storage'
 import { isPlaceholder } from '@/lib/placeholder'
+import { displayFileName, fileKindOf, isHostedFile } from '@/lib/lesson-file'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,13 +25,23 @@ export async function GET(_req: Request, ctx: { params: Promise<{ slug: string; 
 
   const expiresAt = Math.floor(Date.now() / 1000) + 300
   if (access.type === 'VIDEO') {
+    // an uploaded video/audio file (not a YouTube/Vimeo link)
+    if (isHostedFile(access.videoUrl)) {
+      const ref = access.videoUrl as string
+      return ok({
+        type: 'VIDEO',
+        playback: { kind: 'file', src: storage.getSignedUrl(ref), media: fileKindOf(ref) === 'audio' ? 'audio' : 'video' },
+        fileName: displayFileName(ref),
+        expiresAt,
+      })
+    }
     const playback = videoProvider.getPlayback(access.videoUrl, { lessonId, userId: user.id })
     return ok({ type: 'VIDEO', playback: { kind: playback.kind, src: playback.src }, expiresAt: playback.expiresAt })
   }
   if (access.type === 'DOCUMENT') {
     const key = access.fileUrl
     const fileUrl = key && !isPlaceholder(key) ? storage.getSignedUrl(key) : null
-    return ok({ type: 'DOCUMENT', fileUrl, expiresAt })
+    return ok({ type: 'DOCUMENT', fileUrl, fileKind: key ? fileKindOf(key) : 'other', fileName: key ? displayFileName(key) : null, expiresAt })
   }
   return ok({ type: 'QUIZ', expiresAt })
 }

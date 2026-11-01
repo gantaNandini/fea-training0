@@ -120,3 +120,26 @@ fea-training.com into `public/imported/**` and writes `prisma/site-content.json`
 Commit `public/imported` and `prisma/site-content.json`. Matching is heuristic: read the printed report and fix
 anything unmatched by editing the JSON. The "Fatigue Analysis for Pressure Vessels" block on the home page is the
 page `featured-programme`, editable in Admin → Settings → pages.
+
+
+## Lesson files of any type (round 5)
+
+Admin -> course editor -> lesson: **Video** lessons accept a YouTube/Vimeo link *or* an uploaded video/audio file;
+**Document / file** lessons accept *any* file (PDF, Word, Excel, PowerPoint, ANSYS Workbench `.wbpz`/`.zip`, CAD, text …).
+Students get video/audio players, inline PDFs/images, or a download button for everything else.
+
+* On Vercel create a **Blob** store (Project -> Storage). `BLOB_READ_WRITE_TOKEN` is added automatically; files then upload
+  straight from the browser (up to 5 GB, no 4.5 MB serverless limit). Redeploy after creating it.
+* Without the token (local dev) files go through `/api/admin/upload` and are stored under `public/uploads`.
+* Blob URLs are unguessable but public; use a private store / signed delivery before selling sensitive content.
+
+## Payment methods
+
+Admin -> Settings -> System -> *Payment methods shown at checkout*: **Credit + Debit card** (default), **+ UPI**, or **all**.
+Razorpay shows credit and debit cards under one "Card" option. Keys: `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`,
+`RAZORPAY_WEBHOOK_SECRET`, and set `PAYMENT_PROVIDER=razorpay` (remove `ALLOW_MOCK_IN_PRODUCTION`).
+
+## Instructor
+
+Put the real instructor in `prisma/site-content.json` as `"instructor": {"name","title","bio","linkedin","image"}` and re-seed,
+or edit it in Admin -> Instructor profile. Without it the demo LinkedIn link and bio are cleared.

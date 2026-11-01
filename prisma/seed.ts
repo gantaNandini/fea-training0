@@ -22,6 +22,8 @@ interface SiteContent {
   courses?: Record<string, string>
   testimonials?: { name: string; role?: string; company?: string; quote: string; photo?: string }[]
   logos?: { name: string; image: string }[]
+  /** the person who really teaches the courses (name, title, bio, linkedin, image) */
+  instructor?: { name?: string; title?: string; bio?: string; linkedin?: string; image?: string }
 }
 function loadSiteContent(): SiteContent {
   try {
@@ -200,11 +202,12 @@ const SETTINGS: Record<string, string> = {
   address: 'Inspire Workplace, #134 & 135, Karthik Nagar, LRDE Layout, Doddanekundi Post, Bangalore 560037, India',
   email: 'info@fea-training.com',
   phone: '+91 70422 43776',
-  social_linkedin: 'https://www.linkedin.com/',
-  social_youtube: 'https://www.youtube.com/',
-  social_twitter: 'https://x.com/',
+  social_linkedin: '',
+  social_youtube: '',
+  social_twitter: '',
   gst_mode: 'INCLUSIVE',
   gst_percent: '18',
+  payment_methods: 'cards',
   max_order_paise: '100000000',
   gstin: '',
   invoice_prefix: '',
@@ -245,24 +248,41 @@ async function main() {
     catId[c.slug] = row.id
   }
 
-  // instructor (REQ-343)
+  // instructor (REQ-343). Real details come from prisma/site-content.json ("instructor") or Admin -> Instructor profile.
+  // The earlier demo bio / LinkedIn link were placeholders and are cleared here unless real data is supplied.
+  const INS = SITE.instructor ?? {}
+  const instructorName = INS.name ?? 'Dr. Joel Daniel, M.Tech, Ph.D.'
   const instructor = await db.user.upsert({
     where: { email: 'joel.daniel@example.com' },
-    update: { name: 'Dr. Joel Daniel, M.Tech, Ph.D.' },
+    update: { name: instructorName, ...(INS.image ? { image: INS.image } : {}) },
     create: {
       email: 'joel.daniel@example.com',
-      name: 'Dr. Joel Daniel, M.Tech, Ph.D.',
+      name: instructorName,
       role: 'INSTRUCTOR',
-      image: 'placeholder:avatar-instructor',
-      instructorProfile: {
-        create: {
-          title: 'Fatigue and Fracture Mechanics / ASME Pressure Vessel Design',
-          bio: 'Dr. Joel Daniel has over 20 years of experience in fatigue, fracture mechanics and pressure vessel design, previously with Textron, GE and Siemens. He has trained engineers worldwide in ANSYS-based design-by-analysis. His courses focus on practical, code-compliant workflows.',
-          socialLinkedIn: 'https://www.linkedin.com/',
-        },
-      },
+      image: INS.image ?? 'placeholder:avatar-instructor',
     },
   })
+  const OLD_BIO_START = 'Dr. Joel Daniel has over 20 years'
+  const profile = await db.instructorProfile.findUnique({ where: { userId: instructor.id } })
+  const profileData = {
+    title: INS.title ?? 'FEA and Pressure Vessel Design Trainer',
+    bio: INS.bio ?? 'Practical, code-driven FEA training with ANSYS from Pythagoras Engineering Consultancy.',
+    socialLinkedIn: INS.linkedin ?? null,
+  }
+  if (!profile) {
+    await db.instructorProfile.create({ data: { userId: instructor.id, ...profileData } })
+  } else if (SITE.instructor) {
+    await db.instructorProfile.update({ where: { userId: instructor.id }, data: profileData })
+  } else {
+    // no real data supplied: only clear the known placeholders, never overwrite admin edits
+    await db.instructorProfile.update({
+      where: { userId: instructor.id },
+      data: {
+        ...(profile.socialLinkedIn === 'https://www.linkedin.com/' ? { socialLinkedIn: null } : {}),
+        ...(profile.bio?.startsWith(OLD_BIO_START) ? { bio: profileData.bio, title: profileData.title } : {}),
+      },
+    })
+  }
 
   // courses
   const courseId: Record<number, string> = {}
@@ -280,8 +300,8 @@ async function main() {
       thumbnail: SITE.courses?.[c.slug] ?? `placeholder:${c.primary}-${String(c.n).padStart(2, '0')}`,
       previewVideoUrl: null,
       status: c.status,
-      featured: c.n <= 6,
-      featuredOrder: c.n <= 6 ? c.n : null,
+      featured: c.n <= 12,
+      featuredOrder: c.n <= 12 ? c.n : null,
       instructorId: instructor.id,
       requirements: rich?.requirements ?? REQUIREMENTS,
       outcomes: rich?.outcomes ?? OUTCOMES,
@@ -343,6 +363,9 @@ async function main() {
     address: 'Placeholder address, City, State, India',
     email: 'info@example.com',
     phone: '+91 00000 00000',
+    social_linkedin: 'https://www.linkedin.com/',
+    social_youtube: 'https://www.youtube.com/',
+    social_twitter: 'https://x.com/',
   }
   for (const [key, value] of Object.entries(SETTINGS)) {
     const old = OLD_PLACEHOLDERS[key]

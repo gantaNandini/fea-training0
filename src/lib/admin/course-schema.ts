@@ -14,8 +14,8 @@ export const lessonInput = z.object({
   type: z.enum(['VIDEO', 'DOCUMENT', 'QUIZ']),
   durationSeconds: z.number().int().min(0).max(86_400),
   isFreePreview: z.boolean(),
-  videoUrl: optionalText(500),
-  fileUrl: optionalText(500),
+  videoUrl: optionalText(1000),
+  fileUrl: optionalText(1000),
 })
 
 export const sectionInput = z.object({

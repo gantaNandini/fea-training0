@@ -8,7 +8,18 @@ const TYPES: Record<string, string> = {
   jpg: 'image/jpeg',
   jpeg: 'image/jpeg',
   pdf: 'application/pdf',
+  mp4: 'video/mp4',
+  webm: 'video/webm',
+  mov: 'video/quicktime',
+  m4v: 'video/mp4',
+  mp3: 'audio/mpeg',
+  wav: 'audio/wav',
+  m4a: 'audio/mp4',
+  ogg: 'audio/ogg',
+  txt: 'text/plain; charset=utf-8',
 }
+// Types a browser may render inline. Everything else (docx, xlsx, wbpj, zip, html, svg…) is forced to download.
+const INLINE = new Set(['webp', 'png', 'jpg', 'jpeg', 'pdf', 'mp4', 'webm', 'mov', 'm4v', 'mp3', 'wav', 'm4a', 'ogg', 'txt'])
 
 /**
  * Serves local uploads. Avatars and site media (course/hero images) are public; everything else needs a valid short-lived signature
@@ -35,7 +46,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ key: string[] }
       'Content-Type': TYPES[ext] ?? 'application/octet-stream',
       'X-Content-Type-Options': 'nosniff',
       'Cache-Control': isPublic ? 'public, max-age=3600' : 'private, no-store',
-      'Content-Disposition': ext === 'pdf' ? 'inline' : 'inline',
+      'Content-Disposition': INLINE.has(ext) ? 'inline' : `attachment; filename="${key.split('/').pop()}"`,
     },
   })
 }

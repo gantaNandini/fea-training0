@@ -1,14 +1,12 @@
-import type { CourseCardDTO } from '@/lib/types'
 import { getFeaturedCourses } from '@/lib/data/courses'
 import { CourseCard } from '@/components/course/CourseCard'
 import { SectionHeader } from '@/components/shared/SectionHeader'
 import { messages } from '@/lib/messages'
 
-/** REQ-065: exactly the featured + PUBLISHED courses, ordered by featuredOrder; 3x2 grid. */
-export async function TopCourses({ courses }: { courses?: CourseCardDTO[] }) {
-  const all = courses ?? await getFeaturedCourses()
-  const list = all.slice(0, 6)
-  if (list.length === 0) return null
+/** REQ-065: exactly the featured + PUBLISHED courses, ordered by featuredOrder; 3-column grid, 12 cards = 4 even rows. */
+export async function TopCourses() {
+  const courses = (await getFeaturedCourses()).slice(0, 12)
+  if (courses.length === 0) return null
   return (
     <section className="section-y" aria-labelledby="top-courses-heading">
       <div className="container-page">
@@ -19,9 +17,13 @@ export async function TopCourses({ courses }: { courses?: CourseCardDTO[] }) {
           linkHref="/courses"
           linkLabel={messages.common.viewAllCourses}
         />
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {list.map((c) => (
-            <CourseCard key={c.id} course={c} />
+        <div className="grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3 [&>*]:min-w-0 sm:auto-rows-fr">
+          {courses.map((c, i) => (
+            <div key={c.id} className="flex h-full">
+              <div className="h-full w-full">
+                <CourseCard course={c} priority={i < 3} />
+              </div>
+            </div>
           ))}
         </div>
       </div>

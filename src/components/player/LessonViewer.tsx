@@ -3,7 +3,9 @@ import { messages } from '@/lib/messages'
 
 export interface LessonUrlResponse {
   type: 'VIDEO' | 'DOCUMENT' | 'QUIZ'
-  playback?: { kind: 'placeholder' | 'embed'; src?: string }
+  playback?: { kind: 'placeholder' | 'embed' | 'file'; src?: string; media?: 'video' | 'audio' }
+  fileKind?: 'video' | 'audio' | 'pdf' | 'image' | 'text' | 'other'
+  fileName?: string | null
   /** short-lived signed URL, only present for enrolled students / free previews (REQ-181) */
   fileUrl?: string | null
   expiresAt: number
@@ -20,6 +22,17 @@ export function LessonViewer({
   data: LessonUrlResponse
 }) {
   if (type === 'VIDEO') {
+    if (data.playback?.kind === 'file' && data.playback.src) {
+      return (
+        <div className="space-y-3">
+          {data.playback.media === 'audio' ? (
+            <audio src={data.playback.src} controls controlsList="nodownload" className="w-full" />
+          ) : (
+            <video src={data.playback.src} controls controlsList="nodownload" playsInline className="aspect-video w-full rounded-lg bg-black" />
+          )}
+        </div>
+      )
+    }
     if (data.playback?.kind === 'embed' && data.playback.src) {
       return (
         <div className="aspect-video w-full overflow-hidden rounded-lg bg-black">
@@ -47,23 +60,51 @@ export function LessonViewer({
   }
 
   if (type === 'DOCUMENT') {
+    const src = data.fileUrl
+    const kind = data.fileKind ?? 'other'
+    const button = (
+      <div className="flex flex-wrap justify-center gap-3">
+        {src && (kind === 'pdf' || kind === 'text') ? (
+          <a href={src} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-md border border-border bg-background px-5 font-semibold">
+            Open in new tab
+          </a>
+        ) : null}
+        {src ? (
+          <a href={src} download={data.fileName ?? true} className="inline-flex min-h-11 items-center gap-2 rounded-md bg-primary px-5 font-semibold text-primary-foreground">
+            <Download className="h-4 w-4" aria-hidden="true" />
+            {messages.player.download}
+          </a>
+        ) : null}
+      </div>
+    )
+    if (src && kind === 'video') return <video src={src} controls playsInline className="aspect-video w-full rounded-lg bg-black" />
+    if (src && kind === 'audio') return <div className="space-y-3"><audio src={src} controls className="w-full" />{button}</div>
+    if (src && kind === 'image') {
+      return (
+        <div className="space-y-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={src} alt={title} className="mx-auto max-h-[70vh] rounded-lg border border-border" />
+          {button}
+        </div>
+      )
+    }
+    if (src && kind === 'pdf' && /^https:\/\//.test(src)) {
+      return (
+        <div className="space-y-3">
+          <iframe src={src} title={title} className="h-[70vh] w-full rounded-lg border border-border" />
+          {button}
+        </div>
+      )
+    }
     return (
       <div
         data-testid="document-placeholder"
         className="flex min-h-72 w-full flex-col items-center justify-center gap-4 rounded-lg border border-border bg-muted p-6 text-center"
       >
         <FileText className="h-14 w-14 text-plum-700 dark:text-plum-300" aria-hidden="true" />
-        <p className="max-w-md text-sm text-muted-foreground">{messages.player.documentNote}</p>
-        {data.fileUrl ? (
-          <a
-            href={data.fileUrl}
-            download
-            className="inline-flex min-h-11 items-center gap-2 rounded-md bg-primary px-5 font-semibold text-primary-foreground"
-          >
-            <Download className="h-4 w-4" aria-hidden="true" />
-            {messages.player.download}
-          </a>
-        ) : null}
+        {src && data.fileName ? <p className="font-semibold">{data.fileName}</p> : null}
+        <p className="max-w-md text-sm text-muted-foreground">{src ? 'Download this resource to open it on your computer (for example in ANSYS Workbench).' : messages.player.documentNote}</p>
+        {button}
       </div>
     )
   }

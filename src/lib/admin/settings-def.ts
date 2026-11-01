@@ -37,6 +37,13 @@ export const SETTING_GROUPS: SettingGroup[] = [
       },
       { key: 'gst_percent', label: 'GST %', type: 'number' },
       {
+        key: 'payment_tiles',
+        label: 'Payment options shown on the checkout page',
+        type: 'text',
+        placeholder: 'razorpay',
+        help: 'Comma-separated. Available: razorpay, debit, credit, netbanking, wallet. Start with "razorpay" and add the others one by one, for example "razorpay,debit,credit".',
+      },
+      {
         key: 'payment_methods',
         label: 'Payment methods shown at checkout (Razorpay)',
         type: 'select',

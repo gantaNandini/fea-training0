@@ -215,6 +215,7 @@ const SETTINGS: Record<string, string> = {
   gst_mode: 'INCLUSIVE',
   gst_percent: '18',
   payment_methods: 'standard',
+  payment_tiles: 'razorpay',
   max_order_paise: '100000000',
   gstin: '',
   invoice_prefix: '',

@@ -58,7 +58,7 @@ type CreateOrderResponse =
     }
 
 /** Checkout (REQ-140..142). Free totals skip the gateway; the mock provider completes instantly. */
-export function CheckoutView({ initialCoupon }: { initialCoupon: string | null }) {
+export function CheckoutView({ initialCoupon, tiles = ['razorpay'] }: { initialCoupon: string | null; tiles?: PayChoice[] }) {
   const router = useRouter()
   const { user } = useUserState()
   const { data, loading, setCoupon, validCoupon, couponError } = useCartView(initialCoupon)
@@ -197,7 +197,7 @@ export function CheckoutView({ initialCoupon }: { initialCoupon: string | null }
           <div role="group" aria-label="Choose how to pay" className="space-y-3">
             <h3 className="text-base font-semibold">Choose how to pay</h3>
             <ul className="grid grid-cols-1 gap-2.5">
-              {PAY_OPTIONS.map((o) => {
+              {PAY_OPTIONS.filter((o) => tiles.includes(o.id)).map((o) => {
                 const Icon = ICONS[o.id]
                 const active = busy && choice === o.id
                 return (

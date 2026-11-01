@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { CheckoutView } from '@/components/checkout/CheckoutView'
 import { buildMetadata } from '@/lib/utils/seo'
 import { messages } from '@/lib/messages'
+import { getSettings } from '@/lib/data/settings'
+import { parseTiles } from '@/lib/payments/methods'
 
 export const metadata: Metadata = buildMetadata({
   title: messages.checkout.title,
@@ -13,6 +15,8 @@ export const metadata: Metadata = buildMetadata({
 // /checkout is protected by middleware (JWT) — unauthenticated users go to /login?redirect=/checkout.
 export default async function CheckoutPage({ searchParams }: { searchParams: Promise<{ coupon?: string }> }) {
   const { coupon } = await searchParams
+  const settings = await getSettings()
+  const tiles = parseTiles(settings.payment_tiles)
   return (
     <div className="container-page py-10 md:py-14">
       <h1 className="mb-8">{messages.checkout.title}</h1>
@@ -21,7 +25,7 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
           {messages.checkout.mockNotice}
         </p>
       ) : null}
-      <CheckoutView initialCoupon={coupon?.slice(0, 40) ?? null} />
+      <CheckoutView initialCoupon={coupon?.slice(0, 40) ?? null} tiles={tiles} />
     </div>
   )
 }

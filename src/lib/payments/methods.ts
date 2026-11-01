@@ -48,3 +48,13 @@ export function checkoutConfig(choice: PayChoice, hide: { method: string }[] = [
     },
   }
 }
+
+/** Parses the admin setting `payment_tiles` (comma-separated ids). Falls back to the Razorpay tile only. */
+export function parseTiles(raw: string | undefined | null): PayChoice[] {
+  const ids = new Set(PAY_OPTIONS.map((o) => o.id))
+  const picked = (raw ?? '')
+    .split(',')
+    .map((x) => x.trim().toLowerCase())
+    .filter((x): x is PayChoice => ids.has(x as PayChoice))
+  return picked.length ? picked : ['razorpay']
+}

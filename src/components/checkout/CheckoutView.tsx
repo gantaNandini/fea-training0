@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { ShieldCheck } from 'lucide-react'
+import { CreditCard, Landmark, ShieldCheck, Wallet, Zap } from 'lucide-react'
 import { Button, ButtonLink } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { EmptyState } from '@/components/shared/EmptyState'
@@ -12,8 +12,13 @@ import { PriceTag } from '@/components/shared/PriceTag'
 import { OrderSummary } from '@/components/cart/OrderSummary'
 import { CouponField } from '@/components/cart/CouponField'
 import { useCartView } from '@/hooks/useCartView'
+import { formatINR } from '@/lib/utils/pricing'
 import { useUserState } from '@/hooks/useUserState'
 import { messages } from '@/lib/messages'
+import { PAY_OPTIONS, checkoutConfig, type PayChoice } from '@/lib/payments/methods'
+import { cn } from '@/lib/utils/cn'
+
+const ICONS: Record<PayChoice, typeof CreditCard> = { razorpay: Zap, debit: CreditCard, credit: CreditCard, netbanking: Landmark, wallet: Wallet }
 
 interface RazorpayResponse {
   razorpay_order_id: string
@@ -58,6 +63,7 @@ export function CheckoutView({ initialCoupon }: { initialCoupon: string | null }
   const { user } = useUserState()
   const { data, loading, setCoupon, validCoupon, couponError } = useCartView(initialCoupon)
   const [busy, setBusy] = React.useState(false)
+  const [choice, setChoice] = React.useState<PayChoice | null>(null)
 
   const goSuccess = (orderId: string) => router.push(`/checkout/success?orderId=${encodeURIComponent(orderId)}`)
 
@@ -81,7 +87,8 @@ export function CheckoutView({ initialCoupon }: { initialCoupon: string | null }
     setBusy(false)
   }
 
-  async function pay() {
+  async function pay(selected: PayChoice = 'razorpay') {
+    setChoice(selected)
     setBusy(true)
     try {
       const res = await fetch('/api/payments/create-order', {
@@ -121,8 +128,8 @@ export function CheckoutView({ initialCoupon }: { initialCoupon: string | null }
         name: 'PYTHAGORAS',
         order_id: body.razorpayOrderId,
         prefill: { name: user?.name ?? '' },
-        // credit + debit cards (UPI optional via Admin → Settings → System); other methods hidden
-        config: { display: { hide: body.hideMethods ?? [] } },
+        // the chosen category restricts what the Razorpay window shows; the server verifies every payment
+        config: checkoutConfig(selected, body.hideMethods ?? []),
         theme: { color: '#123A78' },
         handler: (r: RazorpayResponse) => void verify(body.orderId, r),
         modal: {
@@ -182,9 +189,54 @@ export function CheckoutView({ initialCoupon }: { initialCoupon: string | null }
         <h2 className="text-xl">{messages.checkout.summary}</h2>
         <CouponField applied={validCoupon} error={couponError} onApply={setCoupon} onRemove={() => setCoupon(null)} />
         <OrderSummary totals={data.totals} couponCode={validCoupon} />
-        <Button size="lg" className="w-full" onClick={pay} disabled={busy} data-testid="pay-now">
-          {busy ? messages.checkout.processing : messages.checkout.payNow}
-        </Button>
+        {data.totals.total === 0 ? (
+          <Button size="lg" className="w-full" onClick={() => pay('razorpay')} disabled={busy} data-testid="pay-now">
+            {busy ? messages.checkout.processing : messages.checkout.payNow}
+          </Button>
+        ) : (
+          <div role="group" aria-label="Choose how to pay" className="space-y-3">
+            <h3 className="text-base font-semibold">Choose how to pay</h3>
+            <ul className="grid grid-cols-1 gap-2.5">
+              {PAY_OPTIONS.map((o) => {
+                const Icon = ICONS[o.id]
+                const active = busy && choice === o.id
+                return (
+                  <li key={o.id}>
+                    <button
+                      type="button"
+                      onClick={() => pay(o.id)}
+                      disabled={busy}
+                      data-testid={o.id === 'razorpay' ? 'pay-now' : `pay-${o.id}`}
+                      aria-label={`Pay ${formatINR(data.totals.total)} with ${o.label}`}
+                      className={cn(
+                        'flex min-h-14 w-full items-center gap-3 rounded-lg border bg-card px-3.5 py-2.5 text-left transition-colors',
+                        'hover:border-plum-600 hover:bg-plum-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-plum-600',
+                        'disabled:cursor-not-allowed disabled:opacity-60',
+                        active ? 'border-plum-600 ring-2 ring-plum-600/30' : 'border-border',
+                      )}
+                    >
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-plum-50 text-plum-700">
+                        <Icon className="h-5 w-5" aria-hidden="true" />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-sm font-semibold">{active ? messages.checkout.processing : o.label}</span>
+                        <span className="block truncate text-xs text-muted-foreground">{o.hint}</span>
+                        {o.badges ? (
+                          <span className="mt-1 flex flex-wrap gap-1">
+                            {o.badges.map((b) => (
+                              <span key={b} className="rounded border border-border px-1.5 text-[10px] font-medium leading-4 text-muted-foreground">{b}</span>
+                            ))}
+                          </span>
+                        ) : null}
+                      </span>
+                      <span aria-hidden="true" className="text-plum-700">›</span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        )}
         <p className="flex items-center gap-2 text-xs text-muted-foreground">
           <ShieldCheck className="h-4 w-4 shrink-0" aria-hidden="true" />
           {messages.checkout.secure}

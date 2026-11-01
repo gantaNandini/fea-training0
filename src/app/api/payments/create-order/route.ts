@@ -8,7 +8,8 @@ import { messages } from '@/lib/messages'
 /** Razorpay checkout `config.display.hide` entries for the configured payment-method policy. */
 function hiddenMethods(policy: string | undefined): { method: string }[] {
   const all = ['netbanking', 'wallet', 'emi', 'paylater', 'upi', 'cardless_emi']
-  const hide = policy === 'all' ? [] : policy === 'cards_upi' ? all.filter((m) => m !== 'upi') : all
+  const hide =
+    policy === 'all' ? [] : policy === 'standard' ? ['upi', 'emi', 'paylater', 'cardless_emi'] : policy === 'cards_upi' ? all.filter((m) => m !== 'upi') : all
   return hide.map((method) => ({ method }))
 }
 

@@ -214,7 +214,7 @@ const SETTINGS: Record<string, string> = {
   social_twitter: '',
   gst_mode: 'INCLUSIVE',
   gst_percent: '18',
-  payment_methods: 'cards',
+  payment_methods: 'standard',
   max_order_paise: '100000000',
   gstin: '',
   invoice_prefix: '',

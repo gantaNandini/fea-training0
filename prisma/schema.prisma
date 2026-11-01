@@ -10,7 +10,6 @@ generator client {
 datasource db {
   provider   = "postgresql"
   url        = env("DATABASE_URL")
-  directUrl  = env("DATABASE_URL_DIRECT")
   extensions = [pg_trgm]
 }
 
@@ -62,6 +61,13 @@ enum PaymentStatus {
   FAILED
 }
 
+/// Static UPI QR payments are never trusted automatically: an admin verifies them against the bank/Razorpay records.
+enum ManualPaymentStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
 // ───────────────────────── Users & auth ─────────────────────────
 
 model User {
@@ -86,6 +92,7 @@ model User {
   cartItems         CartItem[]
   wishlistItems     WishlistItem[]
   orders            Order[]
+  manualPayments    ManualPayment[]
   enrollments       Enrollment[]
   lessonProgress    LessonProgress[]
   reviews           Review[]
@@ -316,6 +323,7 @@ model Order {
   coupon      Coupon?      @relation(fields: [couponId], references: [id])
   items       OrderItem[]
   payments    Payment[]
+  manualPayments ManualPayment[]
   enrollments Enrollment[]
 
   @@index([userId])
@@ -349,6 +357,26 @@ model Payment {
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@index([orderId])
+}
+
+model ManualPayment {
+  id         String              @id @default(cuid())
+  orderId    String
+  userId     String
+  /// bank reference (UTR) typed by the customer, unique so one transfer cannot back two orders
+  utr        String              @unique
+  /// paise expected for the order, copied from the server-side order total
+  amount     Int
+  status     ManualPaymentStatus @default(PENDING)
+  adminNote  String?
+  reviewedAt DateTime?
+  createdAt  DateTime            @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([status])
 }
 
 model Enrollment {

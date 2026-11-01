@@ -36,12 +36,14 @@ export const SETTING_GROUPS: SettingGroup[] = [
         ],
       },
       { key: 'gst_percent', label: 'GST %', type: 'number' },
+      { key: 'upi_id', label: 'UPI ID for the static QR option', type: 'text', placeholder: 'name@bank', help: 'Shown next to the QR on the manual UPI QR option. Leave blank to hide that option.' },
+      { key: 'upi_payee', label: 'Payee name shown with the QR', type: 'text' },
       {
         key: 'payment_tiles',
         label: 'Payment options shown on the checkout page',
         type: 'text',
         placeholder: 'razorpay',
-        help: 'Comma-separated. Available: razorpay, debit, credit, netbanking, wallet. Start with "razorpay" and add the others one by one, for example "razorpay,debit,credit".',
+        help: 'Comma-separated. Available: razorpay, debit, credit, netbanking, wallet, upiqr. Start with "razorpay" and add the others one by one, for example "razorpay,debit,credit".',
       },
       {
         key: 'payment_methods',

@@ -4,7 +4,7 @@
  * display filter: the payment itself is always verified on the server (signature check + gateway
  * lookup) before any course access is granted.
  */
-export type PayChoice = 'razorpay' | 'debit' | 'credit' | 'netbanking' | 'wallet'
+export type PayChoice = 'razorpay' | 'debit' | 'credit' | 'netbanking' | 'wallet' | 'upiqr'
 
 export interface PayOption {
   id: PayChoice
@@ -20,9 +20,10 @@ export const PAY_OPTIONS: PayOption[] = [
   { id: 'credit', label: 'Credit Card', hint: 'Pay with your credit card', badges: ['Visa', 'Mastercard', 'RuPay'] },
   { id: 'netbanking', label: 'Net Banking', hint: 'Pay from your bank account' },
   { id: 'wallet', label: 'Wallets', hint: 'Pay with a mobile wallet' },
+  { id: 'upiqr', label: 'Pay using UPI QR', hint: 'Scan our QR, then submit your UTR. Access is given after we verify the payment.', badges: ['Manual verification'] },
 ]
 
-const BLOCK_NAMES: Record<Exclude<PayChoice, 'razorpay'>, string> = {
+const BLOCK_NAMES: Record<Exclude<PayChoice, 'razorpay' | 'upiqr'>, string> = {
   debit: 'Pay using Debit Card',
   credit: 'Pay using Credit Card',
   netbanking: 'Pay using Net Banking',
@@ -33,7 +34,7 @@ const BLOCK_NAMES: Record<Exclude<PayChoice, 'razorpay'>, string> = {
 export function checkoutConfig(choice: PayChoice): Record<string, unknown> | undefined {
   // The generic Razorpay option opens the FULL checkout: every method enabled on the merchant account
   // (UPI incl. a per-order QR, cards, net banking, wallets). Nothing is hidden.
-  if (choice === 'razorpay') return undefined
+  if (choice === 'razorpay' || choice === 'upiqr') return undefined
   const instrument =
     choice === 'debit'
       ? { method: 'card', types: ['debit'] }
@@ -51,12 +52,12 @@ export function checkoutConfig(choice: PayChoice): Record<string, unknown> | und
   }
 }
 
-/** Parses the admin setting `payment_tiles` (comma-separated ids). Falls back to the Razorpay tile only. */
+/** Parses the admin setting `payment_tiles` (comma-separated ids). Falls back to Razorpay + the manual UPI QR option. */
 export function parseTiles(raw: string | undefined | null): PayChoice[] {
   const ids = new Set(PAY_OPTIONS.map((o) => o.id))
   const picked = (raw ?? '')
     .split(',')
     .map((x) => x.trim().toLowerCase())
     .filter((x): x is PayChoice => ids.has(x as PayChoice))
-  return picked.length ? picked : ['razorpay']
+  return picked.length ? picked : ['razorpay', 'upiqr']
 }

@@ -25,7 +25,7 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
           {messages.checkout.mockNotice}
         </p>
       ) : null}
-      <CheckoutView initialCoupon={coupon?.slice(0, 40) ?? null} tiles={tiles} />
+      <CheckoutView initialCoupon={coupon?.slice(0, 40) ?? null} tiles={tiles} upi={{ id: settings.upi_id ?? 'pythagorasengin171886.rzp@rxairtel', payee: settings.upi_payee ?? 'PYTHAGORAS ENGINEERING CONSULTANCY AND SERVICES PRIVATE LIMITED' }} />
     </div>
   )
 }

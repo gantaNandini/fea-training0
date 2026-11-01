@@ -3,7 +3,7 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BookOpen, ChevronDown, ChevronRight, Grid3x3, MessageSquare, Network, Settings2, User, Users, FileBarChart } from 'lucide-react'
+import { BookOpen, ChevronDown, ChevronRight, Grid3x3, MessageSquare, Network, Settings2, User, Users, FileBarChart, QrCode } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 
 interface Leaf { label: string; href: string }
@@ -31,6 +31,7 @@ function tree(): Branch[] {
         { label: 'Enrol a student', href: '/admin/enrolments/new' },
       ],
     },
+    { label: 'Manual payments', icon: <QrCode className={I} />, href: '/admin/manual-payments' },
     {
       label: 'Report',
       icon: <FileBarChart className={I} />,

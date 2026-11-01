@@ -10,6 +10,7 @@ import { WRITABLE_SETTING_KEYS } from '@/lib/admin/settings-def'
 import { courseInput, type CourseInputRaw } from '@/lib/admin/course-schema'
 import { sanitizeRichText } from '@/lib/utils/sanitize'
 import { emailProvider } from '@/lib/email'
+import { completeOrder } from '@/lib/orders/complete-order'
 import { emailSchema, passwordSchema, nameSchema } from '@/lib/utils/validation'
 
 function bust(tags: string[], paths: string[] = ['/']) {
@@ -254,6 +255,50 @@ export async function removeEnrolment(id: string): Promise<ActionResult> {
     await db.enrollment.delete({ where: { id } })
     bust(['courses'])
     return { ok: true, message: 'Enrolment removed.' }
+  } catch (e) {
+    return errorResult(e)
+  }
+}
+
+// ───────────────────────── manual (static UPI QR) payments ─────────────────────────
+
+/** Only an admin can verify. Re-uses the idempotent fulfilment so access is granted exactly once. */
+export async function verifyManualPayment(id: string): Promise<ActionResult> {
+  try {
+    const admin = await assertAdmin()
+    const claim = await db.manualPayment.findUnique({ where: { id }, include: { order: true } })
+    if (!claim) return { ok: false, error: 'Payment not found.' }
+    if (claim.status !== 'PENDING') return { ok: false, error: 'This payment was already reviewed.' }
+    if (!claim.order.razorpayOrderId) return { ok: false, error: 'This order has no gateway reference.' }
+    await completeOrder(claim.orderId, {
+      razorpayOrderId: claim.order.razorpayOrderId,
+      razorpayPaymentId: `manual_${claim.utr}`,
+      method: 'UPI_QR_MANUAL',
+      amount: claim.amount,
+    })
+    await db.manualPayment.update({
+      where: { id },
+      data: { status: 'VERIFIED', reviewedAt: new Date(), adminNote: `Verified by ${admin.email}` },
+    })
+    bust(['courses'], ['/admin/manual-payments', '/my-courses'])
+    return { ok: true, message: 'Payment verified. The student is enrolled.' }
+  } catch (e) {
+    return errorResult(e)
+  }
+}
+
+export async function rejectManualPayment(id: string): Promise<ActionResult> {
+  try {
+    const admin = await assertAdmin()
+    const claim = await db.manualPayment.findUnique({ where: { id } })
+    if (!claim) return { ok: false, error: 'Payment not found.' }
+    if (claim.status !== 'PENDING') return { ok: false, error: 'This payment was already reviewed.' }
+    await db.manualPayment.update({
+      where: { id },
+      data: { status: 'REJECTED', reviewedAt: new Date(), adminNote: `Rejected by ${admin.email}` },
+    })
+    bust([], ['/admin/manual-payments'])
+    return { ok: true, message: 'Payment rejected. No access was granted.' }
   } catch (e) {
     return errorResult(e)
   }

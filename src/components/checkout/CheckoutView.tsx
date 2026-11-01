@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { CreditCard, Landmark, ShieldCheck, Wallet, Zap } from 'lucide-react'
+import { CreditCard, Landmark, QrCode, ShieldCheck, Wallet, Zap } from 'lucide-react'
 import { Button, ButtonLink } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { EmptyState } from '@/components/shared/EmptyState'
@@ -17,8 +17,9 @@ import { useUserState } from '@/hooks/useUserState'
 import { messages } from '@/lib/messages'
 import { PAY_OPTIONS, checkoutConfig, type PayChoice } from '@/lib/payments/methods'
 import { cn } from '@/lib/utils/cn'
+import { UpiQrPanel } from './UpiQrPanel'
 
-const ICONS: Record<PayChoice, typeof CreditCard> = { razorpay: Zap, debit: CreditCard, credit: CreditCard, netbanking: Landmark, wallet: Wallet }
+const ICONS: Record<PayChoice, typeof CreditCard> = { razorpay: Zap, debit: CreditCard, credit: CreditCard, netbanking: Landmark, wallet: Wallet, upiqr: QrCode }
 
 interface RazorpayResponse {
   razorpay_order_id: string
@@ -58,12 +59,21 @@ type CreateOrderResponse =
     }
 
 /** Checkout (REQ-140..142). Free totals skip the gateway; the mock provider completes instantly. */
-export function CheckoutView({ initialCoupon, tiles = ['razorpay'] }: { initialCoupon: string | null; tiles?: PayChoice[] }) {
+export function CheckoutView({
+  initialCoupon,
+  tiles = ['razorpay'],
+  upi = { id: '', payee: 'PYTHAGORAS ENGINEERING CONSULTANCY AND SERVICES PRIVATE LIMITED' },
+}: {
+  initialCoupon: string | null
+  tiles?: PayChoice[]
+  upi?: { id: string; payee: string }
+}) {
   const router = useRouter()
   const { user } = useUserState()
   const { data, loading, setCoupon, validCoupon, couponError } = useCartView(initialCoupon)
   const [busy, setBusy] = React.useState(false)
   const [choice, setChoice] = React.useState<PayChoice | null>(null)
+  const [manualOrderId, setManualOrderId] = React.useState<string | null>(null)
 
   const goSuccess = (orderId: string) => router.push(`/checkout/success?orderId=${encodeURIComponent(orderId)}`)
 
@@ -107,6 +117,13 @@ export function CheckoutView({ initialCoupon, tiles = ['razorpay'] }: { initialC
         return
       }
       if (body.free) return goSuccess(body.orderId)
+
+      // static UPI QR: record the order only; nothing is paid or unlocked until an admin verifies the UTR
+      if (selected === 'upiqr') {
+        setManualOrderId(body.orderId)
+        setBusy(false)
+        return
+      }
 
       if (body.provider === 'mock' && body.mock) {
         return void verify(body.orderId, {
@@ -184,6 +201,9 @@ export function CheckoutView({ initialCoupon, tiles = ['razorpay'] }: { initialC
             </li>
           ))}
         </ul>
+        {manualOrderId && upi.id ? (
+          <UpiQrPanel orderId={manualOrderId} amount={data.totals.total} upiId={upi.id} payee={upi.payee} onClose={() => setManualOrderId(null)} />
+        ) : null}
       </section>
       <aside className="h-fit space-y-5 rounded-xl border border-border bg-card p-5 lg:sticky lg:top-24">
         <h2 className="text-xl">{messages.checkout.summary}</h2>
@@ -197,7 +217,7 @@ export function CheckoutView({ initialCoupon, tiles = ['razorpay'] }: { initialC
           <div role="group" aria-label="Choose how to pay" className="space-y-3">
             <h3 className="text-base font-semibold">Choose how to pay</h3>
             <ul className="grid grid-cols-1 gap-2.5">
-              {PAY_OPTIONS.filter((o) => tiles.includes(o.id)).map((o) => {
+              {PAY_OPTIONS.filter((o) => tiles.includes(o.id) && (o.id !== 'upiqr' || !!upi.id)).map((o) => {
                 const Icon = ICONS[o.id]
                 const active = busy && choice === o.id
                 return (

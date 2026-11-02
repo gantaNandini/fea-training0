@@ -12,7 +12,8 @@
   {
     "title": "Advanced Finite Element Analysis using ANSYS Workbench and APDL",
     "price": 100000,
-    "level": "Beginner"
+    "level": "Beginner",
+    "matchTitle": "Advanced FEA using ANSYS Workbench and APDL"
   },
   {
     "title": "Rotordynamics Analysis",
@@ -22,7 +23,8 @@
   {
     "title": "Full Course _Pressure Vessel Design DBA (ASME Sec VIII Div 2 and API 579-1 ASME FFS-1 ) by ANSYS",
     "price": 99990,
-    "level": "Beginner"
+    "level": "Beginner",
+    "matchTitle": "Full Course: Pressure Vessel Design by Analysis (DBA) as per ASME Section VIII Div 2"
   },
   {
     "title": "Basic FEA Training for Beginners",
@@ -37,7 +39,8 @@
   {
     "title": "Basic FEA ahead of Pressure vessel, Centrifugal pumps and compressors, wind structures",
     "price": 25000,
-    "level": "Beginner"
+    "level": "Beginner",
+    "matchTitle": "Basic FEA ahead of Pressure Vessel Design"
   },
   {
     "title": "5.2 PROTECTION AGAINST Global FAILURE (API 579 & FSS, ASME 5.2)",
@@ -52,11 +55,13 @@
   {
     "title": "Fatigue, Ratchetting, Creep Assessment (API 579-1/ASME FFS-1 - Fitness-For-Service & ASME 5.5 and 5.6 )",
     "price": 25000,
-    "level": "Advanced"
+    "level": "Advanced",
+    "matchTitle": "Fatigue, Ratchetting, Creep Assessment of Pressure Vessels using ANSYS"
   },
   {
     "title": "3D Fracture Mechanics Simulation (API 579-1/ASME FFS-1 - Fitness-For-Service )",
     "price": 25000,
-    "level": "Intermediate"
+    "level": "Intermediate",
+    "matchTitle": "3D Fracture Mechanics Simulation using ANSYS Mechanical"
   }
 ]

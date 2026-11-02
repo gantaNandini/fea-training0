@@ -15,7 +15,7 @@
  * The importer is deliberately tolerant about key names (title|name|course_name, ...). If your JSON uses
  * other names, it prints the keys it found so they can be added to the `pick` lists below.
  */
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- standalone CLI script
 import { PrismaClient, type CourseLevel, type LessonType } from '@prisma/client'
 import fs from 'node:fs'
 
@@ -80,7 +80,9 @@ async function main() {
   for (const c of courses) {
     const title = str(pick(c, ['title', 'name', 'course_name', 'course_title']))
     if (!title) { console.log('SKIP (no title). Keys found:', Object.keys(c).join(', ')); continue }
+    const mt = str(pick(c, ['matchTitle']))
     const match =
+      (mt ? existing.find((e) => norm(e.title) === norm(mt)) : undefined) ??
       existing.find((e) => norm(e.title) === norm(title)) ??
       existing.find((e) => norm(e.title).includes(norm(title)) || norm(title).includes(norm(e.title)))
     const description = str(pick(c, ['description', 'details', 'about', 'long_description']))

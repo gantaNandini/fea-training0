@@ -2,10 +2,11 @@ import Link from 'next/link'
 import type { EnrolledCourseDTO } from '@/lib/types'
 import { ButtonLink } from '@/components/ui/button'
 import { PlaceholderArt } from '@/components/shared/PlaceholderArt'
+import { CertificateButton } from '@/components/certificate/CertificateButton'
 import { messages } from '@/lib/messages'
 
 /** REQ-171/172: thumbnail, title, instructor, progress bar and a Resume/Start button. */
-export function MyCourseCard({ item }: { item: EnrolledCourseDTO }) {
+export function MyCourseCard({ item, certificateCode }: { item: EnrolledCourseDTO; certificateCode?: string }) {
   const { course, progressPercent, resumeLessonId, resumeLabel } = item
   const href = resumeLessonId ? `/learn/${course.slug}/${resumeLessonId}` : `/courses/${course.slug}`
   return (
@@ -37,6 +38,7 @@ export function MyCourseCard({ item }: { item: EnrolledCourseDTO }) {
           <ButtonLink href={href} className="mt-3 w-full">
             {resumeLabel === 'start' ? messages.student.start : messages.student.resume}
           </ButtonLink>
+          {progressPercent >= 100 ? <CertificateButton courseId={course.id} code={certificateCode} /> : null}
         </div>
       </div>
     </article>

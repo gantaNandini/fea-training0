@@ -21,7 +21,8 @@
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
     "postinstall": "prisma generate",
-    "import:fea": "tsx scripts/fetch-fea-assets.ts"
+    "import:fea": "tsx scripts/fetch-fea-assets.ts",
+    "import:old-courses": "tsx scripts/import-fea-courses.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

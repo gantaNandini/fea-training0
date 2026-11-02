@@ -16,7 +16,7 @@ export function emptyCourseState(instructorId: string): CourseState {
     price: '', discountPrice: '', isFree: false, featured: false, featuredOrder: '',
     thumbnail: '', previewVideoUrl: '', instructorId,
     categoryIds: [], primaryCategoryId: '',
-    requirements: '', outcomes: '', tags: '', seoTitle: '', seoDescription: '',
+    requirements: '', outcomes: '', tags: '', eligibility: '', syllabusUrl: '', durationHours: '', seoTitle: '', seoDescription: '',
     sections: [],
   }
 }
@@ -37,6 +37,7 @@ export async function loadCourseState(id: string): Promise<CourseState | null> {
     thumbnail: c.thumbnail ?? '', previewVideoUrl: c.previewVideoUrl ?? '', instructorId: c.instructorId,
     categoryIds: c.categories.map((x) => x.categoryId), primaryCategoryId: c.categories.find((x) => x.isPrimary)?.categoryId ?? '',
     requirements: c.requirements.join('\n'), outcomes: c.outcomes.join('\n'), tags: c.tags.join(', '),
+    eligibility: c.eligibility.join('\n'), syllabusUrl: c.syllabusUrl ?? '', durationHours: c.durationHours != null ? String(c.durationHours) : '',
     seoTitle: c.seoTitle ?? '', seoDescription: c.seoDescription ?? '',
     sections: c.sections.map((s) => ({
       key: key(), id: s.id, title: s.title,

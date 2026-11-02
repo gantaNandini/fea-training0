@@ -20,7 +20,7 @@ export interface CourseState {
   price: string; discountPrice: string; isFree: boolean; featured: boolean; featuredOrder: string
   thumbnail: string; previewVideoUrl: string; instructorId: string
   categoryIds: string[]; primaryCategoryId: string
-  requirements: string; outcomes: string; tags: string; seoTitle: string; seoDescription: string
+  requirements: string; outcomes: string; tags: string; eligibility: string; syllabusUrl: string; durationHours: string; seoTitle: string; seoDescription: string
   sections: SectionState[]
 }
 
@@ -70,6 +70,15 @@ export function CourseEditor({
     if ('ref' in res) { setLesson(si, li, field === 'fileUrl' ? { fileUrl: res.ref } : { videoUrl: res.ref }); toast.success(`${file.name} uploaded. Remember to save the course.`) } else toast.error(res.error)
   }
 
+  const [sylBusy, setSylBusy] = React.useState(false)
+  async function uploadSyllabus(file: File | undefined) {
+    if (!file) return
+    setSylBusy(true)
+    const res = await uploadLessonFile(file)
+    setSylBusy(false)
+    if ('ref' in res) { set('syllabusUrl', res.ref); toast.success('Syllabus uploaded. Remember to save the course.') } else toast.error(res.error)
+  }
+
   function submit(status?: CourseState['status']) {
     const payload = {
       id: c.id,
@@ -85,6 +94,9 @@ export function CourseEditor({
       instructorId: c.instructorId,
       requirements: lines(c.requirements), outcomes: lines(c.outcomes),
       tags: c.tags.split(',').map((t) => t.trim()).filter(Boolean),
+      eligibility: lines(c.eligibility),
+      syllabusUrl: c.syllabusUrl || null,
+      durationHours: c.durationHours.trim() === '' ? null : Math.max(0, Math.round(Number(c.durationHours) || 0)),
       seoTitle: c.seoTitle || null, seoDescription: c.seoDescription || null,
       categoryIds: c.categoryIds, primaryCategoryId: c.primaryCategoryId || null,
       sections: c.sections.map((s) => ({
@@ -218,6 +230,17 @@ export function CourseEditor({
     <div className="grid max-w-3xl gap-x-6">
       <FieldRow label="What students will learn (one per line)" htmlFor="c-out"><ATextarea id="c-out" rows={6} value={c.outcomes} onChange={text('outcomes')} /></FieldRow>
       <FieldRow label="Requirements (one per line)" htmlFor="c-req"><ATextarea id="c-req" rows={4} value={c.requirements} onChange={text('requirements')} /></FieldRow>
+      <FieldRow label="Who can join / eligibility (one per line)" htmlFor="c-elig" help="Shown as a “Who can join” box on the course page. Example: B.E / B.Tech in Mechanical, Civil or related streams."><ATextarea id="c-elig" rows={4} value={c.eligibility} onChange={text('eligibility')} /></FieldRow>
+      <FieldRow label="Course duration (hours)" htmlFor="c-dur" help="Shown in the “Course Duration and Fees” table on the home page. Leave empty to use the total of the lesson durations."><AInput id="c-dur" type="number" min={0} value={c.durationHours} onChange={text('durationHours')} /></FieldRow>
+      <FieldRow label="Syllabus PDF" htmlFor="c-syl" help="Visitors download this from the fees table and the course page. Paste a link or upload a PDF.">
+        <div className="flex flex-wrap items-center gap-2">
+          <AInput id="c-syl" value={c.syllabusUrl} onChange={text('syllabusUrl')} placeholder="https://…/syllabus.pdf" />
+          <label className={btn('outline') + ' cursor-pointer'}>
+            <FileUp className="h-4 w-4" aria-hidden="true" /> {sylBusy ? 'Uploading…' : 'Upload PDF'}
+            <input type="file" accept="application/pdf" className="sr-only" disabled={sylBusy} onChange={(e) => { void uploadSyllabus(e.target.files?.[0]); e.target.value = '' }} />
+          </label>
+        </div>
+      </FieldRow>
       <FieldRow label="Tags (comma separated)" htmlFor="c-tags"><AInput id="c-tags" value={c.tags} onChange={text('tags')} /></FieldRow>
       <FieldRow label="SEO title" htmlFor="c-seot"><AInput id="c-seot" value={c.seoTitle} onChange={text('seoTitle')} /></FieldRow>
       <FieldRow label="SEO description" htmlFor="c-seod"><ATextarea id="c-seod" rows={3} value={c.seoDescription} onChange={text('seoDescription')} /></FieldRow>

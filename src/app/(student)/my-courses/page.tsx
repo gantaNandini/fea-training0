@@ -5,6 +5,7 @@ import { EmptyState } from '@/components/shared/EmptyState'
 import { ButtonLink } from '@/components/ui/button'
 import { getFreshUser } from '@/lib/auth/guards'
 import { getEnrolledCourses } from '@/lib/data/progress'
+import { getCertificateCodes } from '@/lib/data/certificates'
 import { buildMetadata } from '@/lib/utils/seo'
 import { messages } from '@/lib/messages'
 
@@ -18,7 +19,7 @@ export const metadata: Metadata = buildMetadata({
 export default async function MyCoursesPage() {
   const user = await getFreshUser()
   if (!user) redirect('/login?redirect=/my-courses')
-  const items = await getEnrolledCourses(user.id)
+  const [items, certCodes] = await Promise.all([getEnrolledCourses(user.id), getCertificateCodes(user.id)])
   const completed = items.filter((i) => i.progressPercent === 100).length
   const stats = [
     [messages.student.enrolledCount, items.length],
@@ -46,7 +47,7 @@ export default async function MyCoursesPage() {
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((i) => (
-            <MyCourseCard key={i.course.id} item={i} />
+            <MyCourseCard key={i.course.id} item={i} certificateCode={certCodes[i.course.id]} />
           ))}
         </div>
       )}

@@ -13,6 +13,9 @@ import { HowItWorks } from '@/components/home/HowItWorks'
 import { ShowcaseBand } from '@/components/home/ShowcaseBand'
 import { WhyChoose } from '@/components/home/WhyChoose'
 import { FeaturedProgramme } from '@/components/home/FeaturedProgramme'
+import { CourseFeesTable } from '@/components/home/CourseFeesTable'
+import { CertificateShowcase } from '@/components/home/CertificateShowcase'
+import { ConsultancySection } from '@/components/home/ConsultancySection'
 import { Faq } from '@/components/home/Faq'
 import { CtaBand } from '@/components/home/CtaBand'
 import { buildMetadata } from '@/lib/utils/seo'
@@ -38,13 +41,16 @@ export default async function HomePage() {
       <ValueStrip />
       <WebinarBanner />
       <TopCourses />
+      <CourseFeesTable />
       <FeaturedProgramme />
       <HowItWorks />
       <BrowseCategories />
       <ShowcaseBand />
       <WhyChoose />
+      <CertificateShowcase />
       <StatsBlock />
       <TestimonialsBlock />
+      <ConsultancySection />
       <ClientLogos />
       <Faq />
       <CtaBand />

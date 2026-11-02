@@ -6,6 +6,7 @@ import { getApprovedReviews, getRatingBreakdown } from '@/lib/data/reviews'
 import { getSettings } from '@/lib/data/settings'
 import { sanitizeRichText } from '@/lib/utils/sanitize'
 import { buildMetadata, absoluteUrl } from '@/lib/utils/seo'
+import { Download, UserCheck } from 'lucide-react'
 import { Breadcrumb } from '@/components/shared/Breadcrumb'
 import { StarRating } from '@/components/shared/StarRating'
 import { Badge } from '@/components/ui/badge'
@@ -148,6 +149,34 @@ export default async function CourseDetailPage({ params }: Props) {
               <h2 id="outcomes-heading" className="mb-4 text-2xl">{messages.course.whatYouLearn}</h2>
               <OutcomesList items={course.allOutcomes} />
             </section>
+          ) : null}
+
+          {course.eligibility.length > 0 ? (
+            <section aria-labelledby="eligibility-heading" className="rounded-xl border border-border bg-surface-alt p-6" data-testid="eligibility">
+              <h2 id="eligibility-heading" className="mb-4 flex items-center gap-2 text-2xl">
+                <UserCheck className="h-6 w-6 text-plum-700 dark:text-plum-300" aria-hidden="true" />
+                Who can join
+              </h2>
+              <ul className="list-disc space-y-1.5 pl-5">
+                {course.eligibility.map((e) => (
+                  <li key={e}>{e}</li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          {course.syllabusUrl ? (
+            <a
+              href={course.syllabusUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              download
+              className="inline-flex min-h-11 items-center gap-2 rounded-md border border-border px-4 font-semibold text-link hover:bg-muted"
+              data-testid="syllabus-download"
+            >
+              <Download className="h-4 w-4" aria-hidden="true" />
+              Download syllabus (PDF)
+            </a>
           ) : null}
 
           <section aria-labelledby="curriculum-heading">

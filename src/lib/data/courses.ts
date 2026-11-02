@@ -342,6 +342,8 @@ async function loadCourseDetail(slug: string): Promise<CourseDetailDTO | null> {
       isPrimary: x.isPrimary,
     })),
     previewVideoUrl: c.previewVideoUrl,
+    eligibility: c.eligibility,
+    syllabusUrl: c.syllabusUrl,
     seoTitle: c.seoTitle,
     seoDescription: c.seoDescription,
     createdAt: c.createdAt.toISOString(),
@@ -349,7 +351,7 @@ async function loadCourseDetail(slug: string): Promise<CourseDetailDTO | null> {
 }
 
 export function getCourseBySlug(slug: string): Promise<CourseDetailDTO | null> {
-  return unstable_cache(() => loadCourseDetail(slug), ['course-detail', slug], {
+  return unstable_cache(() => loadCourseDetail(slug), ['course-detail-v2', slug], {
     tags: ['courses', `course-${slug}`],
     revalidate: 3600,
   })()

@@ -145,6 +145,9 @@ export async function saveCourse(raw: CourseInputRaw): Promise<ActionResult<{ id
       requirements: c.requirements,
       outcomes: c.outcomes,
       tags: c.tags,
+      syllabusUrl: c.syllabusUrl,
+      durationHours: c.durationHours,
+      eligibility: c.eligibility,
       seoTitle: c.seoTitle,
       seoDescription: c.seoDescription,
     }

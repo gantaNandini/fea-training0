@@ -79,6 +79,8 @@ export interface CourseDetailDTO extends CourseCardDTO {
   instructor: InstructorDTO
   categories: CourseCategoryDTO[]
   previewVideoUrl: string | null
+  eligibility: string[]
+  syllabusUrl: string | null
   seoTitle: string | null
   seoDescription: string | null
   createdAt: string

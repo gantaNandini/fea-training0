@@ -94,6 +94,7 @@ model User {
   orders            Order[]
   manualPayments    ManualPayment[]
   enrollments       Enrollment[]
+  certificates      Certificate[]
   lessonProgress    LessonProgress[]
   reviews           Review[]
   auditLogs         AuditLog[]
@@ -194,6 +195,12 @@ model Course {
   tags             String[]
   seoTitle         String?
   seoDescription   String?
+  /// Public syllabus PDF (Course Duration and Fees table on the home page)
+  syllabusUrl      String?
+  /// Total course duration in hours shown in the fees table (falls back to lesson total)
+  durationHours    Int?
+  /// "Who can join" bullet points shown on the course page
+  eligibility      String[]
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
 
@@ -205,6 +212,7 @@ model Course {
   orderItems  OrderItem[]
   enrollments Enrollment[]
   reviews     Review[]
+  certificates Certificate[]
 
   @@index([slug])
   @@index([status])
@@ -533,4 +541,21 @@ model AuditLog {
 
   @@index([entity, entityId])
   @@index([actorId])
+}
+
+/// Completion certificate issued once a learner finishes 100% of a course.
+model Certificate {
+  id           String   @id @default(cuid())
+  code         String   @unique
+  userId       String
+  courseId     String
+  learnerName  String
+  courseTitle  String
+  issuedAt     DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([userId])
 }

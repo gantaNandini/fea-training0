@@ -1,0 +1,62 @@
+[
+  {
+    "title": "ANSYS Training: Fatigue and Fracture Mechanics",
+    "price": 20000,
+    "level": "Advanced"
+  },
+  {
+    "title": "ANSYS Training: Non-Linear Analysis",
+    "price": 20000,
+    "level": "Advanced"
+  },
+  {
+    "title": "Advanced Finite Element Analysis using ANSYS Workbench and APDL",
+    "price": 100000,
+    "level": "Beginner"
+  },
+  {
+    "title": "Rotordynamics Analysis",
+    "price": 40000,
+    "level": "Beginner"
+  },
+  {
+    "title": "Full Course _Pressure Vessel Design DBA (ASME Sec VIII Div 2 and API 579-1 ASME FFS-1 ) by ANSYS",
+    "price": 99990,
+    "level": "Beginner"
+  },
+  {
+    "title": "Basic FEA Training for Beginners",
+    "price": 20000,
+    "level": "Beginner"
+  },
+  {
+    "title": "ANSYS Training: Mechanical Vibrations",
+    "price": 30000,
+    "level": "Beginner"
+  },
+  {
+    "title": "Basic FEA ahead of Pressure vessel, Centrifugal pumps and compressors, wind structures",
+    "price": 25000,
+    "level": "Beginner"
+  },
+  {
+    "title": "5.2 PROTECTION AGAINST Global FAILURE (API 579 & FSS, ASME 5.2)",
+    "price": 5000,
+    "level": "Intermediate"
+  },
+  {
+    "title": "5.3 PROTECTION AGAINST LOCAL FAILURE (API 579 & FSS, ASME 5.3) and Buckling Load Assessment",
+    "price": 5000,
+    "level": "Intermediate"
+  },
+  {
+    "title": "Fatigue, Ratchetting, Creep Assessment (API 579-1/ASME FFS-1 - Fitness-For-Service & ASME 5.5 and 5.6 )",
+    "price": 25000,
+    "level": "Advanced"
+  },
+  {
+    "title": "3D Fracture Mechanics Simulation (API 579-1/ASME FFS-1 - Fitness-For-Service )",
+    "price": 25000,
+    "level": "Intermediate"
+  }
+]

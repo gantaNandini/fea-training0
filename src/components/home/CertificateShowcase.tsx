@@ -15,7 +15,7 @@ export async function CertificateShowcase() {
   const s = await getSettings()
   return (
     <section id="certificate" className="section-y" aria-labelledby="cert-heading">
-      <div className="container-page grid items-center gap-10 lg:grid-cols-2">
+      <div className="container-page reveal grid items-center gap-10 lg:grid-cols-2">
         <div>
           <SectionHeader id="cert-heading" title="Earn a certificate of completion" className="mb-4" />
           <ul className="space-y-3">

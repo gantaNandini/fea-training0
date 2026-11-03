@@ -6,7 +6,7 @@ export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'dan
 export type ButtonSize = 'sm' | 'md' | 'lg' | 'icon'
 
 const base =
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-semibold transition-[filter,background-color,color,box-shadow] duration-150 disabled:pointer-events-none disabled:opacity-60 select-none'
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-semibold transition-[filter,background-color,color,box-shadow] duration-150 disabled:pointer-events-none disabled:opacity-60 select-none active:scale-[0.97]'
 
 const variants: Record<ButtonVariant, string> = {
   // gradient is permitted on primary buttons only (REQ-021)

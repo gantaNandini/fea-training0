@@ -23,7 +23,7 @@ export async function ConsultancySection({ force, hideHeading }: { force?: boole
 
   return (
     <section id="consultancy" className="section-y bg-surface-alt" aria-labelledby="consultancy-heading">
-      <div className="container-page grid items-center gap-10 lg:grid-cols-[1.2fr_1fr]">
+      <div className="container-page reveal grid items-center gap-10 lg:grid-cols-[1.2fr_1fr]">
         <div>
           {hideHeading ? <h2 id="consultancy-heading" className="sr-only">{title}</h2> : <h2 id="consultancy-heading">{title}</h2>}
           <p className="mt-3 max-w-2xl text-muted-foreground">{body}</p>

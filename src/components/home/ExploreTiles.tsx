@@ -18,7 +18,7 @@ export function ExploreTiles() {
         <h2 id="explore-heading" className="mb-8">Explore</h2>
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {TILES.map(({ href, Icon, title, body }) => (
-            <li key={href}>
+            <li key={href} className="reveal">
               <Link href={href} className="card-lift group flex h-full items-center gap-4 rounded-xl border border-border bg-card p-5">
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-plum-50 text-plum-700 dark:bg-plum-900/40 dark:text-plum-300">
                   <Icon className="h-6 w-6" aria-hidden="true" />

@@ -5,7 +5,7 @@ import { fmtRange, kindLabel, type EventDTO } from '@/lib/events'
 
 export function EventCard({ e, past }: { e: EventDTO; past?: boolean }) {
   return (
-    <article className="card-lift flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card">
+    <article className="reveal card-lift flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card">
       <div className="relative aspect-[16/9] bg-muted">
         <PlaceholderArt src={e.image} alt={e.title} fill sizes="(min-width: 1024px) 400px, 100vw" className="object-cover" />
         <span className="absolute left-3 top-3 rounded-full bg-plum-700 px-3 py-1 text-xs font-semibold text-white">{kindLabel(e.kind)}</span>

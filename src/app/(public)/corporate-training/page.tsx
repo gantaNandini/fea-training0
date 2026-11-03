@@ -25,7 +25,7 @@ export default function CorporateTrainingPage() {
       <section className="container-page py-10 md:py-14" aria-label="What we offer">
         <div className="grid gap-6 md:grid-cols-3">
           {POINTS.map(({ Icon, title, body }) => (
-            <div key={title} className="rounded-xl border border-border bg-card p-6">
+            <div key={title} className="reveal rounded-xl border border-border bg-card p-6">
               <span className="flex h-12 w-12 items-center justify-center rounded-full bg-plum-50 text-plum-700 dark:bg-plum-900/40 dark:text-plum-300">
                 <Icon className="h-6 w-6" aria-hidden="true" />
               </span>

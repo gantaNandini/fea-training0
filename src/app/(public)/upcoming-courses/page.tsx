@@ -48,7 +48,7 @@ export default async function UpcomingCoursesPage() {
             <h2 id="soon-heading" className="mb-6 text-2xl">Coming soon</h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {courses.map((c) => (
-                <article key={c.id} className="card-lift flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card">
+                <article key={c.id} className="reveal card-lift flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card">
                   <div className="relative aspect-[16/9] bg-muted">
                     <PlaceholderArt src={c.thumbnail} alt={c.title} fill sizes="(min-width: 1024px) 400px, 100vw" className="object-cover" />
                     <span className="absolute left-3 top-3 rounded-full bg-amber-500 px-3 py-1 text-xs font-semibold text-white">Coming soon</span>

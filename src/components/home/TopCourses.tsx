@@ -19,7 +19,7 @@ export async function TopCourses({ limit = 6 }: { limit?: number } = {}) {
         />
         <div className="grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3 [&>*]:min-w-0 sm:auto-rows-fr">
           {courses.map((c, i) => (
-            <div key={c.id} className="flex h-full">
+            <div key={c.id} className="reveal flex h-full">
               <div className="h-full w-full">
                 <CourseCard course={c} priority={i < 3} />
               </div>

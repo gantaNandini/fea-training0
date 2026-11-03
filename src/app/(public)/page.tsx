@@ -3,20 +3,12 @@ import { getHeroSlides } from '@/lib/data/content'
 import { getSettings } from '@/lib/data/settings'
 import { HeroSlider } from '@/components/home/HeroSlider'
 import { ValueStrip } from '@/components/home/ValueStrip'
+import { WebinarBanner } from '@/components/home/WebinarBanner'
 import { TopCourses } from '@/components/home/TopCourses'
-import { BrowseCategories } from '@/components/home/BrowseCategories'
+import { ExploreTiles } from '@/components/home/ExploreTiles'
+import { UpcomingPreview } from '@/components/home/UpcomingPreview'
 import { StatsBlock } from '@/components/home/StatsBlock'
 import { TestimonialsBlock } from '@/components/home/TestimonialsBlock'
-import { ClientLogos } from '@/components/home/ClientLogos'
-import { WebinarBanner } from '@/components/home/WebinarBanner'
-import { HowItWorks } from '@/components/home/HowItWorks'
-import { ShowcaseBand } from '@/components/home/ShowcaseBand'
-import { WhyChoose } from '@/components/home/WhyChoose'
-import { FeaturedProgramme } from '@/components/home/FeaturedProgramme'
-import { CourseFeesTable } from '@/components/home/CourseFeesTable'
-import { CertificateShowcase } from '@/components/home/CertificateShowcase'
-import { ConsultancySection } from '@/components/home/ConsultancySection'
-import { Faq } from '@/components/home/Faq'
 import { CtaBand } from '@/components/home/CtaBand'
 import { buildMetadata } from '@/lib/utils/seo'
 
@@ -40,19 +32,11 @@ export default async function HomePage() {
       <HeroSlider slides={slides} />
       <ValueStrip />
       <WebinarBanner />
-      <TopCourses />
-      <CourseFeesTable />
-      <FeaturedProgramme />
-      <HowItWorks />
-      <BrowseCategories />
-      <ShowcaseBand />
-      <WhyChoose />
-      <CertificateShowcase />
+      <TopCourses limit={6} />
+      <ExploreTiles />
+      <UpcomingPreview />
       <StatsBlock />
       <TestimonialsBlock />
-      <ConsultancySection />
-      <ClientLogos />
-      <Faq />
       <CtaBand />
     </>
   )

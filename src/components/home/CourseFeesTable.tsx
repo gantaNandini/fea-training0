@@ -6,7 +6,7 @@ import { effectivePrice } from '@/lib/utils/pricing'
 import { SectionHeader } from '@/components/shared/SectionHeader'
 
 /** Home page: Sr. No. / Course / Duration (hrs) / [Fee] / Syllabus PDF. The fee column is a setting. */
-export async function CourseFeesTable() {
+export async function CourseFeesTable({ hideHeading }: { hideHeading?: boolean } = {}) {
   const [rows, settings] = await Promise.all([getFeeRows(), getSettings()])
   if (rows.length === 0) return null
   const showFee = settings.show_fee_column === 'true'
@@ -14,11 +14,13 @@ export async function CourseFeesTable() {
   return (
     <section id="fees" className="section-y bg-surface-alt" aria-labelledby="fees-heading">
       <div className="container-page">
-        <SectionHeader
-          id="fees-heading"
-          title="Course Duration and Fees"
-          subtitle="Compare every programme at a glance and download the detailed syllabus."
-        />
+        {hideHeading ? <h2 id="fees-heading" className="sr-only">Course Duration and Fees</h2> : (
+          <SectionHeader
+            id="fees-heading"
+            title="Course Duration and Fees"
+            subtitle="Compare every programme at a glance and download the detailed syllabus."
+          />
+        )}
         <div className="overflow-x-auto rounded-xl border border-border bg-card">
           <table className="w-full min-w-[34rem] border-collapse text-left text-sm" data-testid="fees-table">
             <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">

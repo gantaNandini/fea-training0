@@ -10,9 +10,9 @@ const DEFAULT_POINTS = [
 ]
 
 /** Home page: engineering consultancy (replaces the separate consultancy website). Fully editable in Admin → Settings → Website. */
-export async function ConsultancySection() {
+export async function ConsultancySection({ force, hideHeading }: { force?: boolean; hideHeading?: boolean } = {}) {
   const s = await getSettings()
-  if (s.consultancy_enabled === 'false') return null
+  if (!force && s.consultancy_enabled === 'false') return null
   const title = s.consultancy_title || 'Engineering consultancy'
   const body =
     s.consultancy_body ||
@@ -25,7 +25,7 @@ export async function ConsultancySection() {
     <section id="consultancy" className="section-y bg-surface-alt" aria-labelledby="consultancy-heading">
       <div className="container-page grid items-center gap-10 lg:grid-cols-[1.2fr_1fr]">
         <div>
-          <h2 id="consultancy-heading">{title}</h2>
+          {hideHeading ? <h2 id="consultancy-heading" className="sr-only">{title}</h2> : <h2 id="consultancy-heading">{title}</h2>}
           <p className="mt-3 max-w-2xl text-muted-foreground">{body}</p>
           <Link
             href={ctaHref}

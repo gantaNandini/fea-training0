@@ -10,6 +10,7 @@ import { Button, ButtonLink } from '@/components/ui/button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { useUserState } from '@/hooks/useUserState'
 import { messages } from '@/lib/messages'
+import { MAIN_LINKS } from './MainNav'
 
 /** Hamburger -> full-height drawer with all navigation (REQ-036). */
 export function MobileDrawer({ categories, companyName }: { categories: CategoryDTO[]; companyName: string }) {
@@ -28,6 +29,11 @@ export function MobileDrawer({ categories, companyName }: { categories: Category
       <DialogContent side="left" aria-describedby={undefined} className="flex flex-col overflow-y-auto">
         <DialogTitle className="mb-4 font-display text-lg font-extrabold">{companyName}</DialogTitle>
         <nav aria-label={messages.nav.mainNavigation} className="flex flex-1 flex-col gap-1">
+          <DialogClose asChild>
+            <Link href="/" className={link}>
+              {messages.nav.home}
+            </Link>
+          </DialogClose>
           <DialogClose asChild>
             <Link href="/courses" className={link}>
               {messages.nav.allCourses}
@@ -54,6 +60,13 @@ export function MobileDrawer({ categories, companyName }: { categories: Category
               </AccordionItem>
             ))}
           </Accordion>
+          {MAIN_LINKS.filter((l) => !['/', '/contact'].includes(l.href)).map((l) => (
+            <DialogClose asChild key={l.href}>
+              <Link href={l.href} className={link}>
+                {l.label}
+              </Link>
+            </DialogClose>
+          ))}
           <DialogClose asChild>
             <Link href="/compare" className={link}>
               {messages.nav.compare}

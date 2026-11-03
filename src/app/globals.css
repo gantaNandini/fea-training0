@@ -126,7 +126,7 @@
 /* ───────────────────────── Base ───────────────────────── */
 @layer base {
   * { border-color: var(--border); }
-  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  html { scroll-behavior: smooth; scroll-padding-top: 8rem; -webkit-text-size-adjust: 100%; }
   body {
     background: var(--background);
     color: var(--foreground);

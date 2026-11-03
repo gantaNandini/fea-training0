@@ -559,3 +559,22 @@ model Certificate {
   @@unique([userId, courseId])
   @@index([userId])
 }
+
+/// Events (conferences, workshops, webinars) and scheduled course batches shown on /events and /upcoming-courses.
+model Event {
+  id          String    @id @default(cuid())
+  kind        String    @default("CONFERENCE")
+  title       String
+  summary     String?
+  description String?   @db.Text
+  startsAt    DateTime
+  endsAt      DateTime?
+  location    String?
+  link        String?
+  documentUrl String?
+  image       String?
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+
+  @@index([startsAt])
+}

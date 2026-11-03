@@ -208,7 +208,7 @@ export default async function CourseDetailPage({ params }: Props) {
         </div>
 
         <div className="hidden lg:block">
-          <div className="sticky top-24">
+          <div className="sticky top-36">
             <PurchaseCard course={course} />
           </div>
         </div>

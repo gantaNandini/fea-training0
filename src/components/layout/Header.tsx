@@ -1,6 +1,6 @@
 import type { CategoryDTO } from '@/lib/types'
 import { Logo } from './Logo'
-import { MegaMenu } from './MegaMenu'
+import { MainNav } from './MainNav'
 import { SearchBar } from './SearchBar'
 import { MobileDrawer } from './MobileDrawer'
 import { MobileSearch } from './MobileSearch'
@@ -20,10 +20,7 @@ export function Header({ categories, companyName }: { categories: CategoryDTO[];
         {/* < 1024: hamburger, logo, search icon, cart */}
         <MobileDrawer categories={categories} companyName={companyName} />
         <Logo name={companyName} />
-        <div className="hidden lg:block">
-          <MegaMenu categories={categories} />
-        </div>
-        <div className="hidden max-w-md flex-1 lg:block">
+        <div className="hidden max-w-xl flex-1 lg:ml-6 lg:block">
           <SearchBar />
         </div>
         <div className="ml-auto flex items-center gap-1 lg:gap-2">
@@ -37,6 +34,9 @@ export function Header({ categories, companyName }: { categories: CategoryDTO[];
             <AuthControls />
           </div>
         </div>
+      </div>
+      <div className="hidden lg:block">
+        <MainNav categories={categories} />
       </div>
     </header>
   )

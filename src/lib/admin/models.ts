@@ -12,7 +12,7 @@ export interface Field {
   options?: { value: string; label: string }[]
 }
 
-export type ModelKey = 'category' | 'coupon' | 'heroSlide' | 'testimonial' | 'clientLogo' | 'webinar' | 'announcement'
+export type ModelKey = 'category' | 'coupon' | 'heroSlide' | 'testimonial' | 'clientLogo' | 'webinar' | 'announcement' | 'event'
 
 export interface ModelDef {
   key: ModelKey
@@ -119,6 +119,34 @@ export const MODELS: Record<ModelKey, ModelDef> = {
       { name: 'link', label: 'Registration link', type: 'text', required: true },
       { name: 'description', label: 'Description', type: 'textarea' },
       { name: 'active', label: 'Active', type: 'checkbox' },
+    ],
+  },
+  event: {
+    key: 'event',
+    singular: 'event',
+    plural: 'Events and course batches',
+    columns: ['title', 'kind', 'startsAt', 'active'],
+    fields: [
+      {
+        name: 'kind', label: 'Type', type: 'select', required: true,
+        help: 'Course batch items appear under Upcoming Courses. The others appear under Events.',
+        options: [
+          { value: 'CONFERENCE', label: 'Conference' },
+          { value: 'WORKSHOP', label: 'Workshop' },
+          { value: 'WEBINAR', label: 'Webinar' },
+          { value: 'BATCH', label: 'Course batch (Upcoming Courses)' },
+        ],
+      },
+      { name: 'title', label: 'Title', type: 'text', required: true },
+      { name: 'summary', label: 'Short summary', type: 'textarea', help: 'One or two lines shown on the card.' },
+      { name: 'startsAt', label: 'Starts', type: 'datetime', required: true },
+      { name: 'endsAt', label: 'Ends (optional)', type: 'datetime' },
+      { name: 'location', label: 'Location or mode', type: 'text', placeholder: 'Online, or Hyderabad' },
+      { name: 'description', label: 'Full details', type: 'textarea', help: 'Plain text. Leave a blank line between paragraphs.' },
+      { name: 'link', label: 'Registration link', type: 'text' },
+      { name: 'documentUrl', label: 'Brochure / document link (PDF)', type: 'text', help: 'Paste a link to the brochure or programme PDF.' },
+      { name: 'image', label: 'Image', type: 'image' },
+      { name: 'active', label: 'Show on website', type: 'checkbox' },
     ],
   },
   announcement: {

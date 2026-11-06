@@ -226,10 +226,8 @@ export function CourseEditor({
     </div>
   )
 
-  const extras = (
+  const syllabus = (
     <div className="grid max-w-3xl gap-x-6">
-      <FieldRow label="What students will learn (one per line)" htmlFor="c-out"><ATextarea id="c-out" rows={6} value={c.outcomes} onChange={text('outcomes')} /></FieldRow>
-      <FieldRow label="Requirements (one per line)" htmlFor="c-req"><ATextarea id="c-req" rows={4} value={c.requirements} onChange={text('requirements')} /></FieldRow>
       <FieldRow label="Who can join / eligibility (one per line)" htmlFor="c-elig" help="Shown as a “Who can join” box on the course page. Example: B.E / B.Tech in Mechanical, Civil or related streams."><ATextarea id="c-elig" rows={4} value={c.eligibility} onChange={text('eligibility')} /></FieldRow>
       <FieldRow label="Course duration (hours)" htmlFor="c-dur" help="Shown in the “Course Duration and Fees” table on the home page. Leave empty to use the total of the lesson durations."><AInput id="c-dur" type="number" min={0} value={c.durationHours} onChange={text('durationHours')} /></FieldRow>
       <FieldRow label="Syllabus PDF" htmlFor="c-syl" help="Visitors download this from the fees table and the course page. Paste a link or upload a PDF.">
@@ -241,6 +239,13 @@ export function CourseEditor({
           </label>
         </div>
       </FieldRow>
+    </div>
+  )
+
+  const extras = (
+    <div className="grid max-w-3xl gap-x-6">
+      <FieldRow label="What students will learn (one per line)" htmlFor="c-out"><ATextarea id="c-out" rows={6} value={c.outcomes} onChange={text('outcomes')} /></FieldRow>
+      <FieldRow label="Requirements (one per line)" htmlFor="c-req"><ATextarea id="c-req" rows={4} value={c.requirements} onChange={text('requirements')} /></FieldRow>
       <FieldRow label="Tags (comma separated)" htmlFor="c-tags"><AInput id="c-tags" value={c.tags} onChange={text('tags')} /></FieldRow>
       <FieldRow label="SEO title" htmlFor="c-seot"><AInput id="c-seot" value={c.seoTitle} onChange={text('seoTitle')} /></FieldRow>
       <FieldRow label="SEO description" htmlFor="c-seod"><ATextarea id="c-seod" rows={3} value={c.seoDescription} onChange={text('seoDescription')} /></FieldRow>
@@ -254,6 +259,7 @@ export function CourseEditor({
           { id: 'basic', label: 'Basic', content: basic },
           { id: 'pricing', label: 'Pricing', content: pricing },
           { id: 'curriculum', label: `Curriculum (${totalLessons})`, content: curriculum },
+          { id: 'syllabus', label: 'Eligibility & syllabus', content: syllabus },
           { id: 'extras', label: 'Outcomes & SEO', content: extras },
         ]} />
       </Card>

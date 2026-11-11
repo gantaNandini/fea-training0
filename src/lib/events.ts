@@ -35,6 +35,9 @@ export interface EventDTO {
   link: string | null
   documentUrl: string | null
   image: string | null
+  internalRegistration: boolean
+  maxSeats: number | null
+  registrationCount: number
 }
 
 /** An event is "upcoming" until the end of its last day. */

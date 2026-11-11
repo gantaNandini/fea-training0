@@ -408,6 +408,124 @@ async function main() {
       description: 'A free live session on design by analysis with ANSYS. Placeholder details — to be confirmed by the client.',
     },
   })
+
+  // ── Upcoming events (upserted, never deleted, so admin edits are preserved) ──
+  // DBA & FFS workshop — 9–13 December 2026
+  const DBA_FFS_DESCRIPTION = `Design by Analysis & Fitness-for-Service is a 5-day advanced hybrid workshop for industry professionals.
+
+WHAT YOU WILL LEARN
+By Sunday evening you will be able to:
+• Build and check FEA models of pressure equipment in ANSYS
+• Linearise and categorise stresses to ASME VIII-2 Part 5
+• Check plastic collapse, local failure, buckling and ratcheting
+• Evaluate fatigue, including welded joints
+• Assess crack-like flaws to API 579-1 Part 9, Levels 1, 2 and 3
+• Estimate remaining life and inspection intervals in PY-FFS
+
+DAY-BY-DAY PROGRAMME
+Day 1 (Wed 9 Dec) — FEA for pressure equipment with ANSYS
+08:30 Registration and installation check
+09:15–10:45 FEA fundamentals for pressure equipment
+11:00–12:30 ANSYS Workbench step by step
+13:30–15:00 Nonlinear, thermal and contact analysis
+15:15–17:00 Lab 1: cylindrical vessel with nozzle
+
+Day 2 (Thu 10 Dec) — Part 5: plastic collapse and local failure
+09:15–10:45 Design by analysis vs design by rule; failure modes
+11:00–12:30 Stress categories and linearisation
+13:30–15:00 Limit-load and elastic-plastic collapse
+15:15–17:00 Lab 2: linearise stresses at nozzle-to-shell junction
+
+Day 3 (Fri 11 Dec) — Part 5: buckling, fatigue and ratcheting
+09:15–10:45 Buckling: eigenvalue and nonlinear with imperfections
+11:00–12:30 Fatigue: elastic, elastic-plastic, structural stress for welds
+13:30–15:00 Ratcheting and shakedown
+15:15–17:00 Lab 3: buckling and fatigue of a nozzle weld
+
+Day 4 (Sat 12 Dec) — API 579-1 Part 9: Levels 1 and 2
+09:15–10:45 Part 9 procedure; flaw characterisation from NDE
+11:00–12:30 FAD for every crack case
+13:30–15:00 Stress inputs: primary, secondary, weld residual; Kmat
+15:15–17:00 Lab 4: Level 1 and Level 2 FAD assessments in PY-FFS
+
+Day 5 (Sun 13 Dec) — Level 3, crack growth and remaining life
+09:00–10:45 Level 3: material-specific FAD, J-integral, ductile tearing
+11:00–12:30 Crack growth; Paris law; inspection intervals
+13:30–15:00 Lab 5: crack growth and remaining life in PY-FFS
+15:15–16:30 Group project: complete assessment to report
+16:30–17:00 Assessment test
+17:00–17:30 Certificates and closing
+
+FEES
+Classroom (Bengaluru): US$1,550 per participant + taxes (Early bird US$1,400 until 24 Nov)
+Live online: US$1,150 per participant + taxes (Early bird US$1,050 until 24 Nov)
+Includes 6 months' online course access. Registration closes 4 December 2026.
+
+WHO SHOULD ATTEND
+Static equipment engineers, inspection and NDE engineers, asset integrity teams, design and FEA engineers, consultants and third-party inspectors.`
+
+  await db.event.upsert({
+    where: { id: 'dba-ffs-workshop-dec-2026' },
+    update: {
+      title: 'Design by Analysis & Fitness-for-Service',
+      summary: '5-day advanced hybrid workshop: ANSYS + PY-FFS · ASME VIII-2 Part 5 · API 579-1 Part 9 · 9–13 December 2026, Bengaluru + Live online',
+      description: DBA_FFS_DESCRIPTION,
+      kind: 'WORKSHOP',
+      startsAt: new Date('2026-12-09T08:30:00+05:30'),
+      endsAt: new Date('2026-12-13T17:30:00+05:30'),
+      location: 'Inspire Workspace, Bengaluru + Live online',
+      link: '/events/dba-ffs-workshop-dec-2026',
+      documentUrl: null,
+      internalRegistration: true,
+      maxSeats: 40,
+      active: true,
+    },
+    create: {
+      id: 'dba-ffs-workshop-dec-2026',
+      title: 'Design by Analysis & Fitness-for-Service',
+      summary: '5-day advanced hybrid workshop: ANSYS + PY-FFS · ASME VIII-2 Part 5 · API 579-1 Part 9 · 9–13 December 2026, Bengaluru + Live online',
+      description: DBA_FFS_DESCRIPTION,
+      kind: 'WORKSHOP',
+      startsAt: new Date('2026-12-09T08:30:00+05:30'),
+      endsAt: new Date('2026-12-13T17:30:00+05:30'),
+      location: 'Inspire Workspace, Bengaluru + Live online',
+      link: '/events/dba-ffs-workshop-dec-2026',
+      documentUrl: null,
+      internalRegistration: true,
+      maxSeats: 40,
+      active: true,
+    },
+  })
+
+  // Two upcoming webinars — placeholders until flyers are supplied
+  await db.event.upsert({
+    where: { id: 'webinar-29-nov-2026' },
+    update: {},
+    create: {
+      id: 'webinar-29-nov-2026',
+      title: 'Webinar: FEA for Pressure Equipment (Details to be confirmed)',
+      summary: 'Free live online session. Flyer and registration details coming soon.',
+      kind: 'WEBINAR',
+      startsAt: new Date('2026-11-29T10:00:00+05:30'),
+      location: 'Online',
+      internalRegistration: true,
+      active: true,
+    },
+  })
+  await db.event.upsert({
+    where: { id: 'webinar-06-dec-2026' },
+    update: {},
+    create: {
+      id: 'webinar-06-dec-2026',
+      title: 'Webinar: Introduction to Fitness-for-Service (Details to be confirmed)',
+      summary: 'Free live online session. Flyer and registration details coming soon.',
+      kind: 'WEBINAR',
+      startsAt: new Date('2026-12-06T10:00:00+05:30'),
+      location: 'Online',
+      internalRegistration: true,
+      active: true,
+    },
+  })
   await db.announcement.deleteMany()
   await db.announcement.create({
     data: {

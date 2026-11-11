@@ -574,7 +574,32 @@ model Event {
   documentUrl String?
   image       String?
   active      Boolean   @default(true)
+  /// Whether this event accepts internal registrations (true) or uses an external link (false)
+  internalRegistration Boolean @default(false)
+  /// Maximum number of seats (null = unlimited)
+  maxSeats    Int?
   createdAt   DateTime  @default(now())
 
+  registrations EventRegistration[]
+
   @@index([startsAt])
+}
+
+/// Registration record for a webinar or workshop with internal registration enabled.
+model EventRegistration {
+  id           String   @id @default(cuid())
+  eventId      String
+  fullName     String
+  email        String
+  phone        String
+  organisation String?
+  designation  String?
+  createdAt    DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  /// One person can register once per event
+  @@unique([eventId, email])
+  @@index([eventId])
+  @@index([email])
 }

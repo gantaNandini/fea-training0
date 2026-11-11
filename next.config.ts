@@ -9,6 +9,9 @@ const configured = (process.env.IMAGE_DOMAINS ?? '')
 const hostnames = Array.from(new Set([...configured, 'lh3.googleusercontent.com']))
 
 const nextConfig: NextConfig = {
+  // The workspace has lockfiles in parent dirs (multiple extracted patch folders).
+  // Pin the tracing root to this project so Vercel deploys only ship project files.
+  outputFileTracingRoot: __dirname,
   poweredByHeader: false,
   images: {
     remotePatterns: hostnames.map((hostname) => ({ protocol: 'https' as const, hostname })),

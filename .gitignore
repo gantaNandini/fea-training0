@@ -26,3 +26,9 @@ public/uploads/avatars/*
 .DS_Store
 *.log
 *.tsbuildinfo
+
+.vercel
+.env*
+
+# Local env reference (production env names only, no values)
+.vercel-env-prod

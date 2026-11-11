@@ -34,6 +34,12 @@ export async function CertificateShowcase() {
           date="Date of completion"
           code="PYT-XXXXX-XXXXX"
           company={s.company_name ?? 'PYTHAGORAS'}
+          topics={[
+            'Fatigue screening criteria — Methods A, B & C',
+            'Fatigue assessment using elastic and elastic-plastic analysis',
+            'Structural stress method for welds',
+            'Ratcheting assessment: elastic and elastic-plastic approach',
+          ]}
         />
       </div>
     </section>

@@ -13,6 +13,10 @@ import { buildMetadata } from '@/lib/utils/seo'
 import { messages } from '@/lib/messages'
 import { cn } from '@/lib/utils/cn'
 
+// ISR: revalidate every 5 minutes so a temporary DB outage during build
+// doesn't bake an empty course list into the static page.
+export const revalidate = 300
+
 type Props = { searchParams: Promise<RawParams> }
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {

@@ -1,23 +1,21 @@
 import Link from 'next/link'
 import { Download } from 'lucide-react'
 import { getFeeRows } from '@/lib/data/fees'
-import { getSettings } from '@/lib/data/settings'
-import { effectivePrice } from '@/lib/utils/pricing'
+import { toDisplayTitle } from '@/lib/utils/title-case'
 import { SectionHeader } from '@/components/shared/SectionHeader'
 
-/** Home page: Sr. No. / Course / Duration (hrs) / [Fee] / Syllabus PDF. The fee column is a setting. */
+/** Home page: Sr. No. / Course / Duration (hrs) / Syllabus PDF. Fees are intentionally never shown here. */
 export async function CourseFeesTable({ hideHeading }: { hideHeading?: boolean } = {}) {
-  const [rows, settings] = await Promise.all([getFeeRows(), getSettings()])
+  const rows = await getFeeRows()
   if (rows.length === 0) return null
-  const showFee = settings.show_fee_column === 'true'
 
   return (
     <section id="fees" className="section-y bg-surface-alt" aria-labelledby="fees-heading">
       <div className="container-page">
-        {hideHeading ? <h2 id="fees-heading" className="sr-only">Course Duration and Fees</h2> : (
+        {hideHeading ? <h2 id="fees-heading" className="sr-only">Course Duration and Syllabus</h2> : (
           <SectionHeader
             id="fees-heading"
-            title="Course Duration and Fees"
+            title="Course Duration and Syllabus"
             subtitle="Compare every programme at a glance and download the detailed syllabus."
           />
         )}
@@ -28,8 +26,7 @@ export async function CourseFeesTable({ hideHeading }: { hideHeading?: boolean }
                 <th scope="col" className="px-4 py-3">Sr. No.</th>
                 <th scope="col" className="px-4 py-3">Course title</th>
                 <th scope="col" className="px-4 py-3">Duration (hrs)</th>
-                {showFee ? <th scope="col" className="px-4 py-3">Fee</th> : null}
-                <th scope="col" className="px-4 py-3">Syllabus</th>
+                                <th scope="col" className="px-4 py-3">Syllabus</th>
               </tr>
             </thead>
             <tbody>
@@ -37,14 +34,9 @@ export async function CourseFeesTable({ hideHeading }: { hideHeading?: boolean }
                 <tr key={r.slug} className="border-t border-border">
                   <td className="px-4 py-3 tabular-nums">{i + 1}</td>
                   <td className="px-4 py-3 font-semibold">
-                    <Link href={`/courses/${r.slug}`} className="hover:text-link hover:underline">{r.title}</Link>
+                    <Link href={`/courses/${r.slug}`} className="hover:text-link hover:underline">{toDisplayTitle(r.title)}</Link>
                   </td>
                   <td className="px-4 py-3 tabular-nums">{r.hours > 0 ? r.hours : '—'}</td>
-                  {showFee ? (
-                    <td className="px-4 py-3 tabular-nums">
-                      {r.isFree ? 'Free' : `₹${(effectivePrice(r.price, r.discountPrice) / 100).toLocaleString('en-IN')}`}
-                    </td>
-                  ) : null}
                   <td className="px-4 py-3">
                     {r.syllabusUrl ? (
                       <a

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: `${SITE_NAME} Learning Platform`, template: `%s | ${SITE_NAME}` },
   description:
-    'Engineering courses on FEA/ANSYS, ASME pressure vessel design, fatigue, fracture mechanics and rotordynamics from PYTHAGORAS Engineering Consultancy.',
+    'Engineering courses on FEA/ANSYS, ASME pressure vessel design, fatigue, fracture mechanics and rotordynamics from Pythagoras Engineering Consultancy and Services.',
   openGraph: { siteName: SITE_NAME, type: 'website', locale: 'en_IN' },
   twitter: { card: 'summary' },
 }

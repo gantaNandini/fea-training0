@@ -4,7 +4,7 @@ import { ArrowRight, Award, Building2, CalendarDays, FileText, Rocket, Wrench } 
 const TILES = [
   { href: '/upcoming-courses', Icon: Rocket, title: 'Upcoming courses', body: 'New courses and the next batches.' },
   { href: '/events', Icon: CalendarDays, title: 'Events', body: 'Conferences, workshops and webinars.' },
-  { href: '/fees', Icon: FileText, title: 'Fees & syllabus', body: 'Duration, fees and syllabus PDFs.' },
+  { href: '/fees', Icon: FileText, title: 'Syllabus', body: 'Course duration and syllabus PDFs.' },
   { href: '/corporate-training', Icon: Building2, title: 'Corporate training', body: 'Training programmes for engineering teams.' },
   { href: '/consultancy', Icon: Wrench, title: 'Consultancy', body: 'FEA and fitness-for-service projects.' },
   { href: '/fees#certificate', Icon: Award, title: 'Certificates', body: 'Earn a verifiable certificate.' },

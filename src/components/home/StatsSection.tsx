@@ -11,7 +11,8 @@ export interface StatItem {
 
 function CountUp({ value, suffix, animate }: { value: number; suffix?: string; animate: boolean }) {
   const ref = React.useRef<HTMLSpanElement>(null)
-  const [shown, setShown] = React.useState(animate ? 0 : value)
+  // Start at the real value so server-rendered HTML (and crawlers / no-JS visitors) never see 0.
+  const [shown, setShown] = React.useState(value)
 
   React.useEffect(() => {
     if (!animate) {
@@ -25,6 +26,7 @@ function CountUp({ value, suffix, animate }: { value: number; suffix?: string; a
       (entries) => {
         if (!entries[0]?.isIntersecting) return
         io.disconnect()
+        setShown(0)
         const start = performance.now()
         const dur = 1400
         const tick = (now: number) => {

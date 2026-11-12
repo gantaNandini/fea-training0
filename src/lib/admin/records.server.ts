@@ -20,6 +20,7 @@ const delegates: Record<ModelKey, Delegate> = {
   webinar: db.webinar as unknown as Delegate,
   announcement: db.announcement as unknown as Delegate,
   event: db.event as unknown as Delegate,
+  project: db.consultancyProject as unknown as Delegate,
 }
 
 const orderBy: Record<ModelKey, unknown> = {
@@ -31,6 +32,7 @@ const orderBy: Record<ModelKey, unknown> = {
   webinar: { date: 'desc' },
   announcement: { startsAt: 'desc' },
   event: { startsAt: 'desc' },
+  project: [{ category: 'asc' }, { order: 'asc' }],
 }
 
 export const MODEL_TAGS: Record<ModelKey, string[]> = {
@@ -42,6 +44,7 @@ export const MODEL_TAGS: Record<ModelKey, string[]> = {
   webinar: ['content'],
   announcement: ['content'],
   event: ['content', 'events'],
+  project: ['content', 'projects'],
 }
 
 export const slugify = (s: string) =>

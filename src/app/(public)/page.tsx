@@ -3,10 +3,9 @@ import { getHeroSlides } from '@/lib/data/content'
 import { getSettings } from '@/lib/data/settings'
 import { HeroSlider } from '@/components/home/HeroSlider'
 import { ValueStrip } from '@/components/home/ValueStrip'
-import { WebinarBanner } from '@/components/home/WebinarBanner'
 import { TopCourses } from '@/components/home/TopCourses'
 import { ExploreTiles } from '@/components/home/ExploreTiles'
-import { UpcomingPreview } from '@/components/home/UpcomingPreview'
+import { UpcomingWebinars, UpcomingEvents, NewlyLaunchedCourses, ConsultancyHighlights } from '@/components/home/UpcomingActivities'
 import { StatsBlock } from '@/components/home/StatsBlock'
 import { TestimonialsBlock } from '@/components/home/TestimonialsBlock'
 import { CtaBand } from '@/components/home/CtaBand'
@@ -31,10 +30,12 @@ export default async function HomePage() {
     <>
       <HeroSlider slides={slides} />
       <ValueStrip />
-      <WebinarBanner />
+      <UpcomingWebinars />
+      <UpcomingEvents />
+      <NewlyLaunchedCourses />
       <TopCourses limit={6} />
       <ExploreTiles />
-      <UpcomingPreview />
+      <ConsultancyHighlights />
       <StatsBlock />
       <TestimonialsBlock />
       <CtaBand />

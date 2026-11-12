@@ -35,13 +35,11 @@ export interface EventDTO {
   link: string | null
   documentUrl: string | null
   image: string | null
-  internalRegistration: boolean
-  maxSeats: number | null
-  registrationCount: number
 }
 
-/** An event is "upcoming" until the end of its last day. */
-export function isUpcoming(e: Pick<EventDTO, 'startsAt' | 'endsAt'>, now = Date.now()): boolean {
-  const end = new Date(e.endsAt ?? e.startsAt).getTime() + 24 * 3600 * 1000
-  return end > now
+/** An event is "upcoming" until the end of its last day. Accepts ISO strings or Date objects. */
+export function isUpcoming(e: { startsAt: string | Date; endsAt?: string | Date | null }, now = Date.now()): boolean {
+  const endRaw = e.endsAt ?? e.startsAt
+  const end = endRaw instanceof Date ? endRaw.getTime() : new Date(endRaw).getTime()
+  return end + 24 * 3600 * 1000 > now
 }

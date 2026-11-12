@@ -31,7 +31,7 @@ export function Footer({ settings }: { settings: SettingsMap }) {
             <li><Link className={link} href="/about">{messages.footer.about}</Link></li>
             <li><Link className={link} href="/upcoming-courses">Upcoming courses</Link></li>
             <li><Link className={link} href="/events">Events</Link></li>
-            <li><Link className={link} href="/fees">Fees &amp; syllabus</Link></li>
+            <li><Link className={link} href="/fees">Syllabus</Link></li>
             <li><Link className={link} href="/corporate-training">Corporate training</Link></li>
             <li><Link className={link} href="/consultancy">Consultancy</Link></li>
             <li><Link className={link} href="/refund-policy">{messages.footer.refund}</Link></li>

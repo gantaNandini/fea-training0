@@ -15,7 +15,7 @@ type Rec = Values & { id: string }
 const empty = (fields: Field[], model: ModelKey): Values => {
   const v: Values = {}
   for (const f of fields) v[f.name] = f.type === 'checkbox' ? f.name === 'active' : f.type === 'select' ? f.options?.[0]?.value ?? '' : ''
-  if (model === 'category' || model === 'heroSlide' || model === 'testimonial' || model === 'clientLogo') v.order = '0'
+  if (model === 'category' || model === 'heroSlide' || model === 'testimonial' || model === 'clientLogo' || model === 'project') v.order = '0'
   return v
 }
 

@@ -10,7 +10,7 @@ export const MAIN_LINKS: { href: string; label: string }[] = [
   { href: '/', label: 'Home' },
   { href: '/upcoming-courses', label: 'Upcoming courses' },
   { href: '/events', label: 'Events' },
-  { href: '/fees', label: 'Fees & syllabus' },
+  { href: '/fees', label: 'Syllabus' },
   { href: '/corporate-training', label: 'Corporate training' },
   { href: '/consultancy', label: 'Consultancy' },
   { href: '/about', label: 'About' },

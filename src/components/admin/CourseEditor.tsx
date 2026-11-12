@@ -229,7 +229,7 @@ export function CourseEditor({
   const syllabus = (
     <div className="grid max-w-3xl gap-x-6">
       <FieldRow label="Who can join / eligibility (one per line)" htmlFor="c-elig" help="Shown as a “Who can join” box on the course page. Example: B.E / B.Tech in Mechanical, Civil or related streams."><ATextarea id="c-elig" rows={4} value={c.eligibility} onChange={text('eligibility')} /></FieldRow>
-      <FieldRow label="Course duration (hours)" htmlFor="c-dur" help="Shown in the “Course Duration and Fees” table on the home page. Leave empty to use the total of the lesson durations."><AInput id="c-dur" type="number" min={0} value={c.durationHours} onChange={text('durationHours')} /></FieldRow>
+      <FieldRow label="Course duration (hours)" htmlFor="c-dur" help="Shown in the “Syllabus” page table. Leave empty to use the total of the lesson durations."><AInput id="c-dur" type="number" min={0} value={c.durationHours} onChange={text('durationHours')} /></FieldRow>
       <FieldRow label="Syllabus PDF" htmlFor="c-syl" help="Visitors download this from the fees table and the course page. Paste a link or upload a PDF.">
         <div className="flex flex-wrap items-center gap-2">
           <AInput id="c-syl" value={c.syllabusUrl} onChange={text('syllabusUrl')} placeholder="https://…/syllabus.pdf" />

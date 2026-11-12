@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { PreviewModal } from './PreviewModal'
 import { formatDuration, formatHours } from '@/lib/utils/pricing'
 import { messages } from '@/lib/messages'
+import { toDisplayTitle } from '@/lib/utils/title-case'
 
 const ICONS = { VIDEO: PlayCircle, DOCUMENT: FileText, QUIZ: HelpCircle } as const
 
@@ -46,7 +47,7 @@ export function CurriculumAccordion({ slug, sections }: { slug: string; sections
           return (
             <AccordionItem key={s.id} value={s.id}>
               <AccordionTrigger>
-                <span className="flex-1">{s.title}</span>
+                <span className="flex-1">{toDisplayTitle(s.title)}</span>
                 <span className="mr-2 shrink-0 text-sm font-normal text-muted-foreground">
                   {s.lessons.length} {messages.course.lessons}
                   {secs > 0 ? ` · ${formatHours(secs)}` : ''}
@@ -69,10 +70,10 @@ export function CurriculumAccordion({ slug, sections }: { slug: string; sections
                             }}
                             className="flex-1 text-left font-medium text-link underline-offset-4 hover:underline"
                           >
-                            {l.title}
+                            {toDisplayTitle(l.title)}
                           </button>
                         ) : (
-                          <span className="flex-1">{l.title}</span>
+                          <span className="flex-1">{toDisplayTitle(l.title)}</span>
                         )}
                         {l.isFreePreview ? <Badge tone="plum">{messages.course.preview}</Badge> : null}
                         {dur ? <span className="shrink-0 tabular-nums text-muted-foreground">{dur}</span> : null}

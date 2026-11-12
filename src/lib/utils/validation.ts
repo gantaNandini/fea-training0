@@ -90,3 +90,18 @@ export const verifyPaymentSchema = z.object({
 })
 
 export { safeRedirect } from './redirect'
+
+/** Webinar / workshop registration. Email is lower-cased by emailSchema so duplicates are caught reliably. */
+export const eventRegistrationSchema = z.object({
+  fullName: nameSchema,
+  email: emailSchema,
+  phone: z
+    .string()
+    .trim()
+    .min(7, 'Enter a valid phone number')
+    .max(20, 'Enter a valid phone number')
+    .regex(/^[+\d][\d\s\-()]*$/, 'Use digits only, with an optional leading +'),
+  organisation: z.string().trim().min(2, 'Enter your organisation or college').max(150),
+  designation: z.string().trim().max(100).optional().or(z.literal('')),
+})
+export type EventRegistrationInput = z.infer<typeof eventRegistrationSchema>

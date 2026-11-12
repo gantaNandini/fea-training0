@@ -16,6 +16,8 @@ const prismaAllowList = [
   'src/lib/admin/queries.ts',
   'prisma/seed.ts',
   'tests/**',
+  // Scripts run outside Next.js and need direct Prisma access.
+  'scripts/**',
 ]
 
 const eslintConfig = [

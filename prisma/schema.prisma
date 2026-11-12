@@ -574,10 +574,6 @@ model Event {
   documentUrl String?
   image       String?
   active      Boolean   @default(true)
-  /// Whether this event accepts internal registrations (true) or uses an external link (false)
-  internalRegistration Boolean @default(false)
-  /// Maximum number of seats (null = unlimited)
-  maxSeats    Int?
   createdAt   DateTime  @default(now())
 
   registrations EventRegistration[]
@@ -585,21 +581,38 @@ model Event {
   @@index([startsAt])
 }
 
-/// Registration record for a webinar or workshop with internal registration enabled.
+/// Sign-ups for webinars and workshops. Private: only admins can list or export them.
 model EventRegistration {
   id           String   @id @default(cuid())
   eventId      String
   fullName     String
   email        String
   phone        String
-  organisation String?
+  organisation String
   designation  String?
   createdAt    DateTime @default(now())
 
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
-  /// One person can register once per event
+  /// One registration per email per event (email is stored lower-case).
   @@unique([eventId, email])
-  @@index([eventId])
-  @@index([email])
+  @@index([eventId, createdAt])
+}
+
+/// Consultancy projects / case studies shown on /consultancy (Projects tab) and the home page. Managed in Admin > Consultancy projects.
+model ConsultancyProject {
+  id          String   @id @default(cuid())
+  /// Groups projects into tabs on the Projects page (e.g. "Pressure vessels").
+  category    String   @default("General")
+  title       String
+  summary     String
+  description String?  @db.Text
+  image       String?
+  client      String?
+  year        String?
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@index([category, order])
 }

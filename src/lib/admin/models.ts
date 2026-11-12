@@ -12,7 +12,7 @@ export interface Field {
   options?: { value: string; label: string }[]
 }
 
-export type ModelKey = 'category' | 'coupon' | 'heroSlide' | 'testimonial' | 'clientLogo' | 'webinar' | 'announcement' | 'event'
+export type ModelKey = 'category' | 'coupon' | 'heroSlide' | 'testimonial' | 'clientLogo' | 'webinar' | 'announcement' | 'event' | 'project'
 
 export interface ModelDef {
   key: ModelKey
@@ -143,11 +143,26 @@ export const MODELS: Record<ModelKey, ModelDef> = {
       { name: 'endsAt', label: 'Ends (optional)', type: 'datetime' },
       { name: 'location', label: 'Location or mode', type: 'text', placeholder: 'Online, or Hyderabad' },
       { name: 'description', label: 'Full details', type: 'textarea', help: 'Plain text. Leave a blank line between paragraphs.' },
-      { name: 'link', label: 'Registration link', type: 'text', help: 'External URL (used when internal registration is OFF).' },
+      { name: 'link', label: 'Registration link', type: 'text' },
       { name: 'documentUrl', label: 'Brochure / document link (PDF)', type: 'text', help: 'Paste a link to the brochure or programme PDF.' },
       { name: 'image', label: 'Image', type: 'image' },
-      { name: 'internalRegistration', label: 'Accept registrations on this website', type: 'checkbox', help: 'When ON, visitors register via a form here instead of an external link.' },
-      { name: 'maxSeats', label: 'Maximum seats (blank = unlimited)', type: 'number', help: 'Only applies when internal registration is ON.' },
+      { name: 'active', label: 'Show on website', type: 'checkbox' },
+    ],
+  },
+  project: {
+    key: 'project',
+    singular: 'project',
+    plural: 'Consultancy projects',
+    columns: ['title', 'category', 'order', 'active'],
+    fields: [
+      { name: 'category', label: 'Tab / category', type: 'text', required: true, help: 'Projects with the same category are grouped under one tab, e.g. “Pressure vessels”.' },
+      { name: 'title', label: 'Project title', type: 'text', required: true },
+      { name: 'summary', label: 'Short summary', type: 'textarea', required: true, help: 'One or two lines shown on the card.' },
+      { name: 'description', label: 'Full details (optional)', type: 'textarea', help: 'Plain text. Blank line between paragraphs.' },
+      { name: 'client', label: 'Client / industry (optional)', type: 'text' },
+      { name: 'year', label: 'Year (optional)', type: 'text' },
+      { name: 'image', label: 'Image', type: 'image' },
+      { name: 'order', label: 'Display order', type: 'number', help: 'Lower numbers first.' },
       { name: 'active', label: 'Show on website', type: 'checkbox' },
     ],
   },

@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
   } catch {
     /* DB unavailable at build */
   }
-  return buildMetadata({ title, description: 'Learn about PYTHAGORAS Engineering Consultancy and our training programmes.', path: '/about' })
+  return buildMetadata({ title, description: 'Learn about Pythagoras Engineering Consultancy and Services and our training programmes.', path: '/about' })
 }
 
 export default function Page() {

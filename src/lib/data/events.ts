@@ -19,8 +19,8 @@ export const getAllEvents = unstable_cache(
     const rows = await db.event.findMany({ where: { active: true }, orderBy: { startsAt: 'asc' } })
     return rows.map(toDTO)
   },
-  ['events-all-v1'],
-  { tags: ['content', 'events'], revalidate: 600 },
+  ['events-all-v2'],
+  { tags: ['content', 'events'], revalidate: 300 },
 )
 
 export async function getEventById(id: string): Promise<EventDTO | null> {
@@ -48,8 +48,8 @@ export const getUpcomingCourses = unstable_cache(
     })
     return rows
   },
-  ['upcoming-courses-v1'],
-  { tags: ['courses', 'content'], revalidate: 600 },
+  ['upcoming-courses-v2'],
+  { tags: ['courses', 'content'], revalidate: 300 },
 )
 
 export interface NewCourseDTO {

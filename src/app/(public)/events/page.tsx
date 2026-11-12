@@ -8,7 +8,7 @@ import { isUpcoming } from '@/lib/events'
 import { buildMetadata } from '@/lib/utils/seo'
 import { cn } from '@/lib/utils/cn'
 
-export const revalidate = 600
+export const revalidate = 120
 export const metadata: Metadata = buildMetadata({
   title: 'Events',
   description: 'Upcoming conferences, workshops and webinars.',

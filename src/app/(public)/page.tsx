@@ -12,7 +12,7 @@ import { CtaBand } from '@/components/home/CtaBand'
 import { buildMetadata } from '@/lib/utils/seo'
 
 // ISR: public page, never reads cookies/session (REQ-270).
-export const revalidate = 300
+export const revalidate = 120
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSettings()

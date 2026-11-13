@@ -204,7 +204,7 @@ const PAGES: [string, string, string][] = [
 
 // CLIENT VERIFIED FIGURES
 const SETTINGS: Record<string, string> = {
-  company_name: 'M/s. Pythagoras Engineering Consultancy and Services Pvt. Limited',
+  company_name: 'Pythagoras Engineering Consultancy and Services Pvt. Limited',
   footer_blurb:
     'PYTHAGORAS Engineering and Consultancy offers high-quality instruction in the field of finite element analysis with the Ansys software. This course is designed using real-time examples to understand CAE/CFD/CAD tools easily and efficiently. A significant number of individuals hailing from various regions throughout the globe have derived advantages from the meticulously designed instructional program. A significant majority, over 90%, of our students successfully get positions inside esteemed firms, using the information acquired via my training program.',
   address: '#134&135, Karthik Nagar, LRDE Layout, Doddanekundi Post, Bangalore – 560037',

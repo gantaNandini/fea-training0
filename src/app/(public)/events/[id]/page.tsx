@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { CalendarDays, Download, ExternalLink, MapPin } from 'lucide-react'
+import { CalendarDays, ExternalLink, MapPin } from 'lucide-react'
 import { PageHero } from '@/components/shared/PageHero'
 import { PlaceholderArt } from '@/components/shared/PlaceholderArt'
 import { ButtonLink } from '@/components/ui/button'
@@ -61,20 +61,7 @@ export default async function EventPage({ params }: Props) {
               <p className="text-muted-foreground">More details will be announced soon.</p>
             )}
           </section>
-          {e.documentUrl ? (
-            <section aria-labelledby="ev-docs">
-              <h2 id="ev-docs" className="mb-4 text-2xl">Documents</h2>
-              <a
-                href={e.documentUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-11 items-center gap-2 rounded-md border border-border px-4 font-semibold text-link hover:bg-muted"
-              >
-                <Download className="h-4 w-4" aria-hidden="true" />
-                {e.kind === 'WEBINAR' ? 'Download webinar flyer (PDF)' : 'Download brochure / programme'}
-              </a>
-            </section>
-          ) : null}
+
           {canRegister ? (
             <section aria-labelledby="ev-register" id="register">
               <h2 id="ev-register" className="mb-4 text-2xl">Register for this {kindLabel(e.kind).toLowerCase()}</h2>

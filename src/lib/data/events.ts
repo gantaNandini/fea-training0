@@ -5,11 +5,13 @@ import type { EventDTO } from '@/lib/events'
 function toDTO(e: {
   id: string; kind: string; title: string; summary: string | null; description: string | null
   startsAt: Date; endsAt: Date | null; location: string | null; link: string | null; documentUrl: string | null; image: string | null
+  seatLimit: number | null
 }): EventDTO {
   return {
     id: e.id, kind: e.kind, title: e.title, summary: e.summary, description: e.description,
     startsAt: e.startsAt.toISOString(), endsAt: e.endsAt ? e.endsAt.toISOString() : null,
     location: e.location, link: e.link, documentUrl: e.documentUrl, image: e.image,
+    seatLimit: e.seatLimit,
   }
 }
 
@@ -26,6 +28,11 @@ export const getAllEvents = unstable_cache(
 export async function getEventById(id: string): Promise<EventDTO | null> {
   const all = await getAllEvents()
   return all.find((e) => e.id === id) ?? null
+}
+
+/** Real-time registration count for a single event (not cached — changes on every sign-up). */
+export async function getEventRegistrationCount(eventId: string): Promise<number> {
+  return db.eventRegistration.count({ where: { eventId } })
 }
 
 export interface UpcomingCourseDTO {

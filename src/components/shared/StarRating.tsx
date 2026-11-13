@@ -41,7 +41,9 @@ export function StarRating({ value, count = 0, size = 'sm', compact, className }
           />
         ))}
       </span>
-      <span className={cn('text-muted-foreground', size === 'sm' ? 'text-xs' : 'text-sm')}>({count})</span>
+      {compact ? null : (
+        <span className={cn('text-muted-foreground', size === 'sm' ? 'text-xs' : 'text-sm')}>({count})</span>
+      )}
     </span>
   )
 }

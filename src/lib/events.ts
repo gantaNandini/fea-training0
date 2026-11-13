@@ -35,6 +35,8 @@ export interface EventDTO {
   link: string | null
   documentUrl: string | null
   image: string | null
+  /** NULL = unlimited. Positive integer = max registrations allowed. */
+  seatLimit: number | null
 }
 
 /** An event is "upcoming" until the end of its last day. Accepts ISO strings or Date objects. */

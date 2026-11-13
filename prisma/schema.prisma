@@ -551,6 +551,10 @@ model Certificate {
   courseId     String
   learnerName  String
   courseTitle  String
+  /// Topic bullets shown on the certificate (populated automatically from course outcomes, or set manually for workshop/offline certs).
+  topics       String[] @default([])
+  /// Optional date range for the certificate (e.g. "13 February to 31 March 2026"). Overrides the issuedAt date display.
+  dateRange    String?
   issuedAt     DateTime @default(now())
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -575,6 +579,8 @@ model Event {
   image       String?
   active      Boolean   @default(true)
   createdAt   DateTime  @default(now())
+  /// NULL = unlimited. Set to a positive integer to cap registrations (e.g. 20 for a classroom workshop).
+  seatLimit   Int?
 
   registrations EventRegistration[]
 

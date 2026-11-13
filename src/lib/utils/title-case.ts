@@ -1,6 +1,6 @@
 /**
- * Syllabus heading formatter. Only ALL-CAPS headings are rewritten into normal title case; headings that are
- * already mixed case are left exactly as authored. Technical abbreviations stay upper case.
+ * Syllabus heading formatter. Cleans up raw import artifacts (underscores, missing spaces, typos)
+ * and normalizes ALL-CAPS words into clean title case while preserving technical abbreviations.
  */
 const KEEP_UPPER = new Set([
   'API', 'ASME', 'FSS', 'FFS', 'FEA', 'FEM', 'ANSYS', 'DBA', 'NDE', 'UT', 'PAUT', 'TOFD', 'FAD', 'ASTM', 'AWS', 'ISO',
@@ -10,29 +10,54 @@ const KEEP_UPPER = new Set([
 const SMALL = new Set(['a', 'an', 'and', 'as', 'at', 'by', 'for', 'in', 'of', 'on', 'or', 'per', 'the', 'to', 'vs', 'with'])
 
 export function toDisplayTitle(input: string): string {
-  const text = input.trim()
-  if (!text) return text
-  // Mixed or lower case already: leave it alone.
-  if (/[a-z]/.test(text)) return text
-  // No letters at all (e.g. "1.2"): nothing to do.
-  if (!/[A-Z]/.test(text)) return text
+  if (!input) return ''
+  let text = input.trim()
+  if (!text) return ''
 
-  let first = true
-  return text.replace(/[A-Za-z0-9][A-Za-z0-9'’/-]*/g, (word) => {
-    const upper = word.toUpperCase()
-    const isFirst = first
-    first = false
-    // Hyphenated or slashed compounds: handle each part ("API-579" keeps API; "ELASTIC-PLASTIC" -> "Elastic-Plastic").
+  // 1. Fix common typos in raw syllabus imports
+  text = text.replace(/Interoduction/gi, 'Introduction')
+
+  // 2. Clean up underscores (e.g. "Meshing_Techniques" -> "Meshing Techniques", "METHOD _Horizontal" -> "METHOD - Horizontal")
+  text = text.replace(/\s+_\s*/g, ' - ')
+  text = text.replace(/_+/g, ' ')
+
+  // 3. Spacing around parenthesized dates or hyphens between words/dates
+  text = text.replace(/([A-Za-z0-9])-([A-Za-z0-9])/g, (m, a, b) => {
+    if (/[0-9]/.test(a) && /[0-9]/.test(b)) return m
+    if (/^(Non|Post|Pre|Anti|Semi|Multi)$/i.test(a)) return m
+    return `${a} - ${b}`
+  })
+  text = text.replace(/([A-Za-z0-9])\(/g, '$1 (')
+  text = text.replace(/\)-([A-Za-z0-9])/g, ') - $1')
+  text = text.replace(/\)\s*-\s*([A-Za-z0-9])/g, ') - $1')
+
+  // 4. Tokenize and convert words that are in ALL CAPS (unless in KEEP_UPPER)
+  text = text.replace(/[A-Za-z0-9'’/-]+/g, (word) => {
     if (/[-/]/.test(word)) {
       return word
         .split(/([-/])/)
-        .map((part) => (part === '-' || part === '/' ? part : toDisplayTitle(part) === part && KEEP_UPPER.has(part) ? part : cap(part)))
+        .map((part) => (part === '-' || part === '/' ? part : formatWord(part)))
         .join('')
     }
-    if (KEEP_UPPER.has(upper) || /\d/.test(word)) return upper
-    if (!isFirst && SMALL.has(upper.toLowerCase())) return upper.toLowerCase()
-    return cap(word)
+    return formatWord(word)
   })
+
+  // 5. Clean up multiple spaces
+  return text.replace(/\s{2,}/g, ' ').trim()
+}
+
+function formatWord(word: string): string {
+  const upper = word.toUpperCase()
+  if (!/[A-Za-z]/.test(word)) return word
+  if (KEEP_UPPER.has(upper)) return upper
+  if (/\d/.test(word) && (KEEP_UPPER.has(upper) || /^\d+[A-Z]+$/.test(upper))) return upper
+
+  if (word === upper && word.length > 1) {
+    if (SMALL.has(word.toLowerCase())) return word.toLowerCase()
+    return cap(word)
+  }
+
+  return word
 }
 
 function cap(w: string): string {

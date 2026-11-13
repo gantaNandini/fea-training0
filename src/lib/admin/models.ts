@@ -147,6 +147,7 @@ export const MODELS: Record<ModelKey, ModelDef> = {
       { name: 'documentUrl', label: 'Brochure / document link (PDF)', type: 'text', help: 'Paste a link to the brochure or programme PDF.' },
       { name: 'image', label: 'Image', type: 'image' },
       { name: 'active', label: 'Show on website', type: 'checkbox' },
+      { name: 'seatLimit', label: 'Seat limit (blank = unlimited)', type: 'number', help: 'Set to 20 for the classroom workshop. Leave blank for webinars.' },
     ],
   },
   project: {

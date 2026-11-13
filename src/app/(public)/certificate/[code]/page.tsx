@@ -5,7 +5,6 @@ import { CertificateView } from '@/components/certificate/CertificateView'
 import { PrintButton } from '@/components/certificate/PrintButton'
 import { getCertificateByCode } from '@/lib/data/certificates'
 import { getSettings } from '@/lib/data/settings'
-import { db } from '@/lib/db'
 import { buildMetadata } from '@/lib/utils/seo'
 
 export const dynamic = 'force-dynamic'
@@ -35,12 +34,9 @@ export default async function CertificatePage({ params }: Props) {
   const [cert, settings] = await Promise.all([getCertificateByCode(code.toUpperCase()), getSettings()])
   if (!cert) notFound()
 
-  // Try to fetch course outcomes to show as topics on the certificate
-  const course = await db.course.findFirst({
-    where: { title: cert.courseTitle },
-    select: { outcomes: true, eligibility: true },
-  }).catch(() => null)
-  const topics = (course?.outcomes ?? []).slice(0, 5)
+  // Use topics and dateRange stored on the certificate itself (populated on issue from course outcomes).
+  // This is more reliable than re-fetching the course, and allows manual overrides for workshop certs.
+  const topics = cert.topics.length > 0 ? cert.topics : undefined
 
   return (
     <div className="container-page py-10 md:py-14">
@@ -58,7 +54,8 @@ export default async function CertificatePage({ params }: Props) {
         date={cert.issuedAt}
         code={cert.code}
         company={settings.company_name ?? 'PYTHAGORAS'}
-        topics={topics.length > 0 ? topics : undefined}
+        topics={topics}
+        dateRange={cert.dateRange ?? undefined}
       />
     </div>
   )

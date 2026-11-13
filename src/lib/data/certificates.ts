@@ -16,6 +16,8 @@ export interface CertificateDTO {
   learnerName: string
   courseTitle: string
   issuedAt: string
+  topics: string[]
+  dateRange: string | null
 }
 
 /** Issues (or returns the existing) certificate. Only for an enrolled learner at 100% completion. */
@@ -40,9 +42,12 @@ export async function issueCertificate(
 
   const [user, course] = await Promise.all([
     db.user.findUnique({ where: { id: userId }, select: { name: true, email: true } }),
-    db.course.findUnique({ where: { id: courseId }, select: { title: true } }),
+    db.course.findUnique({ where: { id: courseId }, select: { title: true, outcomes: true } }),
   ])
   if (!user || !course) return { ok: false, reason: 'NOT_ENROLLED' }
+
+  // Persist course outcomes as certificate topics (up to 6)
+  const topics = course.outcomes.slice(0, 6)
 
   for (let i = 0; i < 5; i++) {
     try {
@@ -53,11 +58,11 @@ export async function issueCertificate(
           courseId,
           learnerName: (user.name ?? user.email.split('@')[0]).trim(),
           courseTitle: course.title,
+          topics,
         },
       })
       return { ok: true, code: cert.code }
     } catch {
-      // unique collision on code, or a concurrent issue for the same user+course
       const again = await db.certificate.findUnique({
         where: { userId_courseId: { userId, courseId } },
         select: { code: true },
@@ -72,7 +77,14 @@ export async function getCertificateByCode(code: string): Promise<CertificateDTO
   if (!/^PYT-[A-Z0-9]{5}-[A-Z0-9]{5}$/.test(code)) return null
   const c = await db.certificate.findUnique({ where: { code } })
   if (!c) return null
-  return { code: c.code, learnerName: c.learnerName, courseTitle: c.courseTitle, issuedAt: c.issuedAt.toISOString() }
+  return {
+    code: c.code,
+    learnerName: c.learnerName,
+    courseTitle: c.courseTitle,
+    issuedAt: c.issuedAt.toISOString(),
+    topics: c.topics,
+    dateRange: c.dateRange,
+  }
 }
 
 /** courseId -> certificate code, for the My courses page. */

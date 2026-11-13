@@ -46,10 +46,10 @@ export function CurriculumAccordion({ slug, sections }: { slug: string; sections
           const secs = s.lessons.reduce((n, l) => n + l.durationSeconds, 0)
           return (
             <AccordionItem key={s.id} value={s.id}>
-              <AccordionTrigger>
-                <span className="flex-1">{toDisplayTitle(s.title)}</span>
-                <span className="mr-2 shrink-0 text-sm font-normal text-muted-foreground">
-                  {s.lessons.length} {messages.course.lessons}
+              <AccordionTrigger className="hover:no-underline py-3">
+                <span className="flex-1 text-sm sm:text-[15px] font-medium text-foreground">{toDisplayTitle(s.title)}</span>
+                <span className="mr-2 shrink-0 text-xs sm:text-sm font-normal text-muted-foreground">
+                  {s.lessons.length} {s.lessons.length === 1 ? messages.course.lesson : messages.course.lessons}
                   {secs > 0 ? ` · ${formatHours(secs)}` : ''}
                 </span>
               </AccordionTrigger>
@@ -68,15 +68,17 @@ export function CurriculumAccordion({ slug, sections }: { slug: string; sections
                               setPreview(l)
                               setOpen(true)
                             }}
-                            className="flex-1 text-left font-medium text-link underline-offset-4 hover:underline"
+                            className="flex-1 text-left font-normal text-link underline-offset-4 hover:underline"
                           >
                             {toDisplayTitle(l.title)}
                           </button>
                         ) : (
-                          <span className="flex-1">{toDisplayTitle(l.title)}</span>
+                          <span className="flex-1 font-normal text-muted-foreground hover:text-foreground">
+                            {toDisplayTitle(l.title)}
+                          </span>
                         )}
                         {l.isFreePreview ? <Badge tone="plum">{messages.course.preview}</Badge> : null}
-                        {dur ? <span className="shrink-0 tabular-nums text-muted-foreground">{dur}</span> : null}
+                        {dur ? <span className="shrink-0 tabular-nums text-muted-foreground text-xs">{dur}</span> : null}
                       </li>
                     )
                   })}

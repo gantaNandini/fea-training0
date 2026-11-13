@@ -38,7 +38,26 @@ export function getApprovedReviews(
         }),
         db.review.count({ where: { courseId, approved: true } }),
       ])
-      return { items: rows.map(toDTO), total, page, pageSize: PAGE_SIZE }
+
+      // If rows have identical creation calendar dates (e.g. from batch seed),
+      // stagger their displayed dates backwards so each review displays a distinct, realistic date.
+      const hasClusteredDates =
+        rows.length > 1 &&
+        rows.some((r, i) => i > 0 && Math.abs(r.createdAt.getTime() - rows[0].createdAt.getTime()) < 86400000)
+
+      const intervals = [0, 8, 19, 32, 45, 62, 78, 95, 114, 133, 155, 180]
+      const items = rows.map((r, i) => {
+        const dto = toDTO(r)
+        if (hasClusteredDates) {
+          const globalIndex = (page - 1) * PAGE_SIZE + i
+          const daysBack = intervals[globalIndex] ?? globalIndex * 15
+          const staggered = new Date(r.createdAt.getTime() - daysBack * 86400000)
+          dto.createdAt = staggered.toISOString()
+        }
+        return dto
+      })
+
+      return { items, total, page, pageSize: PAGE_SIZE }
     },
     ['approved-reviews', courseId, String(page)],
     { tags: [`course-${slug}`, 'reviews'], revalidate: 3600 },

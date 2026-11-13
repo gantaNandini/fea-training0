@@ -4,7 +4,7 @@ import { CalendarDays, Download, ExternalLink, MapPin } from 'lucide-react'
 import { PageHero } from '@/components/shared/PageHero'
 import { PlaceholderArt } from '@/components/shared/PlaceholderArt'
 import { ButtonLink } from '@/components/ui/button'
-import { getEventById } from '@/lib/data/events'
+import { getEventById, getEventRegistrationCount } from '@/lib/data/events'
 import { fmtRange, fmtTime, isUpcoming, kindLabel } from '@/lib/events'
 import { EventRegistrationForm } from '@/components/events/EventRegistrationForm'
 import { buildMetadata } from '@/lib/utils/seo'
@@ -30,6 +30,11 @@ export default async function EventPage({ params }: Props) {
   const parentHref = e.kind === 'BATCH' ? '/upcoming-courses' : '/events'
   const canRegister = upcoming && (e.kind === 'WEBINAR' || e.kind === 'WORKSHOP')
   const isOnline = /online/i.test(e.location ?? '') || e.kind === 'WEBINAR'
+
+  // Seat limit — fetch real-time count only when a limit is configured
+  const taken = e.seatLimit != null ? await getEventRegistrationCount(e.id) : 0
+  const seatsLeft = e.seatLimit != null ? Math.max(0, e.seatLimit - taken) : null
+  const isFull = seatsLeft !== null && seatsLeft <= 0
 
   return (
     <>
@@ -73,9 +78,15 @@ export default async function EventPage({ params }: Props) {
           {canRegister ? (
             <section aria-labelledby="ev-register" id="register">
               <h2 id="ev-register" className="mb-4 text-2xl">Register for this {kindLabel(e.kind).toLowerCase()}</h2>
-              <div className="max-w-xl rounded-xl border border-border bg-card p-6">
-                <EventRegistrationForm eventId={e.id} eventTitle={e.title} />
-              </div>
+              {isFull ? (
+                <div className="max-w-xl rounded-xl border border-border bg-card p-6">
+                  <p className="font-semibold text-red-600 dark:text-red-400">This event is fully booked. Registrations are now closed.</p>
+                </div>
+              ) : (
+                <div className="max-w-xl rounded-xl border border-border bg-card p-6">
+                  <EventRegistrationForm eventId={e.id} eventTitle={e.title} />
+                </div>
+              )}
             </section>
           ) : null}
         </div>
@@ -85,12 +96,21 @@ export default async function EventPage({ params }: Props) {
           {isOnline ? <p className="inline-block rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">Online event</p> : null}
           {e.location ? <p className="flex gap-3"><MapPin className="mt-0.5 h-5 w-5 shrink-0 text-plum-700 dark:text-plum-300" aria-hidden="true" />{e.location}</p> : null}
           {canRegister && !e.link ? (
-            <ButtonLink href="#register" className="w-full">Register now</ButtonLink>
+            <ButtonLink href="#register" className="w-full" aria-disabled={isFull}>
+              {isFull ? 'Fully booked' : 'Register now'}
+            </ButtonLink>
           ) : null}
           {upcoming && e.link ? (
             <ButtonLink href={e.link} target="_blank" rel="noopener noreferrer" className="w-full">
               Register now <ExternalLink className="h-4 w-4" aria-hidden="true" />
             </ButtonLink>
+          ) : null}
+          {seatsLeft !== null && seatsLeft > 0 && seatsLeft <= 5 ? (
+            <p className="text-sm font-semibold text-amber-600 dark:text-amber-400">Only {seatsLeft} seat{seatsLeft === 1 ? '' : 's'} left!</p>
+          ) : seatsLeft !== null && seatsLeft > 5 ? (
+            <p className="text-sm text-muted-foreground">{seatsLeft} of {e.seatLimit} seats available</p>
+          ) : seatsLeft === 0 ? (
+            <p className="text-sm font-semibold text-red-600 dark:text-red-400">This event is fully booked.</p>
           ) : null}
           {!upcoming ? <p className="text-sm text-muted-foreground">This {kindLabel(e.kind).toLowerCase()} has ended.</p> : null}
           <ButtonLink href={parentHref} variant="outline" className="w-full">Back to {e.kind === 'BATCH' ? 'upcoming courses' : 'events'}</ButtonLink>

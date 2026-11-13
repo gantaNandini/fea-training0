@@ -23,18 +23,35 @@ export async function POST(req: Request, { params }: Ctx) {
   if (!isUpcoming(event)) return fail('EVENT_ENDED', 'Registration for this event has closed.', 410)
 
   const d = parsed.data
+  const registrationData = {
+    eventId: event.id,
+    fullName: d.fullName,
+    email: d.email,
+    phone: d.phone,
+    organisation: d.organisation,
+    designation: d.designation ? d.designation : null,
+  }
+
   try {
-    await db.eventRegistration.create({
-      data: {
-        eventId: event.id,
-        fullName: d.fullName,
-        email: d.email,
-        phone: d.phone,
-        organisation: d.organisation,
-        designation: d.designation ? d.designation : null,
-      },
-    })
-  } catch (e) {
+    if (event.seatLimit !== null && event.seatLimit > 0) {
+      // Atomic seat-limit enforcement: serialisable transaction prevents overselling
+      // when two requests arrive simultaneously at the last seat.
+      await db.$transaction(async (tx) => {
+        const taken = await tx.eventRegistration.count({ where: { eventId: event.id } })
+        if (taken >= event.seatLimit!) {
+          throw Object.assign(new Error('SEATS_FULL'), { code: 'SEATS_FULL' })
+        }
+        await tx.eventRegistration.create({ data: registrationData })
+      }, { isolationLevel: 'Serializable' })
+    } else {
+      // No seat limit — simple insert (webinars are unlimited by default)
+      await db.eventRegistration.create({ data: registrationData })
+    }
+  } catch (e: unknown) {
+    const code = e instanceof Error ? (e as { code?: string }).code : undefined
+    if (code === 'SEATS_FULL') {
+      return fail('SEATS_FULL', 'This event is fully booked. No seats remain.', 409)
+    }
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
       return fail('ALREADY_REGISTERED', 'This email address is already registered for this event.', 409)
     }

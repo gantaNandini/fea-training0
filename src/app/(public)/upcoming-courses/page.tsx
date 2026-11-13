@@ -2,19 +2,15 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Clock } from 'lucide-react'
 import { PageHero } from '@/components/shared/PageHero'
-import { EmptyState } from '@/components/shared/EmptyState'
 import { PlaceholderArt } from '@/components/shared/PlaceholderArt'
-import { EventCard } from '@/components/events/EventCard'
-import { ButtonLink } from '@/components/ui/button'
-import { getAllEvents, getUpcomingCourses } from '@/lib/data/events'
-import { isUpcoming } from '@/lib/events'
+import { getUpcomingCourses } from '@/lib/data/events'
 import { buildMetadata } from '@/lib/utils/seo'
 import { messages } from '@/lib/messages'
 
 export const revalidate = 600
 export const metadata: Metadata = buildMetadata({
   title: 'Upcoming courses',
-  description: 'New courses and scheduled batches coming soon.',
+  description: 'New courses coming soon.',
   path: '/upcoming-courses',
 })
 
@@ -25,24 +21,11 @@ const levelLabel = {
 } as const
 
 export default async function UpcomingCoursesPage() {
-  const [courses, events] = await Promise.all([getUpcomingCourses(), getAllEvents()])
-  const batches = events.filter((e) => e.kind === 'BATCH' && isUpcoming(e))
+  const courses = await getUpcomingCourses()
   return (
     <>
-      <PageHero title="Upcoming courses" subtitle="New courses we are launching and the next scheduled batches." />
+      <PageHero title="Upcoming courses" subtitle="New courses we are launching." />
       <div className="container-page space-y-14 py-10 md:py-14">
-        <section aria-labelledby="batches-heading">
-          <h2 id="batches-heading" className="mb-6 text-2xl">Scheduled batches</h2>
-          {batches.length === 0 ? (
-            <EmptyState
-              title="No batches scheduled yet"
-              body="Tell us which course you are interested in and we will let you know when the next batch starts."
-              action={<ButtonLink href="/contact">Contact us</ButtonLink>}
-            />
-          ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{batches.map((e) => <EventCard key={e.id} e={e} />)}</div>
-          )}
-        </section>
         {courses.length > 0 ? (
           <section aria-labelledby="soon-heading">
             <h2 id="soon-heading" className="mb-6 text-2xl">Coming soon</h2>
@@ -72,7 +55,9 @@ export default async function UpcomingCoursesPage() {
               ))}
             </div>
           </section>
-        ) : null}
+        ) : (
+          <p className="text-muted-foreground">New courses coming soon. Check back shortly.</p>
+        )}
       </div>
     </>
   )

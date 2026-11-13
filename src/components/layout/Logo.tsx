@@ -51,14 +51,15 @@ export function LogoMark({ className }: { className?: string }) {
 }
 
 export function Logo({ name, className, href = '/' }: { name: string; className?: string; href?: string }) {
+  const cleanName = name.replace(/^M\/s\.?\s*/i, '').trim()
   return (
     <Link
       href={href}
-      aria-label={`${name} — home`}
+      aria-label={`${cleanName} — home`}
       className={cn('inline-flex min-h-11 items-center gap-2.5 font-display text-xl font-extrabold tracking-tight', className)}
     >
       <LogoMark />
-      <span className="text-plum-800 dark:text-white">{name}</span>
+      <span className="text-plum-800 dark:text-white">{cleanName}</span>
     </Link>
   )
 }

@@ -42,7 +42,7 @@ const html = (s: string) => (/<[a-z][\s\S]*>/i.test(s) ? s : s.split(/\n{2,}/).m
 const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
 const slugify = (s: string) => norm(s).replace(/ /g, '-').slice(0, 100)
 
-interface OldLesson { title: string; type: LessonType }
+interface OldLesson { title: string; type: LessonType; seconds: number; preview: boolean }
 interface OldSection { title: string; lessons: OldLesson[] }
 
 function sectionsOf(c: Obj): OldSection[] {
@@ -59,6 +59,8 @@ function sectionsOf(c: Obj): OldSection[] {
         return {
           title: str(pick(lo, ['title', 'name', 'lesson_title'])) || `Lesson ${j + 1}`,
           type: (/pdf|doc|file|attach|document/.test(t) ? 'DOCUMENT' : 'VIDEO') as LessonType,
+          seconds: Number(pick(lo, ['seconds', 'durationSeconds'])) || 0,
+          preview: Boolean(pick(lo, ['preview', 'isFreePreview'])),
         }
       }),
     }
@@ -81,7 +83,9 @@ async function main() {
     const title = str(pick(c, ['title', 'name', 'course_name', 'course_title']))
     if (!title) { console.log('SKIP (no title). Keys found:', Object.keys(c).join(', ')); continue }
     const mt = str(pick(c, ['matchTitle']))
+    const slugKey = str(pick(c, ['slug']))
     const match =
+      (slugKey ? existing.find((e) => e.slug === slugKey) : undefined) ??
       (mt ? existing.find((e) => norm(e.title) === norm(mt)) : undefined) ??
       existing.find((e) => norm(e.title) === norm(title)) ??
       existing.find((e) => norm(e.title).includes(norm(title)) || norm(title).includes(norm(e.title)))
@@ -101,10 +105,12 @@ async function main() {
     const elig = list(pick(c, ['eligibility', 'who_can_join']))
     const hours = num(pick(c, ['duration_hours', 'durationHours', 'hours', 'duration']))
     const subtitle = str(pick(c, ['subtitle', 'tagline']))
+    // when the JSON has a "subtitle" key at all (even null) it is authoritative: the original site has none -> clear ours
+    const subtitleData = 'subtitle' in c ? { subtitle: subtitle || null } : {}
     // only overwrite what the JSON actually provides (a titles-only file must not blank existing text)
     const data = {
       title,
-      ...(subtitle ? { subtitle } : {}),
+      ...subtitleData,
       ...(description ? { description: html(description), shortDescription: short.length >= 10 ? short : title } : {}),
       ...(out.length ? { outcomes: out } : {}),
       ...(req.length ? { requirements: req } : {}),
@@ -137,8 +143,8 @@ async function main() {
               sectionId: sec.id,
               title: l.title,
               type: l.type,
-              durationSeconds: 0,
-              isFreePreview: false,
+              durationSeconds: l.seconds,
+              isFreePreview: l.preview,
               videoUrl: l.type === 'VIDEO' ? 'placeholder:video' : null,
               fileUrl: l.type === 'DOCUMENT' ? 'placeholder:document' : null,
               order: li + 1,

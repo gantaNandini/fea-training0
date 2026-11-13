@@ -28,17 +28,9 @@ export function Footer({ settings }: { settings: SettingsMap }) {
         <nav aria-label={messages.footer.links}>
           <h2 className="mb-3 text-base">{messages.footer.links}</h2>
           <ul>
-            <li><Link className={link} href="/about">{messages.footer.about}</Link></li>
-            <li><Link className={link} href="/upcoming-courses">Upcoming courses</Link></li>
-            <li><Link className={link} href="/events">Events</Link></li>
-            <li><Link className={link} href="/fees">Syllabus</Link></li>
-            <li><Link className={link} href="/corporate-training">Corporate training</Link></li>
-            <li><Link className={link} href="/consultancy">Consultancy</Link></li>
             <li><Link className={link} href="/refund-policy">{messages.footer.refund}</Link></li>
             <li><Link className={link} href="/privacy-policy">{messages.footer.privacy}</Link></li>
             <li><Link className={link} href="/terms">{messages.footer.terms}</Link></li>
-            <li><Link className={link} href="/login">{messages.footer.login}</Link></li>
-            <li><Link className={link} href="/admin-login" data-testid="admin-login-link">Admin login</Link></li>
           </ul>
         </nav>
         <div>

@@ -71,6 +71,7 @@ export function Testimonials({ items }: { items: TestimonialDTO[] }) {
 
   return (
     <div>
+    <div className="overflow-hidden">
       <div
         ref={trackRef}
         onScroll={onScroll}
@@ -85,6 +86,7 @@ export function Testimonials({ items }: { items: TestimonialDTO[] }) {
           <TestimonialCard key={t.id} t={t} />
         ))}
       </div>
+    </div>
       <div className="mt-4 flex items-center justify-center gap-2">
         <button
           type="button"

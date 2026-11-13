@@ -5,8 +5,8 @@ import { HeroSlider } from '@/components/home/HeroSlider'
 import { ValueStrip } from '@/components/home/ValueStrip'
 import { TopCourses } from '@/components/home/TopCourses'
 import { ExploreTiles } from '@/components/home/ExploreTiles'
-import { NewlyLaunchedCourses, ConsultancyHighlights } from '@/components/home/UpcomingActivities'
-import { ComingUp } from '@/components/home/ComingUp'
+import { ConsultancyHighlights } from '@/components/home/UpcomingActivities'
+import { ComingUpStrip } from '@/components/home/ComingUpStrip'
 import { StatsBlock } from '@/components/home/StatsBlock'
 import { TestimonialsBlock } from '@/components/home/TestimonialsBlock'
 import { CtaBand } from '@/components/home/CtaBand'
@@ -31,8 +31,7 @@ export default async function HomePage() {
     <>
       <HeroSlider slides={slides} />
       <ValueStrip />
-      <ComingUp />
-      <NewlyLaunchedCourses />
+      <ComingUpStrip />
       <TopCourses limit={6} />
       <ExploreTiles />
       <ConsultancyHighlights />

@@ -1,0 +1,3395 @@
+{
+ "courses": [
+  {
+   "slug": "full-course-pressure-vessel-design-dba",
+   "title": "Full Course _Pressure Vessel Design DBA (ASME Sec VIII Div 2 and API 579-1 ASME FFS-1 ) by ANSYS",
+   "subtitle": null,
+   "shortDescription": "The design and verification of pressure vessels are regulated by the design requirements outlined in the ASME Boiler and Pressure Vessel Code (BPVC). Designing a convention that meets the standards of the ASME BPVC code would result in a design that is characterized by a cautious approach. The present scenario may be effectively addressed via the use of contemporary finite element analysis (FEA) commercial software packages such as ANSYS. This training session will focus on the discussion of size optimization for pressure vessels that adhere to the design-by-analysis standards outlined in the ASME Sec. VIII Division 2 specification. The integration of ANSYS is used to do stress analysis, hence achieving the desired outcome.",
+   "description": "<p>The Objective of this Course:</p><p>The primary goal of this course is to optimize the design process in order to achieve the dual objectives of ensuring the production of safe pressure vessels and minimizing costs.  The ANSYS tool will be utilized to conduct design optimization in pressure vessels with the objective of reducing material cost. This will be achieved by minimizing the weight of the vessels while ensuring that sufficient design factors are incorporated to prevent failures such as excessive plastic deformation, rupture, ratcheting (incremental plastic deformation under cyclic loading), shakedown, fracture, corrosion fatigue, and buckling.</p><p>The Course Includes:</p><p>40 online interactive classes<br>40 self-placed video tutorials<br>20 downloadable resources<br>Certificate<br>Program Overview:</p><p>Duration of 6 weeks: Three days in week<br>Each day: 3 sessions<br>Format: Online<br>Teaching Medium: English</p><p>The training covered the following topics:</p><p>Basic FEA training to familiar with the tool for 20 hours, which covers;</p><p>Session 1: Introduction of FEA</p><p>Session 2: 3D Link/Spar Elements</p><p>Session 3: 3D Beam elements</p><p>Session 4: Plate element /Membrane element and shell elements</p><p>Session 5: Plane stress/plane strain elements</p><p>Session 6: 3D Solid Element</p><p>Session 7: FEA Guidelines</p><p>Session 8: Symmetry Applications</p><p>Session 9: Thermal-structural Analysis</p><p>Session 10: Vibration Analysis</p><p>The next session will include a comprehensive range of subjects pertaining to pressure vessel design:</p><p>Session 1: Plastic collapse protection using the elastic stress approach, in accordance with the guidelines outlined in ASME VIII Div. 2.</p><p>Session 2:  Plastic collapse protection using the elastic-plastic stress approach, in accordance with the guidelines outlined in ASME VIII Div. 2.</p><p>Session 3:  Plastic collapse protection utilizing limit-load analysis (per ASME VIII Div.2)</p><p>Session 4:  Local Failure Protection Using Elastic Analysis (as per ASME VIII Div.2)</p><p>Session 5:  Local failure protection utilizing elastic-plastic analysis (as per ASME VIII Div.2)</p><p>Session 6:  Protection against buckling collapse using elastic analysis (as per ASME VIII Div.2)</p><p>Session 7: Protection against buckling collapse using an elastic-plastic analytical technique (as per ASME VIII Div.2)</p><p>Session 8:.ASME VIII Div.2 Fatigue Calculation</p><p>Session 9: Thermal ratcheting analysis for pressure vessels in accordance with ASME</p><p>Session 10:  Creep evaluation for pressure vessels used in high-temperature applications.</p><p>Session 11:  API 579 fitness for service and failure assessment diagram (FAD) for pressure vessel</p><p>Session 12:  Contact leak evaluation</p><p>Session 13:  Bolt strength evaluation</p><p>Session 14:  Weld evaluation</p><p>Session 15:  Evaluation of lifting lug strength</p><p>Session 16: Creep-Fatigue Life Assessment Analysis in accordance with API 579 FFS-I</p><p>Worked Examples:</p><p>Horizontal pressure vessel<br>Vertical pressure vessel<br>Spherical pressure vessel<br>Hot box<br>Adsorber vessel<br>Desander Pressure Vessel<br>Slug Catcher<br>Double-loop cylindrical reactor pressure vessel<br>LPG boiler tank<br>FEA Techniques;</p><p>FEA method for Shell modelling<br>FEA method for Shell-Solid interactions<br>FEA method for Stress linearization<br>The Finite Element Analysis (FEA) methodology is used to evaluate the structural integrity of welded joints using the Hotspot technique.<br>FEA approach for Elastic-plastic modeling<br>FEA approach for Thermal structural modeling<br>FEA approach for Creep modelling<br>FEA approach for buckling<br>FEA approach for fracture mechanics analysis<br>FEA approach for weld assessment<br>FEA approach for lifting lug arrangement</p>",
+   "level": null,
+   "outcomes": [
+    "1. This course aims to provide a comprehensive understanding of the fundamental concepts and advanced methods involved in the design of pressure vessel structures using Finite Element Analysis (FEA).",
+    "2. Acquire a comprehensive understanding of solid-shell components in order to effectively develop a finite element analysis (FEA) model for the pressure vessel.",
+    "3. Acquire the necessary skills to effectively implement the American Society of Mechanical Engineers (ASME) norms and standards in the realm of pressure vessel design.",
+    "4. To enhance proficiency in doing experiments involving nonlinear materials, contact mechanics, and large deformations, as well as to improve the ability to analyze and comprehend stress-strain relationships.",
+    "5. This program aims to cultivate and strengthen individuals' critical thinking and problem-solving skills specifically in the context of difficult design issues pertaining to pressure vessel constructions."
+   ],
+   "requirements": [
+    "A thorough understanding of the principles and concepts related to the mechanics of solids and engineering mechanics is essential."
+   ],
+   "curriculum": [
+    {
+     "title": "Questions and Answers",
+     "lessons": [
+      {
+       "title": "Questions and Answers",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "WHITE PAPER II.",
+     "lessons": [
+      {
+       "title": "WHITE PAPER II.",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": true
+      }
+     ]
+    },
+    {
+     "title": "Difference between shear stress and hydrotest stresses",
+     "lessons": [
+      {
+       "title": "Difference between shear stress and hydrotest stresses",
+       "type": "VIDEO",
+       "seconds": 2220,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Substantiation of FEA",
+     "lessons": [
+      {
+       "title": "Substantiation of FEA",
+       "type": "VIDEO",
+       "seconds": 351,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Meshing_Techniques (11-01-2026)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "PROTECTION AGAINST PLASTIC COLLAPSE GLOBAL CRITERIA-INTERODUCTION (16-01-2026)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.2.2 ELASTIC STRESS ANALYSIS METHOD (17-01-2026)-2D Axisymmetric Approach (16-01-2026)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.2.2 ELASTIC STRESS ANALYSIS METHOD (17-01-2026)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.2.2 ELASTIC STRESS ANALYSIS METHOD _Horizontal Pressure Vessel",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.2.3 LIMIT LOAD ANALYSIS METHOD_ASME Sec VIII Div 2_Para 5..2,3(18-01-2026)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.2.4 ELASTIC–PLASTIC STRESS ANALYSIS METHOD_ASME Sec VIII Div 2_Para 5..2,4",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Practice Section_Work shop Models",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.3 PROTECTION AGAINST LOCAL FAILURE(25-01-2026)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.3.3 ELASTIC–PLASTIC ANALYSIS — LOCAL STRAIN LIMIT-5.3.3.2 Assessment Procedure for a Specific Loading Sequence of Applied Loads(30-01-2026)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.4 PROTECTION AGAINST COLLAPSE FROM BUCKLING(01-02-2026)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "ASME Fatigue Analysis for Pressure Vessels & Welded Structures",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.5 PROTECTION AGAINST FAILURE FROM CYCLIC LOADING_LEVEL 1(SCREENING METHODS)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 7",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 8",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 9",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 10",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 11",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 12",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 13",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 14",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.5.4 PROTECTION AGAINST FAILURE FROM CYCLIC LOADING_LEVEL2 (FATIGUE ANALYSIS)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 7",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.5.5 RATCHETING ASSESSMENT(08-03-2026)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.6 PROTECTION AGAINST CREEP DAMAGE",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Fatigue material",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Beam Element Applications_ Lifting Analysis (09-01-2026)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Lifting Lug analysis and spreader beam analysis (10-01-2026)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Vibration analysis: Modal and Harmonic analysis",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Wind and Seismic Load Analysis",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Lifting Lug strength assessment",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Weld assessment",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Practice Exercises",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Lifting Lug strength assessment",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "3D Fracture Mechanics (API 579 & FSS)-Assessment of Crack-Like Flaws_Level 3",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 7",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 8",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 9",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 10",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "API 579-1/ASME FFS-1 2021 Fitness-For-Service_Fracture Mechanics_Level-I",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "API 579-1/ASME FFS-1 2021 Fitness-For-Service _Level 2_Plate_KPTC_RPTC_FAD_Crack Propagation_Constant_variable loads",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "API 579-1/ASME FFS-1 2021 Fitness-For-Service _Level 2 _Plate_KPSCL1 _RPSCL_Crack Propagation_Constant_variable loads",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "API 579-1/ASME FFS-1 2021 Fitness-For-Service _Level 2 _Plate_KPSCL2 _RPSCL__Crack Propagation_Constant_variable loads",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "API 579-1/ASME FFS-1 2021 Fitness-For-Service _Level 2_Plate_KPSCE1__Crack Propagation_Constant_variable loads",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "API 579-1/ASME FFS-1 2021 Fitness-For-Service _Level 2_Plate_KPSCE2_RPSCE2_Crack Propagation_Constant_variable loads",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "API 579-1/ASME FFS-1 2021 Fitness-For-Service _Level 2_Plate_KPSCE3_RPSCE3_Crack Propagation_Constant_variable loads",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "API 579-1/ASME FFS-1 2021 Fitness _Level 2-For-Service_Plate_Fracture Mechanics_KPECL_RPECL_Crack Propagation_Constant_Variable loads",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "API 579-1/ASME FFS-1 2021 Fitness-For-Service _Level 2_Fracture Mechanics_Plate_KPECE1_RPECE1_Crack Propagation_Constant_Variable loads",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "API 579-1/ASME FFS-1 2021 Fitness _Level 2-For-Service_Fracture Mechanics_Plate_KPECE2_RPECE2_Crack Propagation_Constant_variable loads",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "API 579-1/ASME FFS-1 2021 Fitness-For _Level 2-Service_Fracture Mechanics_Plate with A Hole_Single Hole_KPHTC1_RPHTC1_Crack Propagation_Constant_variable loads",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "API 579-1/ASME FFS-1 2021 Fitness-For-Service _Level 2_Fracture Mechanics_Plate with A Hole_KPHTC2_RPHTC2_Crack Propagation_Constant_variable loads",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "API 579-1/ASME FFS-1 2021 Fitness-For-Service _Level 2_Fracture Mechanics_Plate with A Hole_KPHSC1_RPHSC1_Crack Propagation_Constant_variable loads",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "API 579-1/ASME FFS-1 2021 Fitness-For-Service _Level 2_Fracture Mechanics_Plate with A Hole_KPHSC2_RPHSC_Crack Propagation_Constant_variable loads",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    }
+   ],
+   "durationHours": 43,
+   "durationLabel": "43:03:37"
+  },
+  {
+   "slug": "fatigue-ratchetting-creep-assessment",
+   "title": "Fatigue, Ratchetting, Creep Assessment (API 579-1/ASME FFS-1 - Fitness-For-Service & ASME 5.5 and 5.6 )",
+   "subtitle": "Practical Engineering with ASME Codes & FEA",
+   "shortDescription": "Practical Engineering with ASME Codes & FEA",
+   "description": "<p>Fatigue is one of the most common and costly failure modes in welded structures — especially in pressure vessels, piping, offshore, and industrial equipment.<br>Yet, many engineers rely on oversimplified rules or black-box software outputs without truly understanding what governs fatigue life.</p><p>This course bridges that gap.</p><p>You’ll learn how fatigue actually works, how codes like ASME treat fatigue, and how to perform defensible fatigue life assessments using both hand calculations and FEA — exactly the way industry expects.</p>",
+   "level": "Advanced",
+   "outcomes": [
+    "Understand fatigue failure mechanisms in welded joints",
+    "Extract and interpret stresses from FEA for fatigue checks",
+    "Apply Stress-Life (S-N) based fatigue methods correctly",
+    "Perform ASME BPVC Section VIII Division 2 fatigue screening",
+    "Account for mean stress effects using Goodman relationships",
+    "Use Rainflow counting and Miner’s rule for real load histories",
+    "Evaluate constant and variable amplitude loading",
+    "Ratcheting and Shakedown Assessment",
+    "Creep Assessment"
+   ],
+   "requirements": [
+    "CAE Engineers · Mechanical Engineers · Pressure Vessel Designers · Structural & Integrity Engineers"
+   ],
+   "curriculum": [
+    {
+     "title": "Introduction to Fatigue Calculations",
+     "lessons": [
+      {
+       "title": "Introduction to Fatigue Calculations",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Introduction to Fatigue Calculations_Low cycle Fatigue_Part1",
+     "lessons": [
+      {
+       "title": "Introduction to Fatigue Calculations_Low cycle Fatigue_Part1",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Introduction to Fatigue Calculations_Low cycle Fatigue_Part2",
+     "lessons": [
+      {
+       "title": "Introduction to Fatigue Calculations_Low cycle Fatigue_Part2",
+       "type": "VIDEO",
+       "seconds": 3600,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Introduction to Fatigue Calculations_High Cycle Fatigue_Part 3",
+     "lessons": [
+      {
+       "title": "Introduction to Fatigue Calculations_High Cycle Fatigue_Part 3",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Presentation_High Cycle Fatigue_Class Presentation File.",
+     "lessons": [
+      {
+       "title": "Presentation_High Cycle Fatigue_Class Presentation File.",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Presentation_Fundamentals of Fatigue.",
+     "lessons": [
+      {
+       "title": "Presentation_Fundamentals of Fatigue.",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Presentation_Fatigue Life Calculation.",
+     "lessons": [
+      {
+       "title": "Presentation_Fatigue Life Calculation.",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "5.5 PROTECTION AGAINST FAILURE FROM CYCLIC LOADING_LEVEL 1(SCREENING METHODS)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "3D FEA _Vertical Pressure vessel",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.5.4 PROTECTION AGAINST FAILURE FROM CYCLIC LOADING_LEVEL2 (FATIGUE ANALYSIS)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 7",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 8",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 9",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.5.5 RATCHETING ASSESSMENT",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Fatigue Material",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.6 PROTECTION AGAINST CREEP DAMAGE",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    }
+   ],
+   "durationHours": 7,
+   "durationLabel": "07:07:33"
+  },
+  {
+   "slug": "3d-fracture-mechanics-simulation",
+   "title": "3D Fracture Mechanics Simulation (API 579-1/ASME FFS-1 - Fitness-For-Service )",
+   "subtitle": null,
+   "shortDescription": "This training provides a comprehensive understanding of Fitness-For-Service (FFS) assessments based on API 579-1/ASME FFS-1 (2021), focusing on evaluating the structural integrity of components containing flaws. Participants will learn the practical application of Level 1, Level 2, and Level 3 assessments, including Failure Assessment Diagram (FAD), crack growth analysis, and Leak-Before-Break (LBB) methodologies.",
+   "description": "<p>The Fracture Mechanics &amp; FFS Level 3 Training Program is an industry-focused course designed to help engineers understand, assess, and simulate crack behavior in pressure equipment and structural components.</p><p>This program bridges the gap between theoretical fracture mechanics concepts and real-world engineering applications, enabling participants to perform reliable integrity assessments using international standards such as API 579 / ASME FFS-1.</p><p>What You Will Learn<br>Fundamentals of fracture mechanics (LEFM &amp; EPFM)<br>Stress Intensity Factor (SIF) and fracture toughness (KIC)<br>Failure mechanisms: brittle fracture, fatigue, ductile failure<br>Failure Assessment Diagram (FAD) methodology<br>Crack assessment using API 579 Part 9<br>Level 1, Level 2, and Level 3 Fitness-for-Service assessments<br>Engineering evaluation of real defects in pressure vessels and welds<br>Crack growth and fatigue life prediction (Paris Law)<br>Hands-on simulation using ANSYS SMART crack tool<br>Advanced concepts: J-integral, CTOD, R-curve<br>Course Structure<br>The program is delivered over 3 weeks (weekend sessions):</p><p>Module 1: Fundamentals of Fracture Mechanics &amp; FAD<br>Module 2: API 579 Part 9 &amp; Crack Assessment<br>Module 3: Simulation, Crack Growth &amp; Advanced FM<br>Key Highlights</p><p>API 579 FFS methodology (Level 1, 2, 3)<br>FAD (Kr–Lr) assessment approach<br>Crack growth &amp; remaining life prediction<br>Leak-Before-Break (LBB) analysis<br>Stress intensity factor (K) evaluation<br>3D crack modelling &amp; propagation simulation<br>Practical examples from pressure vessels, pumps, and pipelines</p>",
+   "level": "Intermediate",
+   "outcomes": [
+    "Apply key fracture mechanics concepts (LEFM & EPFM)",
+    "Evaluate cracks using SIF & FAD methods",
+    "Perform FFS assessments as per API 579 / ASME",
+    "Assess defects in pressure vessels & welds",
+    "Simulate crack behavior using ANSYS SMART",
+    "Predict crack growth & fatigue life"
+   ],
+   "requirements": [
+    "Hand on -3D Fracture Mechanics Simulation ( Edge crack, Surface crack and corner crack)",
+    "API 579 FFS methodology (Level 1, 2, 3)",
+    "FAD (Kr–Lr) assessment approach",
+    "Crack growth & remaining life prediction",
+    "Leak-Before-Break (LBB) analysis",
+    "Stress intensity factor (K) evaluation",
+    "3D crack modelling & propagation simulation",
+    "Practical examples from pressure vessels, pumps, and pipelines",
+    "Crack Arrest Concept"
+   ],
+   "curriculum": [
+    {
+     "title": "Hand-on: 3D Fracture Mechanics Simulation with Edge Crack, Surface crack, and Corner Crack)",
+     "lessons": [
+      {
+       "title": "Hand-on: 3D Fracture Mechanics Simulation with Edge Crack, Surface crack, and Corner Crack)",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Intrcoduction : 2D and 3D Fracture Mechanics",
+     "lessons": [
+      {
+       "title": "Intrcoduction : 2D and 3D Fracture Mechanics",
+       "type": "VIDEO",
+       "seconds": 3600,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Hands on _Procedure of 3D FM Simulation Using ANSYS",
+     "lessons": [
+      {
+       "title": "Hands on _Procedure of 3D FM Simulation Using ANSYS",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "SIF Calculations in Pressure Vessel Applications",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Fracture Crack Growth Simulation ( Fatigue Life and critical crack length)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "SIF and J Integral Calculations in Tubular Joint Design",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "API 579_ASME FFS_PART 9 – ASSESSMENT OF CRACK-LIKE FLAWS",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 7",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 8",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 9",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 10",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 11",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 12",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 13",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 14",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 15",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 16",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 17",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 18",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 19",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 20",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 21",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "API 579_ASME FFS_PART 9 – ASSESSMENT OF CRACK-LIKE FLAWS CYLINDER",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 7",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 8",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 9",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 10",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 11",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 12",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 13",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 14",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 15",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 16",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    }
+   ],
+   "durationHours": 5,
+   "durationLabel": "04:50:30"
+  },
+  {
+   "slug": "protection-against-local-failure",
+   "title": "5.3 PROTECTION AGAINST LOCAL FAILURE (API 579 & FSS, ASME 5.3) and Buckling Load Assessment",
+   "subtitle": null,
+   "shortDescription": "This 9-session layout is suitable for training, interview prep, or a short course module focused specifically on local criteria as per ASME Section VIII Div. 2.",
+   "description": "<p>This specialized program is designed to provide in-depth, practical understanding of ASME Plastic Collapse Analysis with a strong focus on Local Criteria, implemented using ANSYS Simulate. The program bridges the gap between ASME code theory and real-world finite element application, enabling participants to confidently perform code-compliant structural integrity assessments.</p><p>The training systematically covers the ASME design philosophy, explaining why controlled local yielding is permitted and how plastic collapse differs from elastic failure. Participants will gain clarity on stress categorization, stress linearization, and acceptance criteria as per ASME Section VIII Division 2 and ASME FFS principles, which are critical in pressure vessel and mechanical equipment design.</p>",
+   "level": "Intermediate",
+   "outcomes": [
+    "What You Will Learn from This Course By the end of this program, you will be able to: Understand ASME plastic collapse philosophy with clear distinction between local and global criteria Perform ASME-compliant local plastic collapse checks using ANSYS Simulate Apply stress categorization and stress linearization correctly for code assessment Interpret and justify local yielding using elastic–plastic analysis Confidently defend simulation results in design reviews, audits, and interviews",
+    "5.3.2 ELASTIC ANALYSIS — TRIAXIAL STRESS LIMIT",
+    "5.3.3 ELASTIC–PLASTIC ANALYSIS — LOCAL STRAIN LIMIT",
+    "5.4.2-3 BUCKLING ANALYSIS — METHOD A & B (Elastic and EP Method)"
+   ],
+   "requirements": [
+    "Basic understanding of Engineering Mechanics and Strength of Materials Fundamental knowledge of Stress–Strain behavior and material properties Familiarity with Mechanical Engineering concepts (UG level is sufficient) Basic exposure to Finite Element Method (FEM) concepts (recommended but not mandatory) Ability to interpret engineering drawings and loading conditions Access to a laptop/desktop system for practice sessions (software guidance will be provided)"
+   ],
+   "curriculum": [
+    {
+     "title": "Question and Answers",
+     "lessons": [
+      {
+       "title": "Question and Answers",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "what is the difference between shear stress and hydrostatic stress",
+     "lessons": [
+      {
+       "title": "what is the difference between shear stress and hydrostatic stress",
+       "type": "VIDEO",
+       "seconds": 3600,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Substantiation of the FEA",
+     "lessons": [
+      {
+       "title": "Substantiation of the FEA",
+       "type": "VIDEO",
+       "seconds": 3600,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Practice_meshing",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Horizontal Pressure Vessel_Elastic Stress Analysis",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.3 PROTECTION AGAINST LOCAL FAILURE",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.3 PROTECTION AGAINST LOCAL FAILURE-5.3.3.2 Assessment Procedure for a Specific Loading Sequence of Applied Loads",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "5.4 PROTECTION AGAINST COLLAPSE FROM BUCKLING",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    }
+   ],
+   "durationHours": 16,
+   "durationLabel": "16:14:29"
+  },
+  {
+   "slug": "protection-against-global-failure",
+   "title": "5.2 PROTECTION AGAINST Global FAILURE (API 579 & FSS, ASME 5.2)",
+   "subtitle": null,
+   "shortDescription": "This session introduces the ASME global plastic collapse criteria used in Design-by-Analysis to prevent gross structural failure under primary loads. It explains the concept of plastic collapse, the difference between global and local collapse, and the role of limit load and elastic–plastic analysis. Participants will gain practical insight into collapse load identification, including the Limit Load and Twice Elastic Slope methods, with relevance to real-world FEA and code-compliant design.",
+   "description": "<p>This session provides a practical and industry-oriented understanding of ASME Global Plastic Collapse criteria used in Design-by-Analysis (DBA) of pressure vessels and structural components. Participants will gain insight into how ASME codes ensure structural integrity against gross plastic deformation under primary loading conditions.</p><p>The session covers the fundamental concepts of plastic collapse, distinction between global and local collapse, and the role of limit load analysis as prescribed in ASME BPVC. Emphasis is placed on elastic–plastic analysis methods, interpretation of load–deformation behavior, and commonly used acceptance approaches such as the Limit Load method and Twice Elastic Slope (TES) criterion.</p><p>Real-world engineering relevance will be highlighted through simulation-based explanations, demonstrating how finite element results are used to assess collapse loads and ensure code compliance. The session also discusses material modeling requirements, common analysis pitfalls, and best practices followed in industry.</p><p>By the end of this session, participants will be able to confidently interpret ASME global plastic collapse requirements, understand when and how to apply elastic–plastic FEA, and appreciate the importance of collapse prevention in pressure vessel and structural design.</p>",
+   "level": "Intermediate",
+   "outcomes": [
+    "Understand the concept and importance of global plastic collapse Differentiate global vs local collapse as per ASME philosophy Interpret ASME criteria and acceptance checks for plastic collapse Identify collapse load using limit load and TES methods Apply elastic–plastic FEA concepts for code-compliant design",
+    "5.2.2 ELASTIC STRESS ANALYSIS METHOD",
+    "5.2.3 LIMIT LOAD ANALYSIS METHOD (Elastic and EP )",
+    "5.2.4 ELASTIC–PLASTIC STRESS ANALYSIS METHOD"
+   ],
+   "requirements": [
+    "Basic understanding of Engineering Mechanics and Strength of Materials Fundamental knowledge of Stress–Strain behavior and material properties Familiarity with Mechanical Engineering concepts (UG level is sufficient) Basic exposure to Finite Element Method (FEM) concepts (recommended but not mandatory) Ability to interpret engineering drawings and loading conditions Access to a laptop/desktop system for practice sessions (software guidance will be provided)"
+   ],
+   "curriculum": [
+    {
+     "title": "Question and Answers",
+     "lessons": [
+      {
+       "title": "Question and Answers",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Difference between shear stress and hydrotest stress",
+     "lessons": [
+      {
+       "title": "Difference between shear stress and hydrotest stress",
+       "type": "VIDEO",
+       "seconds": 3600,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Substantiation of FEA",
+     "lessons": [
+      {
+       "title": "Substantiation of FEA",
+       "type": "VIDEO",
+       "seconds": 600,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Meshing_Practice",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Horizontal Pressure Vessel_Elastic stress Analysis",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Introduction to Plastic Collapse & Analysis Methods (16-01-2026)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Elastic Stress Analysis –2D Axisymmetric approach(_ASME Sec VIII Div 2_Para 5.2.2( ( 16 - 01-2026)16-01-2026)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Elastic Stress Analysis –3D FEA approach_ASME Sec VIII Div 2_Para 5.2.2( (17-01-2026)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Limit Load Analysis_ASME Sec VIII Div 2_Para 5.2.3(18-01-2026)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Elastic Plastic Analysis_ASME Sec VIII Div 2_Para 5.2.4(18-01-2026)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    }
+   ],
+   "durationHours": 14,
+   "durationLabel": "13:45:47"
+  },
+  {
+   "slug": "basic-fea-ahead-of-pressure-vessel-design",
+   "title": "Basic FEA ahead of Pressure vessel, Centrifugal pumps and compressors, wind structures",
+   "subtitle": null,
+   "shortDescription": "This course is essential to start any further FEA course including pressure vessel design, pumps, compressors, wind structures, gas turbines, and aerostructures. This is a free course for the people who are going to take any advanced course.",
+   "description": "<p>This course is essential to start any further FEA course including pressure vessel design, pumps, compressors, wind structures, gas turbines, and aerostructures. This is a free course for the people who are going to take any advanced course.</p>",
+   "level": "Beginner",
+   "outcomes": [
+    "Fundamentals of FEA",
+    "Meshing Techniques: Hexa and Tet",
+    "Link Elements applications",
+    "Beam Elements applications.",
+    "Shell element applications",
+    "Solid Element applications",
+    "Best Practices of applying boundary conditions",
+    "Best Practices of applying loading conditions",
+    "Results Interpretation",
+    "Symmetry applications: Cyclic, axisymmetric",
+    "Examples: Centrifugal Pump Casings",
+    "Examples: Propeller shaft",
+    "Examples: Test Rig",
+    "Examples: multistage centrifugal pumps",
+    "Examples: Gear box",
+    "Examples: Spur gears"
+   ],
+   "requirements": [
+    "Mechanical and civil Engineers"
+   ],
+   "curriculum": [
+    {
+     "title": "Introduction to ANSYS",
+     "lessons": [
+      {
+       "title": "Introduction to ANSYS",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Introduction of FEA00:52:02",
+     "lessons": [
+      {
+       "title": "Introduction of FEA00:52:02",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": true
+      }
+     ]
+    },
+    {
+     "title": "Basic FEA Concepts",
+     "lessons": [
+      {
+       "title": "Basic FEA Concepts",
+       "type": "VIDEO",
+       "seconds": 4232,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Splined Shaft with a flange/hub : ANSYS Workbench",
+     "lessons": [
+      {
+       "title": "Splined Shaft with a flange/hub : ANSYS Workbench",
+       "type": "VIDEO",
+       "seconds": 4900,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "ANSYS APDL Practice Problem",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Link Element Applications",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 7",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 8",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Link/Truss/Spar/Bar Element",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Beam Element",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 7",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 8",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 9",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 10",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 11",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Beam Element_189_Applications",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 7",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 8",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 9",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Link and Beam Elements",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Lifting Rope Design",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Plane Stress Exercises",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Shell Element",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 7",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 8",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 9",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 10",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 11",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 12",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Working with Macros",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Meshing Techniques",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 7",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 8",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 9",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Contact Establishment",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Ansys Workbench Introduction",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Workbench_Skid Torsional analysis",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Workbench_Bearing Housing",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Workbench_Earth Movers Examples",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Workbench_Propeller shaft stress analysis",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Gear Box _Base skid Analysis",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Workbench-Lifting Lug Analysis",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Interference problems",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Structural analysis of centrifugal pump casing analysis under MAWP and Nozzle loads as per API 61",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Linear Stress Analysis-Propeller shaft",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Linear static structural analysis-Propeller test rig and Gear box",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Pin_Analysis",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Weld Calculations",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    }
+   ]
+  },
+  {
+   "slug": "ansys-training-mechanical-vibrations",
+   "title": "ANSYS Training: Mechanical Vibrations",
+   "subtitle": null,
+   "shortDescription": "FEA is a valuable tool in the analysis and design of mechanical systems to ensure that vibrations are well-understood and controlled, leading to the development of reliable and efficient structures and machinery. It allows engineers to assess the dynamic behavior of structures under various conditions and make informed design decisions to prevent potential issues related to mechanical vibrations.",
+   "description": "<p>The application of mechanical vibrations in industries is diverse and critical for ensuring the reliability, safety, and performance of various systems and structures. Engineers and researchers continuously study and optimize mechanical vibrations to improve the design and operation of industrial machinery and infrastructure.</p><p>Mechanical vibrations play a significant role in various industries, influencing the design, performance, and reliability of mechanical systems. Understanding and managing vibrations are crucial for ensuring the safe and efficient operation of machinery. Here are some key roles of mechanical vibrations in industries:</p><p>1. Structural Health Monitoring:</p><p>Bridges and Infrastructure: Mechanical vibrations are used to monitor the structural health of bridges, buildings, and other infrastructure. Changes in vibration characteristics can indicate potential structural issues.</p><p>2. Machinery Condition Monitoring:</p><p>Rotating Machinery: Vibrations in rotating machinery, such as turbines, pumps, and motors, are monitored to detect anomalies, misalignments, unbalance, and other issues. Condition monitoring helps predict equipment failures and allows for timely maintenance.</p><p>3. Automotive Industry:</p><p>Vehicle Dynamics: Vibrations in vehicles affect ride comfort, handling, and overall performance. Automotive engineers study and optimize vibrations to enhance vehicle dynamics, comfort, and safety.</p><p>4. Aerospace Industry:</p><p>Aircraft Structural Analysis: Vibrations in aircraft structures are analyzed to ensure they can withstand the dynamic loads experienced during flight. This is crucial for designing lightweight yet durable aircraft components.</p><p>5. Electronics and Semiconductor Manufacturing:</p><p>Precision Equipment: In the manufacturing of electronic components, vibrations can affect the precision and quality of processes. Controlling vibrations is essential in semiconductor fabrication and other precision industries.</p><p>6. Power Generation:</p><p>Generators and Turbines: Vibrations in power generation equipment, such as generators and turbines, are monitored to prevent damage, ensure reliable operation, and optimize performance.</p><p>7. Mining Industry:</p><p>Excavation Equipment: Mechanical vibrations are studied in mining equipment to enhance efficiency and safety. Vibration monitoring helps in preventing equipment failures and ensuring worker safety.</p><p>8. Construction Industry:</p><p>Construction Equipment: Vibrations from construction equipment, such as pile drivers and excavators, can impact nearby structures. Managing and controlling these vibrations are essential for preventing damage to adjacent buildings.</p><p>9. Consumer Electronics:</p><p>Electronic Devices: Vibration analysis is employed in the design and testing of consumer electronics to ensure reliability and performance. It is particularly relevant in devices with moving parts like hard drives.</p><p>10. Railway Industry:</p><p>Railway Vehicles and Infrastructure: Vibrations in railway vehicles and tracks are studied to optimize ride comfort, reduce wear and tear, and ensure the safety of passengers and cargo.</p><p>11. Healthcare Industry:</p><p>Medical Equipment: Vibration analysis is used in the design and maintenance of medical equipment to ensure precision and reliability, particularly in devices like MRI machines.</p><p>12. Oil and Gas Industry:</p><p>Drilling and Exploration: Vibrations in drilling equipment and offshore platforms are monitored to enhance safety and prevent structural damage in the challenging environments of the oil and gas industry.</p><p>13. Manufacturing Industry:</p><p>Machine Tools: In manufacturing, vibrations in machine tools can affect the quality of machined parts. Controlling vibrations is crucial for achieving high precision and surface finish.</p>",
+   "level": "Beginner",
+   "outcomes": [
+    "Understanding of FEA Basics: ANSYS training in mechanical vibrations typically covers fundamental concepts of FEA, ensuring participants have a solid understanding of how the software works, including meshing, material properties, boundary conditions, and solving techniques",
+    "Modelling Complex Structures: Participants learn how to create accurate 3D models of complex structures and mechanical components relevant to mechanical vibrations analysis using ANSYS",
+    "Meshing Techniques: The training includes meshing strategies and techniques for generating high-quality meshes that capture the geometry and structural features effectively, especially in areas prone to stress concentrations",
+    "Material Modeling: Engineers gain expertise in assigning appropriate material properties and models within ANSYS, considering isotropic or anisotropic behavior, and accounting for damping characteristics relevant to mechanical vibrations",
+    "Boundary Conditions and Loading: Training covers the proper application of boundary conditions and loading scenarios to simulate real-world conditions, ensuring the accuracy of the simulation results",
+    "Modal Analysis: Participants learn how to perform modal analysis using ANSYS, allowing them to extract natural frequencies, mode shapes, and participation factors critical for understanding the vibrational behaviour of structures.",
+    "Harmonic Analysis: Training includes techniques for performing harmonic analysis in ANSYS, enabling engineers to study the response of structures to periodic excitations and identify potential resonance issues",
+    "Transient Analysis: Engineers gain the ability to simulate transient dynamic events, such as start-up, shutdown, or impact loading, to understand the time-dependent response of structures to dynamic forces",
+    "Post-Processing and Result Interpretation: Training covers post-processing tools in ANSYS for interpreting results, visualizing mode shapes, stress distributions, and displacement patterns critical for assessing the vibrational characteristics of structures",
+    "Fatigue Analysis: Participants learn how to perform fatigue analysis within ANSYS, helping them assess the durability and fatigue life of components subjected to cyclic loading",
+    "Optimization Strategies: Training may cover optimization techniques within ANSYS, allowing engineers to iteratively optimize designs to reduce vibrations, improve performance, and meet design criteria"
+   ],
+   "requirements": [
+    "Should have mechanical Engineering Basics, Strength of materials, and mechanical vibrations.",
+    "Understand the ANSYS user interface, workflow, and how to set up and solve different types of analyses.",
+    "A background in mechanical engineering or related fields is beneficial."
+   ],
+   "curriculum": [
+    {
+     "title": "Introduction to Mechanical Vibrations",
+     "lessons": [
+      {
+       "title": "Introduction to Mechanical Vibrations",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Video: Mechanical Vibrations",
+     "lessons": [
+      {
+       "title": "Video: Mechanical Vibrations",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Free Vibrations",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Single-Degree-of-Freedom (SDOF) and Multi-Degree-of-Freedom (MDOF) Systems : Numerical approach and ANSYS approach to solve the problems",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Modal Analysis using ANSYS",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 7",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 8",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 9",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 10",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 11",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Prestress Modal analysis",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Scaled model analysis",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "HARMONICALL Y EXCITED VIBRATION",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 7",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 8",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Harmonic Analysis Using ANSYS",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Random Vibrations",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Impact Analysis or shock load analysis",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 7",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "TRANSIENT VIBRATIONS",
+     "lessons": [],
+     "placeholderLessons": true
+    }
+   ]
+  },
+  {
+   "slug": "basic-fea-training-for-beginners",
+   "title": "Basic FEA Training for Beginners",
+   "subtitle": null,
+   "shortDescription": "Online Training/Classroom",
+   "description": "<p>Students pursuing third or fourth year BE/BTech programs in mechanical, aerospace, automotive, and civil engineering are targeted for this course. Based on a level of student knowledge, the FEA course is designed. Practical explanations will be given for the principles of engineering mechanics, strength of materials, machine design, and heat transport. FEA tools (ANSYS) will be used to solve problems.</p><p>The course is split up into ten 40-hour periods, with a well-balanced preparation for each class that uses a FEA approach to encompass theory and its applications. Every session consists of the three phases listed below:</p><p>Step 1: Theoretical approach: Students will use manual calculations to resolve the problem.</p><p>Step 2: FEA method: Students will use the FEA technique to solve the same problem and compare the results obtained.</p><p>Step 3: Industrial applications: Using the knowledge gained from steps 1 and 2, students will tackle industrial problems in real time.</p>",
+   "level": "Beginner",
+   "outcomes": [
+    "Step 1: Theoretical approach: Students will use theoretical concepts to solve problems. Every one of these classes aids pupils in reviewing the fundamentals and comprehending the issue in depth.",
+    "Step 2:FEA Approach: Students will use FEA to solve the same issue. This part assists students in validating FEA results using manual calculations.",
+    "Step 3: Industrial applications: Industrial applications on similar concepts will be explained in detail. In the third step,",
+    "In the third step, students will be familiar with FEA and the theoretical approach. He will be in a position of handling practical engineering problems"
+   ],
+   "requirements": [
+    "Good understanding in engineering mechanics, strength of materials, design of machine elements, heat transfer, mechanical vibrations",
+    "Mechanical/Civil/ Aerospace Engineering graduates, MS and PhD students, Design Engineers"
+   ],
+   "curriculum": [
+    {
+     "title": "Introduction of FEA",
+     "lessons": [
+      {
+       "title": "Introduction of FEA",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Introduction to the FEA Training01:20:40",
+     "lessons": [
+      {
+       "title": "Introduction to the FEA Training01:20:40",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": true
+      }
+     ]
+    },
+    {
+     "title": "Meshing_APDL",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Meshing_Workbench",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "3D Link/Spar Elements",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Plane Stress & Plane Strain Concept & Example",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "3D Beam elements",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "3D Solid Element",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Symmetry Applications",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "FEA Guidelines",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Thermal-structural Analysis",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Vibration Analysis",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    }
+   ],
+   "durationHours": 8,
+   "durationLabel": "08:19:27"
+  },
+  {
+   "slug": "rotordynamics-analysis",
+   "title": "Rotordynamics Analysis",
+   "subtitle": null,
+   "shortDescription": "1. Analyzing and predicting vibration behavior of structures is important in the design and development of mechanical systems.",
+   "description": "<p>Rotordynamics is applicable across a wide range of industries, including aerospace, automotive, energy, oil and gas, and manufacturing. Its versatility makes it a valuable tool for improving the performance and reliability of diverse rotating machinery.<br>In summary, rotordynamics provides valuable insights into the behavior of rotating machinery, offering a proactive approach to design, maintenance, and optimization. Industries that leverage rotordynamics can benefit from increased reliability, reduced downtime, and improved overall efficiency of their rotating equipment.</p><p>Rotordynamics, which involves the study of rotating machinery behavior, plays a crucial role in various industries due to its numerous advantages. Here are some key advantages of rotordynamics in industry:</p><p>1. Increased Equipment Reliability:<br>Understanding the dynamic behavior of rotating machinery helps in designing more reliable systems. This knowledge allows engineers to identify potential issues related to vibrations, stability, and critical speeds, leading to improved reliability and reduced risk of failures.<br>2. Optimized Design for Performance:<br>Rotordynamics analysis allows engineers to optimize the design of rotating equipment for better performance. This includes considerations for balancing, alignment, and damping to ensure that machinery operates efficiently and meets performance requirements.<br>3. Prevention of Catastrophic Failures:<br>Rotordynamics analysis helps in identifying potential resonance conditions and critical speeds that could lead to catastrophic failures if not addressed. By understanding and mitigating these risks, industries can prevent costly downtime and equipment damage.<br>4. Energy Efficiency:<br>Optimized rotor designs can lead to more energy-efficient machinery. By minimizing vibrations and ensuring smooth operation at different speeds, industries can enhance the overall energy efficiency of rotating equipment, reducing operational costs.<br>5. Extended Equipment Lifespan:<br>By assessing the dynamic behavior of rotating machinery, engineers can design systems that minimize wear and fatigue, leading to an extended lifespan of equipment. This is particularly important in industries with continuous or heavy-duty operations.<br>6. Reduced Maintenance Costs:<br>Proactive rotordynamics analysis helps in identifying potential issues early on, allowing for planned maintenance rather than reactive repairs. This can significantly reduce downtime and overall maintenance costs.<br>7. Customization for Specific Applications:<br>Different industries have unique requirements for rotating machinery. Rotordynamics analysis enables the customization of designs to meet specific application needs, ensuring that equipment performs optimally in its intended environment.<br>8. Compliance with Standards and Regulations:<br>Many industries have stringent standards and regulations regarding the performance and safety of rotating machinery. Rotordynamics analysis helps ensure that equipment complies with these standards, reducing the risk of regulatory non-compliance.</p>",
+   "level": "Beginner",
+   "outcomes": [
+    "Carry out the basic end-to-end rotordynamics analysis process in Ansys Mechanical.",
+    "Understand the underlying technical and analysis features that are unique to rotordynamics.",
+    "Describe and apply the essential rotordynamics analysis capabilities: computation of critical speeds, prediction of rotor whirl and system stability, computation of unbalance response, and consideration of start up and shut-down transient responses.",
+    "Results Validation",
+    "Training on Rotor Dynamics tool, ROSS {Open Forum)",
+    "Exercise 1: Lateral critical speed analysis of multi sage centrifugal pump casings",
+    "Exercise 2: Forced response analysis of multi sage centrifugal pump casings",
+    "Exercise 3: Torsional critical speed analysis of multi sage centrifugal pump casings",
+    "Exercise 4: Torsional critical speed analysis of multi sage centrifugal pump casings (VFD)",
+    "Exercise 5: Steady state responce analysis of multi sage centrifugal pump casings (VFD)",
+    "Hydrodynamic Bearing Calculations",
+    "Short bearings (Wear rings, seals, sleeves) calculations",
+    "Gyroscopic Effects",
+    "Rotor Mounted on Bearings",
+    "Design Optimization using DesignXplorer"
+   ],
+   "requirements": [
+    "strong foundation in mechanical engineering or a related field"
+   ],
+   "curriculum": [
+    {
+     "title": "Class _Videos",
+     "lessons": [
+      {
+       "title": "Class _Videos",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Video: Introduction to Structural dynamics and Rotordynamics",
+     "lessons": [
+      {
+       "title": "Video: Introduction to Structural dynamics and Rotordynamics",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Rotor Dynamics_API Guidelines_Plart1",
+     "lessons": [
+      {
+       "title": "Rotor Dynamics_API Guidelines_Plart1",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Rotor Dynamics_API Guidelines_Plart2",
+     "lessons": [
+      {
+       "title": "Rotor Dynamics_API Guidelines_Plart2",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Bearing stiffness and damping _long brg_APDL",
+     "lessons": [
+      {
+       "title": "Bearing stiffness and damping _long brg_APDL",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Bearing stiffness and damping _short brg",
+     "lessons": [
+      {
+       "title": "Bearing stiffness and damping _short brg",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Bearing stiffness and damping _Theory",
+     "lessons": [
+      {
+       "title": "Bearing stiffness and damping _Theory",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Bearing stiffness and damping _Workbench",
+     "lessons": [
+      {
+       "title": "Bearing stiffness and damping _Workbench",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Exercise-1_Bearing stiffness caculations_1",
+     "lessons": [
+      {
+       "title": "Exercise-1_Bearing stiffness caculations_1",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Exercise-1_Bearing stiffness caculations_11",
+     "lessons": [
+      {
+       "title": "Exercise-1_Bearing stiffness caculations_11",
+       "type": "DOCUMENT",
+       "seconds": 0,
+       "preview": false
+      }
+     ]
+    },
+    {
+     "title": "Rotor Dynamics :Overview",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Gyroscopic Effects",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Rotor Mounted on Bearings:",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Simple Rotor Systems",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Theory of Bearing Characteristics Calculations",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "FEA approach (ANSYS and ROSS) to find the bearing characteristics (Stiffness and damping)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Instability in Rotor Systems",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Theoretical approach of finding lateral critical speeds",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Forced Response Analysis (Unbalance Response Analysis)",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "FEA Simulation of Lateral Critical Speed Analysis using ANSYS and ROSS",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "FEA Simulation of Lateral Critical Speed analysis uisng ANSYS and ROSS",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Theoretical approach of finding torsional vibrations",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "FEA Simulation of Torsional Critical Speed analysis using ANSYS and ROSS",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Fatigue Life Calculations in ANSYS",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Exercise 1: Stiffness and damping values for Long bearings and Short Bearings Using ANSYS and ROSS",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Exercise 2: Lateral analysis study of the multistage centrifugal Pump using ANSYS and ROSS",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 7",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Exercise 3: Torsional analysis of the pump-motor and direct coupling in ANSYS",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Exercise 4:Torsional analysis of the pump-motor and flexible coupling-Gear box in ANSYS",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    },
+    {
+     "title": "Exercise 5:Field Fix : Boiler Feed Pump -Lateral and Torsional analysis",
+     "lessons": [
+      {
+       "title": "Lesson 1",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 2",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 3",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 4",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 5",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 6",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 7",
+       "type": "VIDEO"
+      },
+      {
+       "title": "Lesson 8",
+       "type": "VIDEO"
+      }
+     ],
+     "placeholderLessons": true
+    }
+   ]
+  },
+  {
+   "slug": "advanced-fea-ansys-workbench-apdl",
+   "title": "Advanced Finite Element Analysis using ANSYS Workbench and APDL",
+   "subtitle": null,
+   "shortDescription": "The Finite Element Analysis (FEA) is the simulation of any given design concept using the numerical technique called Finite Element Method (FEM). Engineers/Product Companies use FEA to reduce the number of physical prototypes and experiments and optimize components in their design phase to develop better products, faster while saving on expenses. ANSYS is a leading FEA software used in wire range of industries",
+   "description": "<p>This course is divided into Theoretical session, workshop and live projects</p><p>In the Theoretical session, you will be introduced to the basic theoretical concepts regarding the topics of structural statics, dynamics, thermal, durability and optimization.</p><p>In the workshop, you will be using industrial examples for learning Ansys Workbench &amp; APDL software for efficiently performing different kinds of Simulations such as:</p><p>Linear and Non-linear static structural analysis<br>Structural Dynamic Analysis<br>Modal Analysis<br>Harmonic Analysis<br>Random Vibration<br>Shock load Analysis<br>Thermal-structural coupled analysis<br>Buckling Analysis<br>Fatigue Analysis<br>LCF<br>HCF<br>Fracture Mechanics<br>Linear Elastic Fracture mechanics (LEFM)<br>Linear Elastic-Plastic Fracture mechanics (LEPFM)<br>Thermal Mechanical Fatigue (TMF)<br>Rotor Dynamics Analysis (Lateral and Torsional Vibrations)<br>Design Optimization<br>3D design using ANSYS SpaceClaim<br>APDL Macro creation<br>Centrifugal pump and Compressor Design and Analysis as per API, Non-API, Euro Code, and ASME codes</p><p>Live Projects session, you will be performing simulation on real industrial components and validation as per industrial codes such as</p><p>ASME Section VIII division 2 &amp; 3<br>ISO<br>DNV GL RP C203<br>DNV GL RP F112<br>API 6X<br>API 17D<br>API 610<br>Eurocode</p>",
+   "level": "Beginner",
+   "outcomes": [
+    "Upon completion of the course, participants will acquire the necessary skills to proficiently use the ANSYS software in addressing both static and dynamic engineering issues, particularly those including thermal coupling.",
+    "Understanding of FEA Basics: ANSYS training in mechanical vibrations typically covers fundamental concepts of FEA, ensuring participants have a solid understanding of how the software works, including meshing, material properties, boundary conditions, and solving techniques",
+    "Modelling Complex Structures: Participants learn how to create accurate 3D models of complex structures and mechanical components relevant to mechanical vibrations analysis using ANSYS",
+    "Meshing Techniques: The training includes meshing strategies and techniques for generating high-quality meshes that capture the geometry and structural features effectively, especially in areas prone to stress concentrations",
+    "Material Modeling: Engineers gain expertise in assigning appropriate material properties and models within ANSYS, considering isotropic or anisotropic behaviour, and accounting for damping characteristics relevant to mechanical vibrations",
+    "Boundary Conditions and Loading: Training covers the proper application of boundary conditions and loading scenarios to simulate real-world conditions, ensuring the accuracy of the simulation results",
+    "Basic FEA: Introduction of FEA,Thermal-structural Analysis,Symmetry Applications FEA Guidelines,3D Solid Element,Plane stress/plane strain elements, Plate element /Membrane element and shell elements,3D Beam elements 3D Link/Spar Elements, Vibration Analysis",
+    "Non-Linear Analysis: Overview of Non-linear analysis, Non-Linear Analysis Procedure in ANSYS, Factors influencing the problem's convergence: Contact Settings, Guidelines for obtaining contact convergence, Case Studies to demonstrate convergence issue and resolve it, exercises on Material Nonlinear Analysis, exercises on Material and Contact Nonlinear Analysis, exercises on Large Deformation Nonlinear analysis, Workshop on Contact Non-linearity analysis",
+    "Vibration Analysis: Introduction to Mechanical Vibrations, Free Vibrations. Single-Degree-of-Freedom (SDOF) and Multi-Degree-of-Freedom (MDOF) Systems , Numerical approach and ANSYS approach to solve the problems, HARMONICALL Y EXCITED VIBRATION, TRANSIENT VIBRATIONS, Modal Analysis using ANSYS, Prestress Modal analysis, Scaled model analysis, Random Vibrations, Harmonic Analysis Using ANSYS, Impact Analysis or shock load analysis",
+    "Rotor Dynamics: rotor dynamics overview,gyroscopic effects,rotor mounted on bearings,simple rotor systems,theory of bearing characteristics calculations, fea approach (ansys and ross) to find the bearing characteristics (stiffness and damping),instability in rotor systems,theoretical approach of finding lateral critical speeds,forced response analysis (unbalance response analysis),fea simulation of lateral critical speed analysis using ansys and ross,fea simulation of lateral critical speed analysis uisng ansys and ross,theoretical approach of finding torsional vibrations,fea simulation of torsional critical speed analysis using ansys and ross,fatigue life calculations in ansys,exercise on stiffness and damping values for long bearings and short bearings using ansys and ross,exercise on lateral analysis study of the multistage centrifugal pump using ansys and ross, exercise on torsional analysis of the pump-motor and direct coupling in ansys,exercise on torsional analysis of the pump-motor and flexible coupling-gear box in ansys,exercise on field fix of boiler feed pump -lateral and torsional analysis",
+    "Offshore wind turbine structures: Introduction to Wind Turbine Foundation Structures and DNV Codes, Foundation Design and Loads, Weld Modeling in FEA, Ultimate Limit State (ULS) Analysis for Welded Joints, Serviceability Limit State (SLS) Analysis for Welded Joints, Accidental Limit States and Load Cases, Fatigue Damage Calculations for Welded Joints, Reporting and Documentation for Weld Analysis, Case Studies and Practical Applications",
+    "Centrifugal Pump and Compressors: Torsional stiffness for base skid as per HIS standards, Stress calculations for the base plate under lifting conditions-transportation conditions- wind and seismic load conditions,Modal analysis assessment of base skid,Harmonic analysis of the base skid,Random analysis of the base skid,Stiffness test acceptance criteria for base skid as per API 610, clause 6.3.7,Structural assessment of centrifugal pump casing under MAWP and nozzle loads as per API 610 clause 5.3.4,Leakage assessment of the casings as per API 610 clause 5.3.3,Calculations of stiffness and damping values for short and long bearings (wear rings, sleeves, and hydraulic bearings),Rotor dynamics: Lateral critical speed analysis as per API 610- Annex I,Torsional critical speed analysis as per API 610 clause 5.9.2,Bolt assessment,Weld assessment as per DNV codes,Stress analysis for casings and impellers under variable pressure load conditions,Ultimate Limit State (ULS) for the compressor skid,Serviceability Limit States (SLS) for the compressor skid,Accidental Limit States (ALS) for the compressor skid, Blast Load analysis for the compressor skid ,Wind and Seismic Load Analysis,",
+    "Pressure Vessel Design: Plastic collapse protection using the elastic stress approach, in accordance with the guidelines outlined in ASME VIII Div. 2,Protection against Plastic Collapse-Global Criteria: Limit Load Analysis,Plastic collapse protection using the elastic-plastic approach, in accordance with the guidelines outlined in ASME VIII Div. 2,Protection against Plastic Collapse-Local Criteria: Elastic Analysis-Triaxial stress Limit,Protection against Plastic Collapse-Local Criteria: Elastic Plastic Analysis-Local strain Limit,Protection against collapse from buckling using elastic , elastic-plastic analysis approach (as per ASME VIII Div.2),Fatigue Life Estimation of Pressure Vessel as per ASME Section VIII Div 2, Lifting Lug strength assessment,Weld assessment,Bolt strength assessment, Thermal ratcheting analysis for pressure vessel as per ASME,Creep assessment for pressure vessel for high temperature applications, Practice Exercises, Lifting Lug strength assessment",
+    "High Cycle Fatigue in FEA Simulation: Introduction to Fatigue, Stress-Life Curves, Mean Stress Effects on S-N Behavior, and Factors affecting S-N Behavior, S-N curve representation and approximations, S-N approach for Notched Members, Example of life estimation using the S-N approach,Workshop1: HCF calculations for Gas turbine components,Workshop2:HCF calculations for automobile components",
+    "Low cycle Fatigue Simulation in FEA Simulation: Introduction to LCF, Strain-Life Curves, Mean Stress Effects on strain-life Behavior, and Factors affecting strain-life Behavior, Strain-Based approach to life estimation, Strain-life approach for Notched Members, Finding stresses in plastic region using Nuber’s rule, Strain energy density or glinka’s rule, Workshop3: LCF calculations for Gas turbine components",
+    "Fatigue from Variable Amplitude Loading in FEA Simulation, Spectrum loads and cumulative damage,Damage quantification, damage fraction, and accumulation,Load interaction and sequence effects,Cycle counting methods; rain flow, and other cycle counting methods,Life estimation using the stress-life approach,Life estimation using a strain-life approach,Crack growth and life estimation models, Workshop 4: LCF and HCF calculations for Gas turbine components",
+    "Fracture Mechanics:Mechanisms of Fatigue and Creep Fatigue,Fundamentals of LEFM and applications to Fatigue Crack Growth Contribution,FRACTURE TOUGHNESS - Kc , KIc,Crack Tip Plastic Zone,Fatigue crack growth,Mean stress effect,Cyclic Plastic Zone Size,Crack Closure,Small Fatigue Cracks and LEFM Assumption,Plastic Extension of LEFM and Elastic Plastic Fracture Mechanics,Applications of Fracture Mechanics to crack growth at notches,SIF for residual stresses,Crack growth and life estimation for variable amplitude loading,Crack growth and life estimation for multiaxial stresses,Fatigue crack growth of weldments ( Constant amplitude Fatigue) Environmental effects: Fatigue crack growth behavior, Corrosion Fatigue, Fretting Fatigue, Low temperature Fatigue, High temperature Fatigue",
+    "Exercises of Fracture Mechanics: Computation of SIF for solid cylinder block through (Elliptical Crack,Pre meshed crack,Arbitrary crack),Crack Propagation simulation for three-point bend specimen (LEFM),Plasticity accountability through LEFM –Spur gear example through perturbation approach,Crack Propagation due to High cycle Fatigue for turbine blade.",
+    "Workshops on Fracture Mechanics :3D Fracture Mechanics Simulation Procedure through ANSYS Workbench (Elliptical Crack- pressure vessel with internal pressure,Pre meshed crack – Rail track from publication,Arbitrary crack- Spur gear root fillet ),Crack Propagation simulation in ANSYS Workbench,LEFM (Linear Elastic Fracture Mechanics)- Spur gear tooth ( ASME publication),LEPM (Linear elastic-plastic Fracture Mechanics)- Gas turbine blade,Thermal Mechanical Fatigue (TMF)- Gas turbine blade, Crack Propagation due to High cycle Fatigue - Gas turbine blade.",
+    "Steady-state thermal-structural analysis of Gas turbine components: Need of steady-state thermal structural analysis, Preparation of FEA model for thermal analysis at steady state point,Preparation structural FEA for stress calculations at steady state point, Results evaluation, Failure criteria as per ASME",
+    "Transient thermal-structural analysis of Gas turbine components: Need of steady-state thermal structural analysis,Preparation of FEA model for thermal analysis at steady state point,Preparation structural FEA for stress calculations at steady state point, Results evaluation",
+    "Thermal Mechanical Fatigue Assessment of Gas Turbine Components: Theoretical concept of CREEP, Method of finding CREEP Coefficients through strain hardening approach, Performing transient thermal-structural analysis by considering CREEP, Evaluation of the CREEP rupture and creep strength as per Stress approach,Evaluation of the CREEP rupture and creep strength as per Strain approach"
+   ],
+   "requirements": [
+    "It is essential to possess a comprehensive knowledge of engineering disciplines such as engineering mechanics, solid mechanics, mechanical vibrations, and thermal engineering."
+   ],
+   "curriculum": []
+  }
+ ]
+}

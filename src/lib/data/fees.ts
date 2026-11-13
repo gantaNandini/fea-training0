@@ -41,6 +41,6 @@ export const getFeeRows = unstable_cache(
       }
     })
   },
-  ['fee-rows-v1'],
+  ['fee-rows-v2'],
   { tags: ['courses'], revalidate: 3600 },
 )

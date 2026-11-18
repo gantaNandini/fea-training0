@@ -25,7 +25,7 @@ export default async function AdminProfilePage() {
             <PasswordForm hasPassword={!!profile.passwordHash} />
           </Card>
           <Card title="Instructor details (shown on course pages)">
-            <InstructorProfileForm initial={{ title: ip?.title ?? '', bio: ip?.bio ?? '', linkedin: ip?.socialLinkedIn ?? '', twitter: ip?.socialTwitter ?? '', website: ip?.socialWebsite ?? '' }} />
+            <InstructorProfileForm initial={{ title: ip?.title ?? '', bio: ip?.bio ?? '', linkedin: ip?.socialLinkedIn ?? '', twitter: ip?.socialTwitter ?? '', website: ip?.socialWebsite ?? '', facebook: (ip as { socialFacebook?: string | null } | null)?.socialFacebook ?? '', youtube: (ip as { socialYoutube?: string | null } | null)?.socialYoutube ?? '' }} />
           </Card>
         </div>
       </div>

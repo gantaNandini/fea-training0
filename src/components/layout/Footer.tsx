@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Linkedin, Mail, MapPin, Phone, Twitter, Youtube } from 'lucide-react'
+import { Facebook, Linkedin, Mail, MapPin, Phone, Twitter, Youtube } from 'lucide-react'
 import { Logo } from './Logo'
 import { messages } from '@/lib/messages'
 import type { SettingsMap } from '@/lib/types'
@@ -8,6 +8,7 @@ export function Footer({ settings }: { settings: SettingsMap }) {
   const year = new Date().getFullYear()
   const social = [
     { href: settings.social_linkedin, label: 'LinkedIn', Icon: Linkedin },
+    { href: settings.social_facebook, label: 'Facebook', Icon: Facebook },
     { href: settings.social_youtube, label: 'YouTube', Icon: Youtube },
     { href: settings.social_twitter, label: 'X (Twitter)', Icon: Twitter },
   ].filter((s) => !!s.href)

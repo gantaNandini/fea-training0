@@ -382,14 +382,26 @@ export async function saveInstructorProfile(input: {
   linkedin: string
   twitter: string
   website: string
+  facebook?: string
+  youtube?: string
 }): Promise<ActionResult> {
   try {
     const me = await assertAdmin()
-    const v = (s: string) => (s.trim() ? s.trim().slice(0, 500) : null)
+    const v = (s: string | undefined) => (s?.trim() ? s.trim().slice(0, 500) : null)
+    const profileData = {
+      title: v(input.title),
+      bio: v(input.bio),
+      socialLinkedIn: v(input.linkedin),
+      socialTwitter: v(input.twitter),
+      socialWebsite: v(input.website),
+      // socialFacebook / socialYoutube available after migration 20261118_trainee_footer
+      ...(input.facebook !== undefined ? { socialFacebook: v(input.facebook) } : {}),
+      ...(input.youtube !== undefined ? { socialYoutube: v(input.youtube) } : {}),
+    }
     await db.instructorProfile.upsert({
       where: { userId: me.id },
-      update: { title: v(input.title), bio: v(input.bio), socialLinkedIn: v(input.linkedin), socialTwitter: v(input.twitter), socialWebsite: v(input.website) },
-      create: { userId: me.id, title: v(input.title), bio: v(input.bio), socialLinkedIn: v(input.linkedin), socialTwitter: v(input.twitter), socialWebsite: v(input.website) },
+      update: profileData,
+      create: { userId: me.id, ...profileData },
     })
     bust(['courses', `instructor-${me.id}`], [])
     return { ok: true, message: 'Profile saved.' }

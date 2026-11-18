@@ -67,6 +67,7 @@ export const SETTING_GROUPS: SettingGroup[] = [
     fields: [
       { key: 'footer_blurb', label: 'Footer description', type: 'textarea' },
       { key: 'social_linkedin', label: 'LinkedIn URL', type: 'text' },
+      { key: 'social_facebook', label: 'Facebook URL', type: 'text' },
       { key: 'social_youtube', label: 'YouTube URL', type: 'text' },
       { key: 'social_twitter', label: 'X (Twitter) URL', type: 'text' },
       { key: 'stats_students', label: 'Statistic: students', type: 'number', help: 'Must be a verified figure.' },

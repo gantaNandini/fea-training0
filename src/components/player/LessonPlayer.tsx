@@ -14,6 +14,8 @@ import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { formatDuration } from '@/lib/utils/pricing'
 import { messages } from '@/lib/messages'
 
+import { QuizPanel } from './QuizPanel'
+
 interface Props {
   course: { slug: string; title: string }
   sections: PlayerSectionDTO[]
@@ -103,6 +105,9 @@ export function LessonPlayer({ course, sections, lesson, prevId, nextId, percent
   }, [course.slug, lesson.id])
 
   const done = completed.has(lesson.id)
+  const [videoCompleted, setVideoCompleted] = React.useState(false)
+  // Reset videoCompleted when lesson changes
+  React.useEffect(() => setVideoCompleted(false), [lesson.id])
 
   async function toggleComplete() {
     setBusy(true)
@@ -167,16 +172,41 @@ export function LessonPlayer({ course, sections, lesson, prevId, nextId, percent
               {messages.player.loadError}
             </p>
           ) : data ? (
-            <LessonViewer type={lesson.type} title={lesson.title} data={data} />
+            <>
+              <LessonViewer
+                type={lesson.type}
+                title={lesson.title}
+                data={data}
+                lessonId={lesson.id}
+                alreadyCompleted={done}
+                onVideoCompleted={() => setVideoCompleted(true)}
+              />
+              {lesson.type === 'VIDEO' && videoCompleted && (
+                <div className="mt-6">
+                  <QuizPanel
+                    lessonId={lesson.id}
+                    onPassed={() => {
+                      // Mark the lesson complete on the server via the existing progress API
+                      void toggleComplete()
+                    }}
+                  />
+                </div>
+              )}
+            </>
           ) : (
             <Skeleton className="aspect-video w-full" />
           )}
 
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-            <Button variant={done ? 'outline' : 'primary'} onClick={toggleComplete} disabled={busy} aria-pressed={done}>
-              <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
-              {done ? messages.player.completed : messages.player.markComplete}
-            </Button>
+            {/* For non-VIDEO lessons keep the manual complete toggle; VIDEO completion is tracked automatically */}
+            {lesson.type !== 'VIDEO' ? (
+              <Button variant={done ? 'outline' : 'primary'} onClick={toggleComplete} disabled={busy} aria-pressed={done}>
+                <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
+                {done ? messages.player.completed : messages.player.markComplete}
+              </Button>
+            ) : (
+              <span />
+            )}
             <div className="flex gap-2">
               {prevId ? (
                 <Link
@@ -187,12 +217,22 @@ export function LessonPlayer({ course, sections, lesson, prevId, nextId, percent
                 </Link>
               ) : null}
               {nextId ? (
-                <Link
-                  href={`/learn/${course.slug}/${nextId}`}
-                  className="inline-flex min-h-11 items-center gap-1 rounded-md border border-border px-4 text-sm font-semibold hover:bg-muted"
-                >
-                  {messages.player.nextLesson} <ChevronRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
+                done ? (
+                  <Link
+                    href={`/learn/${course.slug}/${nextId}`}
+                    className="inline-flex min-h-11 items-center gap-1 rounded-md border border-border px-4 text-sm font-semibold hover:bg-muted"
+                  >
+                    {messages.player.nextLesson} <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                ) : (
+                  <span
+                    className="inline-flex min-h-11 cursor-not-allowed items-center gap-1 rounded-md border border-border px-4 text-sm font-semibold opacity-40"
+                    aria-disabled="true"
+                    title={lesson.type === 'VIDEO' ? 'Complete this video (and its quiz) to continue' : undefined}
+                  >
+                    {messages.player.nextLesson} <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                )
               ) : null}
             </div>
           </div>

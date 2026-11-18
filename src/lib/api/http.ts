@@ -3,6 +3,27 @@ import type { ZodTypeAny, z } from 'zod'
 
 const NO_STORE = { 'Cache-Control': 'no-store' }
 
+/** Structured error for API route handlers. Same envelope: { error: { code, message } } */
+export class ApiError extends Error {
+  constructor(
+    public readonly status: number,
+    public readonly code: string,
+    message: string,
+  ) {
+    super(message)
+    this.name = 'ApiError'
+  }
+}
+
+/** Turn an ApiError (or any other thrown value) into a JSON response with the site's error envelope. */
+export function apiError(e: unknown): NextResponse {
+  if (e instanceof ApiError) {
+    return NextResponse.json({ error: { code: e.code, message: e.message } }, { status: e.status })
+  }
+  console.error(e)
+  return NextResponse.json({ error: { code: 'INTERNAL', message: 'Something went wrong' } }, { status: 500 })
+}
+
 export function ok<T>(data: T, init?: ResponseInit): NextResponse {
   return NextResponse.json(data, {
     ...init,

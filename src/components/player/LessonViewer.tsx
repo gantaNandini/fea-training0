@@ -1,5 +1,7 @@
+import * as React from 'react'
 import { Download, FileText, HelpCircle, PlayCircle } from 'lucide-react'
 import { messages } from '@/lib/messages'
+import { useVideoWatchTracking } from '@/hooks/useVideoWatchTracking'
 
 export interface LessonUrlResponse {
   type: 'VIDEO' | 'DOCUMENT' | 'QUIZ'
@@ -16,11 +18,26 @@ export function LessonViewer({
   type,
   title,
   data,
+  lessonId,
+  alreadyCompleted,
+  onVideoCompleted,
 }: {
   type: 'VIDEO' | 'DOCUMENT' | 'QUIZ'
   title: string
   data: LessonUrlResponse
+  lessonId?: string
+  alreadyCompleted?: boolean
+  onVideoCompleted?: () => void
 }) {
+  const videoRef = React.useRef<HTMLVideoElement | null>(null)
+  // Only track hosted file videos (not embeds / placeholders, which need provider APIs)
+  const isHostedVideo = type === 'VIDEO' && data.playback?.kind === 'file' && data.playback.media !== 'audio'
+  useVideoWatchTracking(videoRef, lessonId ?? '', {
+    enabled: isHostedVideo && !!lessonId,
+    alreadyCompleted,
+    onCompleted: onVideoCompleted,
+  })
+
   if (type === 'VIDEO') {
     if (data.playback?.kind === 'file' && data.playback.src) {
       return (
@@ -28,7 +45,14 @@ export function LessonViewer({
           {data.playback.media === 'audio' ? (
             <audio src={data.playback.src} controls controlsList="nodownload" className="w-full" />
           ) : (
-            <video src={data.playback.src} controls controlsList="nodownload" playsInline className="aspect-video w-full rounded-lg bg-black" />
+            <video
+              ref={videoRef}
+              src={data.playback.src}
+              controls
+              controlsList="nodownload"
+              playsInline
+              className="aspect-video w-full rounded-lg bg-black"
+            />
           )}
         </div>
       )

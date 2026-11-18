@@ -11,12 +11,13 @@ import { cn } from '@/lib/utils/cn'
 export const revalidate = 120
 export const metadata: Metadata = buildMetadata({
   title: 'Events',
-  description: 'Upcoming conferences, workshops and webinars.',
+  description: 'Upcoming workshops and webinars.',
   path: '/events',
 })
 
+// MoM item 6 (R6): Conferences tab removed; default tab = Workshops.
+// ?tab=conferences (or any unknown key) falls back to the first tab (Workshops).
 const TABS = [
-  { key: 'conferences', label: 'Conferences', kind: 'CONFERENCE', empty: 'No conferences scheduled right now' },
   { key: 'workshops', label: 'Workshops', kind: 'WORKSHOP', empty: 'No workshops scheduled right now' },
   { key: 'webinars', label: 'Webinars', kind: 'WEBINAR', empty: 'No webinars scheduled right now' },
 ] as const
@@ -25,13 +26,14 @@ type Props = { searchParams: Promise<{ tab?: string }> }
 
 export default async function EventsPage({ searchParams }: Props) {
   const { tab } = await searchParams
+  // Fall back to Workshops for unknown / old 'conferences' key (R6 §3)
   const active = TABS.find((t) => t.key === tab) ?? TABS[0]
   const all = (await getAllEvents()).filter((e) => e.kind === active.kind)
   const upcoming = all.filter((e) => isUpcoming(e))
   const past = all.filter((e) => !isUpcoming(e)).reverse()
   return (
     <>
-      <PageHero title="Events" subtitle="Conferences, workshops and webinars. Register early, seats are limited." />
+      <PageHero title="Events" subtitle="Workshops and webinars. Register early, seats are limited." />
       <div className="container-page space-y-10 py-10 md:py-14">
         <nav aria-label="Event types" className="flex flex-wrap gap-2 border-b border-border pb-3">
           {TABS.map((t) => (

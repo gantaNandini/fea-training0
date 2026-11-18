@@ -131,7 +131,6 @@ export const MODELS: Record<ModelKey, ModelDef> = {
         name: 'kind', label: 'Type', type: 'select', required: true,
         help: 'Course batch items appear under Upcoming Courses. The others appear under Events.',
         options: [
-          { value: 'CONFERENCE', label: 'Conference' },
           { value: 'WORKSHOP', label: 'Workshop' },
           { value: 'WEBINAR', label: 'Webinar' },
           { value: 'BATCH', label: 'Course batch (Upcoming Courses)' },

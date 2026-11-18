@@ -1,9 +1,9 @@
-/** Shared (client + server safe) event helpers. Dates are stored as the wall-clock time the admin typed, so they are shown in UTC. */
+// MoM item 6 (R6): Conferences removed from public tabs. CONFERENCE key kept for legacy DB rows.
 export const EVENT_KINDS: Record<string, string> = {
-  CONFERENCE: 'Conference',
   WORKSHOP: 'Workshop',
   WEBINAR: 'Webinar',
   BATCH: 'Course batch',
+  CONFERENCE: 'Conference', // legacy — not shown in public tabs
 }
 
 export const kindLabel = (k: string) => EVENT_KINDS[k] ?? 'Event'

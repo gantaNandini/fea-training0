@@ -43,12 +43,12 @@ export async function UpcomingWebinars() {
 }
 
 export async function UpcomingEvents() {
-  const next = (await getAllEvents()).filter((e) => (e.kind === 'WORKSHOP' || e.kind === 'CONFERENCE') && isUpcoming(e)).slice(0, 3)
+  const next = (await getAllEvents()).filter((e) => e.kind === 'WORKSHOP' && isUpcoming(e)).slice(0, 3)
   if (next.length === 0) return null
   return (
     <section className="section-y" aria-labelledby="home-events-heading" data-testid="home-events">
       <div className="container-page">
-        <SectionHeader id="home-events-heading" title="Upcoming events" subtitle="Workshops and conferences." linkHref="/events" linkLabel="All events" />
+        <SectionHeader id="home-events-heading" title="Upcoming events" subtitle="Workshops and webinars." linkHref="/events" linkLabel="All events" />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{next.map((e) => <EventCard key={e.id} e={e} />)}</div>
       </div>
     </section>

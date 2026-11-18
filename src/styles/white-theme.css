@@ -1,0 +1,98 @@
+/*
+ * MoM item 5 — pure-white, neutral theme (R5).
+ * Imported last in src/app/globals.css — overrides all earlier token values.
+ *
+ * Layer 1 (tokens): overrides --background / --card / --surface-alt / --muted / --border
+ *   to pure white and neutral grey. The site already drives colour through CSS variables,
+ *   so this is sufficient for most surfaces.
+ * Layer 2 (stop-gap hooks): targeted overrides for the full-bleed coloured bands that
+ *   hard-code gradient-brand / text-white at the component level. The proper fix is in
+ *   the component edits that follow in Group C.
+ *
+ * Dark mode is removed: @custom-variant dark is redefined so dark: utilities match a class
+ * that is never set (.never-dark) — effectively disabling them without deleting the CSS.
+ */
+
+/* Disable dark mode variant site-wide (R5 §2) */
+@custom-variant dark (&:where(.never-dark, .never-dark *));
+
+:root,
+.dark {
+  color-scheme: light;
+  --background:         #ffffff;
+  --foreground:         #171717;
+  --surface-alt:        #ffffff;   /* sections / footer are now plain white */
+  --muted:              #f5f5f5;   /* neutral hover / chip fill */
+  --muted-foreground:   #525252;
+  --card:               #ffffff;
+  --border:             #e5e5e5;
+  /* One restrained accent (brand navy) for buttons, links, focus rings */
+  --primary:            #123a78;
+  --primary-foreground: #ffffff;
+  --link:               #123a78;
+  --ring:               #123a78;
+}
+
+html, body { background: #ffffff; }
+
+/* Primary buttons keep brand navy as a flat fill, not the teal/navy gradient */
+.gradient-brand {
+  background-image: none !important;
+  background-color: var(--primary) !important;
+}
+
+/* ── Coloured bands → white with hairline ───────────────────────────────────
+   These stop-gap overrides target hooks already in the DOM.
+   They are superseded by the component edits below (ValueStrip, CtaBand, Footer). */
+[role="region"][aria-label="Announcement"],
+[data-testid="value-strip"],
+section[aria-labelledby="cta-heading"],
+.site-footer {
+  background: #ffffff !important;
+  background-image: none !important;
+  color: var(--foreground) !important;
+  border-block: 1px solid var(--border);
+}
+
+/* text-white / text-white/80 inside those bands → readable foreground */
+[role="region"][aria-label="Announcement"] *,
+[data-testid="value-strip"] *,
+section[aria-labelledby="cta-heading"] *:not(.gradient-brand):not(.gradient-brand *) {
+  color: var(--foreground) !important;
+}
+
+/* icon circles inside value-strip */
+[data-testid="value-strip"] .bg-white\/20 {
+  background: var(--muted) !important;
+}
+
+/* CTA band buttons keep white text on the primary fill */
+section[aria-labelledby="cta-heading"] a.gradient-brand,
+section[aria-labelledby="cta-heading"] button.gradient-brand,
+section[aria-labelledby="cta-heading"] a.gradient-brand *,
+section[aria-labelledby="cta-heading"] button.gradient-brand * {
+  color: var(--primary-foreground) !important;
+}
+
+/* Hero: component edit handles the layout; this removes the dark navy background */
+[data-testid="hero"] {
+  background: #ffffff !important;
+}
+/* Hide the dark gradient scrim — component edit renders without it */
+[data-testid="hero"] .bg-gradient-to-r {
+  display: none;
+}
+
+/* Amber "Upcoming course" pill → neutral chip */
+.bg-amber-500,
+.bg-amber-100 {
+  background: var(--muted) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--border);
+}
+
+/* Theme toggle — hidden after removal from Header; hides any stray instance */
+button[aria-label*="theme" i],
+button[aria-label*="dark mode" i] {
+  display: none !important;
+}

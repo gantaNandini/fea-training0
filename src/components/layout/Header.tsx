@@ -7,7 +7,6 @@ import { MobileSearch } from './MobileSearch'
 import { CompareLink } from './CompareLink'
 import { AuthControls } from './AuthControls'
 import { MiniCart } from '@/components/cart/MiniCart'
-import { ThemeToggle } from '@/components/shared/ThemeToggle'
 
 /**
  * Server component shell (REQ-032): never reads cookies or calls auth(), so every page using it
@@ -27,9 +26,6 @@ export function Header({ categories, companyName }: { categories: CategoryDTO[];
           <MobileSearch />
           <CompareLink />
           <MiniCart />
-          <div className="hidden lg:block">
-            <ThemeToggle />
-          </div>
           <div className="hidden lg:block">
             <AuthControls />
           </div>

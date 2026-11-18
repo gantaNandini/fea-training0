@@ -67,7 +67,7 @@ export async function NewlyLaunchedCourses() {
             <article key={c.id} className="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card">
               <div className="relative aspect-[16/9] bg-muted">
                 <PlaceholderArt src={c.thumbnail} alt={c.title} fill sizes="(min-width: 1024px) 400px, 100vw" className="object-cover" />
-                <span className="absolute left-3 top-3 rounded-full bg-amber-500 px-3 py-1 text-xs font-semibold text-white">New</span>
+                <span className="absolute left-3 top-3 rounded-full border border-border bg-muted px-3 py-1 text-xs font-semibold text-foreground">New</span>
               </div>
               <div className="flex flex-1 flex-col gap-3 p-5">
                 <h3 className="font-display text-lg font-bold leading-snug">{c.title}</h3>

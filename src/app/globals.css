@@ -237,3 +237,6 @@
   body { background: #fff !important; color: #000 !important; }
   body { background: #fff; color: #000; }
 }
+
+/* ── MoM item 5: white theme (must be last so it overrides everything above) ── */
+@import "../styles/white-theme.css";

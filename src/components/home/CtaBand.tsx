@@ -37,14 +37,14 @@ export function CtaBand() {
   }
 
   return (
-    <section className="gradient-brand text-white" aria-labelledby="cta-heading">
+    <section className="border-t border-border bg-background" aria-labelledby="cta-heading">
       <div className="container-page section-y grid items-center gap-8 lg:grid-cols-2">
         <div>
-          <h2 id="cta-heading" className="text-white">{messages.home.ctaHeading}</h2>
-          <p className="mt-3 text-white">{messages.home.ctaSub}</p>
+          <h2 id="cta-heading">{messages.home.ctaHeading}</h2>
+          <p className="mt-3 text-muted-foreground">{messages.home.ctaSub}</p>
         </div>
         <form onSubmit={onSubmit} noValidate>
-          <Label htmlFor="newsletter-email" className="text-white">
+          <Label htmlFor="newsletter-email">
             {messages.home.emailLabel}
           </Label>
           <div className="flex flex-col gap-3 sm:flex-row">
@@ -58,14 +58,14 @@ export function CtaBand() {
               placeholder={messages.home.emailPlaceholder}
               aria-invalid={!!error}
               aria-describedby={error ? 'newsletter-error' : undefined}
-              className="h-12 flex-1 rounded-md border-0 bg-white px-4 text-slate-900 placeholder:text-slate-500"
+              className="h-12 flex-1 rounded-md border border-border bg-background px-4 text-foreground placeholder:text-muted-foreground"
             />
-            <Button type="submit" size="lg" disabled={busy} className="!bg-plum-900 !bg-none text-white hover:!bg-plum-800">
+            <Button type="submit" size="lg" disabled={busy}>
               {messages.home.subscribe}
             </Button>
           </div>
           {error ? (
-            <p id="newsletter-error" role="alert" className="mt-2 rounded-md bg-white px-3 py-2 text-sm font-medium text-danger-text">
+            <p id="newsletter-error" role="alert" className="mt-2 rounded-md border border-border bg-muted px-3 py-2 text-sm font-medium text-danger-text">
               {error}
             </p>
           ) : null}

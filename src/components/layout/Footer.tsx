@@ -15,7 +15,7 @@ export function Footer({ settings }: { settings: SettingsMap }) {
   const link = 'inline-flex min-h-11 items-center text-muted-foreground hover:text-foreground hover:underline'
 
   return (
-    <footer className="site-footer mt-auto bg-surface-alt">
+    <footer className="site-footer mt-auto border-t border-border bg-background">
       {/* gradient top border (REQ-021) */}
       <div className="gradient-brand h-1" aria-hidden="true" />
       <div className="container-page grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">

@@ -12,16 +12,16 @@ export async function ValueStrip() {
     { Icon: InfinityIcon, title: messages.home.valueLifetime, sub: settings.value_strip_item3_sub ?? null },
   ]
   return (
-    <section className="gradient-brand text-white" data-testid="value-strip" aria-label="Highlights">
+    <section className="border-y border-border bg-background" data-testid="value-strip" aria-label="Highlights">
       <div className="container-page grid gap-6 py-8 sm:grid-cols-3">
         {items.map(({ Icon, title, sub }) => (
           <div key={title} className="flex items-start gap-4">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/20">
-              <Icon className="h-6 w-6" aria-hidden="true" />
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-muted">
+              <Icon className="h-6 w-6 text-primary" aria-hidden="true" />
             </span>
             <div>
               <p className="font-display text-lg font-bold">{title}</p>
-              {sub ? <p className="text-sm text-white">{sub}</p> : null}
+              {sub ? <p className="text-sm text-muted-foreground">{sub}</p> : null}
             </div>
           </div>
         ))}

@@ -32,7 +32,7 @@ export default async function HomePage() {
       <HeroSlider slides={slides} />
       <ValueStrip />
       <ComingUpStrip />
-      <TopCourses limit={6} />
+      <TopCourses />
       <ExploreTiles />
       <ConsultancyHighlights />
       <StatsBlock />

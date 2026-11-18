@@ -181,6 +181,26 @@ export const getPublishedCourseCount = unstable_cache(
   { tags: ['courses'], revalidate: 3600 },
 )
 
+/**
+ * All PUBLISHED courses for the home page grid (R4).
+ * Ordered: featured courses first (by featuredOrder), then the rest newest-first.
+ * UPCOMING courses are excluded from this grid.
+ */
+export const getAllPublishedCourses = unstable_cache(
+  async (): Promise<CourseCardDTO[]> => {
+    const rows = await db.course.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: [{ featured: 'desc' }, { featuredOrder: 'asc' }, { createdAt: 'desc' }],
+      include: cardInclude,
+    })
+    const stats = await db.$queryRaw<StatRow[]>`SELECT * FROM "CourseStats"`
+    const byId = new Map(stats.map((s) => [s.courseId, s]))
+    return rows.map((c) => toCard(toRecord(c, byId.get(c.id))))
+  },
+  ['all-published-courses-v1'],
+  { tags: ['courses'], revalidate: 3600 },
+)
+
 export async function getCourseCardsByIds(ids: string[]): Promise<CourseCardDTO[]> {
   if (ids.length === 0) return []
   const all = await getAllRecords()

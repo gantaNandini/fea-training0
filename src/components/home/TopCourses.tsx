@@ -1,14 +1,19 @@
-import { getFeaturedCourses } from '@/lib/data/courses'
+import { getAllPublishedCourses } from '@/lib/data/courses'
 import { CourseCard } from '@/components/course/CourseCard'
 import { SectionHeader } from '@/components/shared/SectionHeader'
 import { messages } from '@/lib/messages'
 
-/** REQ-065: exactly the featured + PUBLISHED courses, ordered by featuredOrder; 3-column grid, 12 cards = 4 even rows. */
-export async function TopCourses({ limit = 6 }: { limit?: number } = {}) {
-  const courses = await getFeaturedCourses(limit)
+/**
+ * R4: all PUBLISHED courses (not UPCOMING) in a responsive grid.
+ * 1 col (phone) → 2 (tablet) → 3 (laptop) → 4 (≥1280 px, 3 rows of 4).
+ * Uses data-testid="home-courses" on the section and "home-course-card" on each card wrapper
+ * for the verify-live.mjs checker.
+ */
+export async function TopCourses() {
+  const courses = await getAllPublishedCourses()
   if (courses.length === 0) return null
   return (
-    <section className="section-y" aria-labelledby="top-courses-heading">
+    <section className="section-y" aria-labelledby="top-courses-heading" data-testid="home-courses">
       <div className="container-page">
         <SectionHeader
           id="top-courses-heading"
@@ -17,11 +22,11 @@ export async function TopCourses({ limit = 6 }: { limit?: number } = {}) {
           linkHref="/courses"
           linkLabel={messages.common.viewAllCourses}
         />
-        <div className="grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3 [&>*]:min-w-0 sm:auto-rows-fr">
+        <div className="grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 [&>*]:min-w-0 sm:auto-rows-fr">
           {courses.map((c, i) => (
-            <div key={c.id} className="reveal flex h-full">
+            <div key={c.id} className="reveal flex h-full" data-testid="home-course-card">
               <div className="h-full w-full">
-                <CourseCard course={c} priority={i < 3} />
+                <CourseCard course={c} priority={i < 4} />
               </div>
             </div>
           ))}

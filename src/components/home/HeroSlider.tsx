@@ -11,11 +11,6 @@ import { cn } from '@/lib/utils/cn'
 
 const INTERVAL_MS = 5000
 
-/*
- * Header height on desktop: logo row h-16 (4rem = 64px) + nav row h-11 + 1px border = ~6.75rem.
- * On mobile only the logo row is visible.
- */
-
 export function HeroSlider({ slides }: { slides: HeroSlideDTO[] }) {
   const [index, setIndex] = React.useState(0)
   const [userPaused, setUserPaused] = React.useState(false)
@@ -56,13 +51,10 @@ export function HeroSlider({ slides }: { slides: HeroSlideDTO[] }) {
       }}
       onKeyDown={onKeyDown}
       data-testid="hero"
-      /* Full-bleed: no max-width, no side padding.
-         Height: fills viewport minus header on desktop; 70svh on mobile. */
-      className="relative w-full overflow-hidden
-        min-h-[70svh]
-        lg:min-h-[calc(100svh-6.75rem)]"
+      /* Full-bleed: no max-width, overflow-hidden stops any scrollbar */
+      className="relative w-full overflow-hidden min-h-[70svh] lg:min-h-[calc(100svh-6.75rem)]"
     >
-      {/* Background image — absolutely fills the section */}
+      {/* Full-bleed image — no overlay, full colour */}
       <PlaceholderArt
         src={s.image}
         alt=""
@@ -72,23 +64,15 @@ export function HeroSlider({ slides }: { slides: HeroSlideDTO[] }) {
         className="object-cover object-center"
       />
 
-      {/* Light scrim: solid white/70 on mobile, left-to-right gradient on desktop */}
-      <div
-        className="absolute inset-0 bg-white/70 md:bg-gradient-to-r md:from-white/90 md:via-white/55 md:to-transparent"
-        aria-hidden="true"
-      />
-
-      {/* Slide content — centred vertically, inside the page container */}
-      <div
-        aria-live="polite"
-        aria-atomic="true"
-        className="container-page relative z-10 flex min-h-[70svh] items-center py-14 lg:min-h-[calc(100svh-6.75rem)]"
-      >
+      {/* Text card container
+          Mobile:  card pinned to the bottom so image shows above (items-end, pb-20)
+          Desktop: card centred vertically on the left (lg:items-center, lg:pb-0) */}
+      <div className="container-page relative z-10 flex min-h-[70svh] items-end pb-20 lg:min-h-[calc(100svh-6.75rem)] lg:items-center lg:pb-0">
         <div
           data-testid="hero-panel"
           aria-roledescription="slide"
           aria-label={`${messages.home.slide} ${index + 1} / ${count}`}
-          className="w-full max-w-xl"
+          className="w-full max-w-xl rounded-2xl border border-neutral-200 bg-white/90 p-6 shadow-lg backdrop-blur-sm md:p-10"
         >
           <Heading className="text-foreground">{s.heading}</Heading>
           <p data-testid="hero-sub" className="mt-4 text-lg text-muted-foreground">
@@ -107,10 +91,9 @@ export function HeroSlider({ slides }: { slides: HeroSlideDTO[] }) {
         </div>
       </div>
 
-      {/* Slider controls — bottom of hero */}
+      {/* Slider controls — white pill at the bottom of the hero */}
       {count > 1 ? (
         <div className="absolute inset-x-0 bottom-4 z-20 container-page flex items-center justify-between">
-          {/* Pause / prev / next pill */}
           <div className="flex items-center gap-0.5 rounded-full border border-border bg-white/80 p-1 shadow-sm backdrop-blur-sm">
             <button
               type="button"
@@ -140,7 +123,6 @@ export function HeroSlider({ slides }: { slides: HeroSlideDTO[] }) {
             </button>
           </div>
 
-          {/* Dot indicators */}
           <div className="flex items-center rounded-full border border-border bg-white/80 px-1 shadow-sm backdrop-blur-sm">
             {slides.map((slide, i) => (
               <button

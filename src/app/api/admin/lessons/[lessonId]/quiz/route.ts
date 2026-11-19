@@ -39,23 +39,18 @@ function validate(b: QuizInput): number {
   return pass
 }
 
-/** GET — full quiz incl. correct answers (for the admin editor) */
 export async function GET(_req: Request, ctx: Ctx) {
   try {
     await requireAdmin()
     const { lessonId } = await ctx.params
-    // db.quiz available after migration
-    const quizDb = db as unknown as {
-      quiz: {
-        findUnique: (args: {
-          where: { lessonId: string }
-          include: { questions: { orderBy: { order: 'asc' }; include: { options: { orderBy: { order: 'asc' } } } } }
-        }) => Promise<unknown>
-      }
-    }
-    const quiz = await quizDb.quiz.findUnique({
+    const quiz = await db.quiz.findUnique({
       where: { lessonId },
-      include: { questions: { orderBy: { order: 'asc' as const }, include: { options: { orderBy: { order: 'asc' as const } } } } },
+      include: {
+        questions: {
+          orderBy: { order: 'asc' },
+          include: { options: { orderBy: { order: 'asc' } } },
+        },
+      },
     })
     return NextResponse.json({ quiz })
   } catch (e) {
@@ -63,7 +58,6 @@ export async function GET(_req: Request, ctx: Ctx) {
   }
 }
 
-/** PUT — replace the lesson's quiz (create if missing). Existing attempts are kept. */
 export async function PUT(req: Request, ctx: Ctx) {
   try {
     await requireAdmin()
@@ -76,25 +70,14 @@ export async function PUT(req: Request, ctx: Ctx) {
     if (!lesson) throw new ApiError(404, 'NOT_FOUND', 'Lesson not found')
     if (lesson.type !== 'VIDEO') throw new ApiError(400, 'NOT_A_VIDEO', 'Quizzes attach to video lessons')
 
-    const quizDb = db as unknown as {
-      quiz: {
-        upsert: (args: { where: { lessonId: string }; create: Record<string, unknown>; update: Record<string, unknown> }) => Promise<{ id: string }>
-        deleteMany: (args: { where: { lessonId: string } }) => Promise<unknown>
-      }
-      quizQuestion: {
-        deleteMany: (args: { where: { quizId: string } }) => Promise<unknown>
-        create: (args: { data: Record<string, unknown> }) => Promise<unknown>
-      }
-    }
-
-    const quiz = await quizDb.quiz.upsert({
+    const quiz = await db.quiz.upsert({
       where: { lessonId },
       create: { lessonId, title: body.title?.trim() || 'Lesson quiz', passPercent },
       update: { title: body.title?.trim() || 'Lesson quiz', passPercent },
     })
-    await quizDb.quizQuestion.deleteMany({ where: { quizId: quiz.id } })
+    await db.quizQuestion.deleteMany({ where: { quizId: quiz.id } })
     for (const [qi, qq] of body.questions.entries()) {
-      await quizDb.quizQuestion.create({
+      await db.quizQuestion.create({
         data: {
           quizId: quiz.id,
           prompt: qq.prompt.trim(),
@@ -120,10 +103,7 @@ export async function DELETE(_req: Request, ctx: Ctx) {
   try {
     await requireAdmin()
     const { lessonId } = await ctx.params
-    const quizDb = db as unknown as {
-      quiz: { deleteMany: (args: { where: { lessonId: string } }) => Promise<unknown> }
-    }
-    await quizDb.quiz.deleteMany({ where: { lessonId } })
+    await db.quiz.deleteMany({ where: { lessonId } })
     return NextResponse.json({ ok: true })
   } catch (e) {
     return apiError(e)

@@ -96,6 +96,7 @@ model User {
   enrollments       Enrollment[]
   certificates      Certificate[]
   lessonProgress    LessonProgress[]
+  quizAttempts      QuizAttempt[]
   reviews           Review[]
   auditLogs         AuditLog[]
 }
@@ -150,6 +151,10 @@ model InstructorProfile {
   socialLinkedIn String?
   socialTwitter  String?
   socialWebsite  String?
+  /// Facebook profile URL (MoM item 3, R3)
+  socialFacebook String?
+  /// YouTube channel URL (MoM item 3, R3)
+  socialYoutube  String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -258,6 +263,7 @@ model Lesson {
 
   section  Section          @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   progress LessonProgress[]
+  quiz     Quiz?
 
   @@index([sectionId])
 }
@@ -413,12 +419,21 @@ model LessonProgress {
   lessonId    String
   completed   Boolean   @default(false)
   completedAt DateTime?
+  /// Merged watched ranges in seconds: [[0,120],[130,600]] (R7)
+  watchedRanges   Json      @default("[]")
+  durationSeconds Int       @default(0)
+  lastHeartbeatAt DateTime?
+  videoCompletedAt DateTime?
+  quizPassedAt     DateTime?
+  /// Denormalized courseId for efficient progress queries (R7)
+  courseId    String    @default("")
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   @@unique([userId, lessonId])
   @@index([userId])
+  @@index([userId, courseId])
 }
 
 model Review {
@@ -621,4 +636,64 @@ model ConsultancyProject {
   createdAt   DateTime @default(now())
 
   @@index([category, order])
+}
+
+// ───────────────────────── Quiz system (MoM item 7, R7) ─────────────────────────
+
+/// One quiz per VIDEO lesson. Pass mark defaults to 80 %.
+model Quiz {
+  id          String        @id @default(cuid())
+  lessonId    String        @unique
+  title       String        @default("Lesson quiz")
+  passPercent Int           @default(80)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  lesson    Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  questions QuizQuestion[]
+  attempts  QuizAttempt[]
+}
+
+model QuizQuestion {
+  id          String       @id @default(cuid())
+  quizId      String
+  prompt      String
+  explanation String?
+  order       Int
+
+  quiz    Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  options QuizOption[]
+
+  @@index([quizId, order])
+}
+
+model QuizOption {
+  id         String       @id @default(cuid())
+  questionId String
+  text       String
+  isCorrect  Boolean      @default(false)
+  order      Int
+
+  question QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId, order])
+}
+
+/// Every submission is kept: pass/fail history, retakes, analytics.
+model QuizAttempt {
+  id           String   @id @default(cuid())
+  userId       String
+  quizId       String
+  lessonId     String
+  correct      Int
+  total        Int
+  scorePercent Int
+  passed       Boolean
+  answers      Json
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@index([userId, lessonId, createdAt])
 }

@@ -74,14 +74,7 @@ section[aria-labelledby="cta-heading"] button.gradient-brand * {
   color: var(--primary-foreground) !important;
 }
 
-/* Hero: component edit handles the layout; this removes the dark navy background */
-[data-testid="hero"] {
-  background: #ffffff !important;
-}
-/* Hide the dark gradient scrim — component edit renders without it */
-[data-testid="hero"] .bg-gradient-to-r {
-  display: none;
-}
+/* Hero: image now fills the full section — no background override needed */
 
 /* Amber "Upcoming course" pill → neutral chip */
 .bg-amber-500,

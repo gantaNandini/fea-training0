@@ -155,7 +155,7 @@ export async function recordWatch(
   }
 
   const done = coverage(merged, duration) >= WATCH_COMPLETE_RATIO
-  const data: Prisma.LessonProgressUpdateInput = {
+  const sharedData = {
     watchedRanges: merged as unknown as Prisma.InputJsonValue,
     durationSeconds: duration,
     lastHeartbeatAt: now,
@@ -164,8 +164,8 @@ export async function recordWatch(
 
   await db.lessonProgress.upsert({
     where: { userId_lessonId: { userId: user.id, lessonId } },
-    create: { userId: user.id, lessonId, courseId, completed: false, ...data },
-    update: data,
+    create: { userId: user.id, lessonId, courseId, completed: false, ...sharedData },
+    update: sharedData,
   })
   return { videoCompleted: done || !!existing?.videoCompletedAt, coverage: coverage(merged, duration) }
 }

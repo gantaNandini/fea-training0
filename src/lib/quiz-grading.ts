@@ -11,6 +11,13 @@ export interface GradeResult {
   perQuestion: Array<{ questionId: string; correct: boolean }>
 }
 
+/** Exact-set match: every correct option chosen and nothing else. Used by both per-question check and final grade. */
+export function checkAnswer(correctOptionIds: string[], given: string[] | undefined): boolean {
+  const g = new Set(given ?? [])
+  const want = new Set(correctOptionIds)
+  return want.size > 0 && g.size === want.size && [...want].every((id) => g.has(id))
+}
+
 export function gradeQuiz(
   questions: GradeQuestion[],
   answers: Record<string, string[] | undefined>,
@@ -18,10 +25,7 @@ export function gradeQuiz(
 ): GradeResult {
   if (questions.length === 0) throw new Error('Quiz has no questions')
   const perQuestion = questions.map((q) => {
-    const given = new Set(answers[q.id] ?? [])
-    const want = new Set(q.correctOptionIds)
-    const correct = given.size === want.size && [...want].every((id) => given.has(id))
-    return { questionId: q.id, correct }
+    return { questionId: q.id, correct: checkAnswer(q.correctOptionIds, answers[q.id]) }
   })
   const correct = perQuestion.filter((p) => p.correct).length
   const total = questions.length

@@ -14,7 +14,7 @@ import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { formatDuration } from '@/lib/utils/pricing'
 import { messages } from '@/lib/messages'
 
-import { QuizPanel } from './QuizPanel'
+import { KbcQuizPanel } from './KbcQuizPanel'
 
 interface Props {
   course: { slug: string; title: string }
@@ -183,7 +183,7 @@ export function LessonPlayer({ course, sections, lesson, prevId, nextId, percent
               />
               {lesson.type === 'VIDEO' && videoCompleted && (
                 <div className="mt-6">
-                  <QuizPanel
+                  <KbcQuizPanel
                     lessonId={lesson.id}
                     onPassed={() => {
                       // Mark the lesson complete on the server via the existing progress API

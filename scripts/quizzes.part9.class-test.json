@@ -1,0 +1,335 @@
+[
+ {
+  "courseSlug": "api-579-1-asme-ffs-1-part-9",
+  "lessonTitle": "Branched & Multiple Flaws – Part 2",
+  "title": "Knowledge Test: Assessment of Crack-Like Flaws (25 questions)",
+  "passPercent": 80,
+  "questions": [
+   {
+    "prompt": "The three stages of a fracture mechanics fitness-for-service assessment, in the correct order, are:",
+    "options": [
+     "Inspection → flaw characterization → fracture assessment",
+     "Flaw characterization → inspection → remaining-life estimate",
+     "Inspection → stress analysis → repair",
+     "Fracture assessment → inspection → flaw characterization"
+    ],
+    "correct": [
+     0
+    ],
+    "explanation": "Inspection finds and sizes the flaw, characterization idealizes it, fracture assessment checks acceptance."
+   },
+   {
+    "prompt": "In a Part 9 Level 2 assessment, a crack-like flaw is judged acceptable by plotting its assessment point on:",
+    "options": [
+     "An S–N fatigue curve",
+     "A Larson–Miller creep-rupture curve",
+     "A Failure Assessment Diagram of toughness ratio Kr against load ratio Lr",
+     "A Charpy ductile-to-brittle transition curve"
+    ],
+    "correct": [
+     2
+    ],
+    "explanation": "Level 2 plots the point (Lr, Kr) on the Failure Assessment Diagram."
+   },
+   {
+    "prompt": "Inspection reports a 50 mm long crack in a pressure vessel. Is this enough information to carry out a fracture assessment?",
+    "options": [
+     "Yes, provided the length was measured by ultrasonic testing",
+     "Yes, for surface cracks only",
+     "No; only the material fracture toughness is still missing",
+     "No; crack type, location, orientation and depth, component geometry, loads and material properties are also needed"
+    ],
+    "correct": [
+     3
+    ],
+    "explanation": "Length alone is insufficient; type, location, orientation, depth, geometry, loads and material data are all required."
+   },
+   {
+    "prompt": "A surface crack has t = 20 mm, a = 5 mm and 2c = 60 mm. What is the crack shape ratio a/c?",
+    "options": [
+     "0.083",
+     "0.167",
+     "0.25",
+     "0.333"
+    ],
+    "correct": [
+     1
+    ],
+    "explanation": "c = 30 mm, so a/c = 5/30 = 0.167."
+   },
+   {
+    "prompt": "An embedded flaw has a = 4 mm and a ligament d = 6 mm to the nearest surface. Applying the d ≥ 0.4a check from class, the flaw:",
+    "options": [
+     "Must be recategorized as a surface flaw, because d < 1.6 mm",
+     "Remains an embedded flaw, because 6 mm ≥ 1.6 mm",
+     "Must be treated as a through-wall flaw",
+     "Cannot be assessed until its depth is re-measured"
+    ],
+    "correct": [
+     1
+    ],
+    "explanation": "0.4a = 1.6 mm; d = 6 mm ≥ 1.6 mm, so the flaw stays embedded."
+   },
+   {
+    "prompt": "At a crack location σ1 = 120 MPa and σ2 = 60 MPa. The biaxial stress ratio B and the stress state are:",
+    "options": [
+     "B = 2.0, uniaxial tension",
+     "B = 0.5, uniaxial tension",
+     "B = 0.5, biaxial tension (σ2 is 50% of σ1)",
+     "B = 0, biaxial tension"
+    ],
+    "correct": [
+     2
+    ],
+    "explanation": "B = 60/120 = 0.5; both stresses tensile, so biaxial tension."
+   },
+   {
+    "prompt": "A crack inclination angle α = 0° means the crack:",
+    "options": [
+     "Lies in the plane normal to σ1",
+     "Lies in the plane normal to σ2",
+     "Is inclined at 45° to both principal stresses",
+     "Runs parallel to σ1"
+    ],
+    "correct": [
+     0
+    ],
+    "explanation": "α = 0° puts the crack in the plane normal to σ1; α = 90° in the plane normal to σ2."
+   },
+   {
+    "prompt": "Why must an irregular crack found in the field be converted into an idealized geometry before assessment?",
+    "options": [
+     "To make the reported crack smaller and easier to accept",
+     "Because the inspection code requires all cracks to be drawn as rectangles",
+     "Because stress intensity factor and reference stress solutions exist only for defined crack geometries",
+     "So that the crack depth no longer needs to be measured"
+    ],
+    "correct": [
+     2
+    ],
+    "explanation": "Codified SIF and reference stress solutions exist only for idealized shapes."
+   },
+   {
+    "prompt": "An inclined crack has a measured total length 2cm = 80 mm, α = 30°, σ1 = 120 MPa and σ2 = 60 MPa. Using Eq 9.1, the equivalent total crack length 2c in the plane normal to σ1 is closest to:",
+    "options": [
+     "80.00 mm",
+     "73.66 mm",
+     "60.00 mm",
+     "43.66 mm"
+    ],
+    "correct": [
+     1
+    ],
+    "explanation": "B = 0.5, α = 30° → c/cm = 0.9207; c = 0.9207 × 40 = 36.83 mm, so 2c = 73.66 mm."
+   },
+   {
+    "prompt": "With B = 0.5 held constant and 2cm = 80 mm, how does the equivalent length 2c from Eq 9.1 change as α increases from 0° to 90°?",
+    "options": [
+     "It stays at 80 mm for every angle",
+     "It increases above 80 mm",
+     "It first falls, then rises again",
+     "It falls overall, from 80 mm at 0° to 20 mm at 90°"
+    ],
+    "correct": [
+     3
+    ],
+    "explanation": "At B = 0.5: 80, 73.66, 60.00, 43.66 and 20 mm for α = 0°, 30°, 45°, 60° and 90°."
+   },
+   {
+    "prompt": "For equal biaxial tension (σ1 = σ2, so B = 1), Eq 9.1 gives:",
+    "options": [
+     "c = cm for any inclination angle α",
+     "c = 0.5 cm for any α",
+     "c = cm only when α = 0°",
+     "c = cm · cos α"
+    ],
+    "correct": [
+     0
+    ],
+    "explanation": "At B = 1, Eq 9.1 reduces to cos²α + sin²α = 1, so c = cm."
+   },
+   {
+    "prompt": "σ1 = 200 MPa, σ2 = 150 MPa, α = 45° and 2cm = 40 mm. The crack is characterized in the plane normal to the second principal stress, using Eq 9.2 (c/cm = 1.5). The equivalent total length is:",
+    "options": [
+     "30 mm",
+     "40 mm",
+     "60 mm",
+     "80 mm"
+    ],
+    "correct": [
+     2
+    ],
+    "explanation": "B = 0.75; c = 1.5 × 20 = 30 mm, so 2c = 60 mm. The crack has not grown; this is a representation in the σ2 plane."
+   },
+   {
+    "prompt": "σ1 = 150 MPa (tension), σ2 = −30 MPa (compression), α = 45° and 2cm = 40 mm. Which approach and result are correct?",
+    "options": [
+     "Eq 9.1 with B = −0.2, giving 2c ≈ 41 mm",
+     "Eq 9.4 (B taken as 0), giving 2c = 30 mm",
+     "Eq 9.2, giving 2c = 60 mm",
+     "No correction, because σ2 is compressive; 2c = 40 mm"
+    ],
+    "correct": [
+     1
+    ],
+    "explanation": "σ2 ≤ 0 → Eq 9.4 with B = 0: c/cm = 0.75, c = 15 mm, 2c = 30 mm."
+   },
+   {
+    "prompt": "Penetrant (PT) and magnetic particle (MT) testing reveal surface-breaking indications. Their main limitation for flaw characterization is that they:",
+    "options": [
+     "Cannot detect surface-breaking cracks",
+     "Always over-estimate crack length",
+     "Can be used only while the vessel is pressurized",
+     "Do not reliably establish crack depth, so UT or the default depth rules are needed"
+    ],
+    "correct": [
+     3
+    ],
+    "explanation": "PT and MT show surface extent only; depth needs UT or the default rules."
+   },
+   {
+    "prompt": "A surface flaw has t = 20 mm and 2c = 16 mm, and its depth is unknown. Using the default rule a = min(t, c), the characterized depth, depth ratio and remaining ligament are:",
+    "options": [
+     "a = 8 mm, a/t = 0.4, t − a = 12 mm",
+     "a = 20 mm, a/t = 1.0, t − a = 0 mm",
+     "a = 16 mm, a/t = 0.8, t − a = 4 mm",
+     "a = 10 mm, a/t = 0.5, t − a = 10 mm"
+    ],
+    "correct": [
+     0
+    ],
+    "explanation": "min(20, 8) = 8 mm; a/t = 0.4; t − a = 12 mm. The a = t default leaves no ligament (a leak path in pressurized equipment)."
+   },
+   {
+    "prompt": "For a flaw inclined through the wall, a = W · am with W = max(Wθ, 1). If the measured projected depth am = 5 mm and Wθ = 0.85, the characterized depth is:",
+    "options": [
+     "4.25 mm",
+     "5.85 mm",
+     "5.00 mm",
+     "5.90 mm"
+    ],
+    "correct": [
+     2
+    ],
+    "explanation": "W = max(0.85, 1) = 1, so a = am = 5 mm."
+   },
+   {
+    "prompt": "A flaw inclined at θ = 30° has a measured projected depth am = 5 mm. Eq 9.7 gives Wθ = 1.185. The characterized depth is closest to:",
+    "options": [
+     "4.22 mm",
+     "5.92 mm (about 18.5% deeper than measured)",
+     "6.85 mm",
+     "5.00 mm, because inclination never changes the depth"
+    ],
+    "correct": [
+     1
+    ],
+    "explanation": "a = 1.185 × 5 = 5.92 mm, about 18.5% deeper than measured."
+   },
+   {
+    "prompt": "Which mapping of Part 9 paragraphs to topics is correct?",
+    "options": [
+     "9.3.6.4 branched cracks; 9.3.6.5 multiple flaws; 9.3.6.6 recategorization of embedded and deep surface flaws",
+     "9.3.6.4 multiple flaws; 9.3.6.5 branched cracks; 9.3.6.6 flaw depth",
+     "9.3.6.2 branched cracks; 9.3.6.3 multiple flaws; 9.3.6.4 recategorization",
+     "9.3.6.5 branched cracks; 9.3.6.6 multiple flaws; 9.3.6.4 recategorization"
+    ],
+    "correct": [
+     0
+    ],
+    "explanation": "9.3.6.4 branched, 9.3.6.5 multiple, 9.3.6.6 recategorization (9.3.6.2 length, 9.3.6.3 depth)."
+   },
+   {
+    "prompt": "A branched crack network is enclosed by a rectangle 80 mm long and 45 mm wide. UT gives a maximum through-wall depth of 4 mm. The 45 mm width is:",
+    "options": [
+     "The crack depth to be used in the assessment",
+     "The half-length c of the idealized flaw",
+     "Not the crack depth; depth is the separately measured through-wall penetration",
+     "Added to the 80 mm to give the total crack length"
+    ],
+    "correct": [
+     2
+    ],
+    "explanation": "The rectangle sets the length; depth is the separately measured penetration (4 mm)."
+   },
+   {
+    "prompt": "For the same branched network (t = 20 mm, maximum measured depth a0 = 4 mm), the effective depth a = 1.2 a0. The effective depth, depth ratio and remaining ligament are:",
+    "options": [
+     "a = 4.0 mm, a/t = 0.20, t − a = 16.0 mm",
+     "a = 5.0 mm, a/t = 0.25, t − a = 15.0 mm",
+     "a = 8.0 mm, a/t = 0.40, t − a = 12.0 mm",
+     "a = 4.8 mm, a/t = 0.24, t − a = 15.2 mm"
+    ],
+    "correct": [
+     3
+    ],
+    "explanation": "a = 1.2 × 4 = 4.8 mm; a/t = 0.24; t − a = 15.2 mm."
+   },
+   {
+    "prompt": "For the branched network, the orientation correction (Eq 9.1) gives 2c = 73.66 mm. What conservative alternative does 9.3.6.4 permit for the length?",
+    "options": [
+     "Half the bounding-rectangle length, 40 mm",
+     "The bounding-rectangle length used directly, 2c = 80 mm",
+     "The sum of every individual branch length",
+     "The rectangle diagonal, about 92 mm"
+    ],
+    "correct": [
+     1
+    ],
+    "explanation": "The bounding-rectangle length (80 mm) may be used directly as the conservative option."
+   },
+   {
+    "prompt": "Four flaws lie on parallel planes. Their separations from flaw F1 are F3 = 6 mm, F2 = 8 mm and F4 = 20 mm. Flaws within H ≤ 13 mm (0.5 in.) are treated as coplanar. The correct treatment is:",
+    "options": [
+     "Project F2 and F3 onto F1's plane; assess F4 separately",
+     "Project all four flaws onto one common plane",
+     "Assess all four flaws separately",
+     "Project only F4 onto F1's plane"
+    ],
+    "correct": [
+     0
+    ],
+    "explanation": "6 mm and 8 mm ≤ 13 mm, so coplanar; 20 mm > 13 mm, so F4 is assessed on its own."
+   },
+   {
+    "prompt": "Two coplanar surface flaws: F1 has 2c = 30 mm and a = 5 mm; F2 has 2c = 20 mm and a = 8 mm; spacing s = 5 mm. With the combination rule s ≤ max(a1, a2), the combined flaw is:",
+    "options": [
+     "2c = 50 mm, a = 8 mm",
+     "2c = 55 mm, a = 13 mm",
+     "Not combined, because the flaws do not touch",
+     "2c = 55 mm, a = 8 mm"
+    ],
+    "correct": [
+     3
+    ],
+    "explanation": "s = 5 ≤ max(5, 8) = 8, so combine: 2c = 30 + 5 + 20 = 55 mm; a = deepest = 8 mm."
+   },
+   {
+    "prompt": "An embedded flaw lies close to the surface: t = 20 mm, 2cb = 40 mm, 2ab = 8 mm, ligament d = 1 mm. It meets the recategorization criterion. The equivalent surface flaw (2c = 2cb + 2d; a = 2ab + d) is:",
+    "options": [
+     "2c = 40 mm, a = 8 mm",
+     "2c = 42 mm, a = 9 mm",
+     "2c = 41 mm, a = 9 mm",
+     "2c = 42 mm, a = 10 mm"
+    ],
+    "correct": [
+     1
+    ],
+    "explanation": "2c = 40 + 2 × 1 = 42 mm; a = 8 + 1 = 9 mm."
+   },
+   {
+    "prompt": "A surface flaw has t = 20 mm, as = 18 mm and 2cs = 60 mm. Because as/t exceeds 0.8, it is recategorized. The result is:",
+    "options": [
+     "A surface flaw with 2c = 60 mm, a = 18 mm",
+     "A through-wall flaw with 2c = 60 mm, a = 20 mm",
+     "A through-wall flaw with 2c = 2cs + 2(t − as) = 64 mm, a = t = 20 mm",
+     "An embedded flaw with 2c = 64 mm, a = 18 mm"
+    ],
+    "correct": [
+     2
+    ],
+    "explanation": "as/t = 0.9 > 0.8 → through-wall: 2c = 60 + 2 × (20 − 18) = 64 mm, a = t = 20 mm."
+   }
+  ]
+ }
+]

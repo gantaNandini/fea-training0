@@ -96,7 +96,7 @@ async function main() {
       if (n) console.log(`  updated ${n} row(s) in ${c.table_name}.${c.column_name}`)
       changed += n
     }
-  })
+  }, { timeout: 60000 })
   console.log(`\nDone. ${changed} row(s) updated.`)
 
   const left = await db.siteSetting.findMany({ where: { value: { contains: OLD, mode: 'insensitive' } } })

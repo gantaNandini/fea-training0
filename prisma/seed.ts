@@ -208,7 +208,7 @@ const SETTINGS: Record<string, string> = {
   footer_blurb:
     'PYTHAGORAS Engineering and Consultancy offers high-quality instruction in the field of finite element analysis with the Ansys software. This course is designed using real-time examples to understand CAE/CFD/CAD tools easily and efficiently. A significant number of individuals hailing from various regions throughout the globe have derived advantages from the meticulously designed instructional program. A significant majority, over 90%, of our students successfully get positions inside esteemed firms, using the information acquired via my training program.',
   address: '#134&135, Karthik Nagar, LRDE Layout, Doddanekundi Post, Bangalore – 560037',
-  email: 'info@pe-fea.com',
+  email: 'info@fea-training.com',
   phone: '+91 70422 43776',
   social_linkedin: '',
   social_youtube: '',

@@ -1,9 +1,10 @@
-'use client'
+﻿'use client'
 
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { ArrowDown, ArrowUp, FileUp, ListPlus, Plus, Trash2 } from 'lucide-react'
+import { MONTHS } from '@/lib/upcoming-months'
 import { AInput, ASelect, ATextarea, Card, FieldRow, btn } from './ui'
 import { ImageField } from './ImageField'
 import { Tabs } from './Tabs'
@@ -133,7 +134,14 @@ export function CourseEditor({
       <FieldRow label="Level" htmlFor="c-level"><ASelect id="c-level" value={c.level} onChange={text('level')}><option value="BEGINNER">Beginner</option><option value="INTERMEDIATE">Intermediate</option><option value="ADVANCED">Advanced</option></ASelect></FieldRow>
       <FieldRow label="Language" htmlFor="c-lang"><AInput id="c-lang" value={c.language} onChange={text('language')} /></FieldRow>
       <FieldRow label="Status" htmlFor="c-status" help="Draft is hidden. Upcoming shows “Coming soon”. Published is on sale."><ASelect id="c-status" value={c.status} onChange={text('status')}><option value="DRAFT">Draft</option><option value="PUBLISHED">Published</option><option value="UPCOMING">Upcoming</option></ASelect></FieldRow>
-      <FieldRow label="Instructor" htmlFor="c-inst" required><ASelect id="c-inst" value={c.instructorId} onChange={text('instructorId')}><option value="">Select…</option>{instructors.map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}</ASelect></FieldRow>
+      {c.status === 'UPCOMING' ? (
+        <FieldRow label="Planned month" htmlFor="c-month" help="Which month tab this course appears under on the Upcoming courses page. Leave on &quot;Not set yet&quot; to show it under &quot;In progress&quot;.">
+          <ASelect id="c-month" value={c.upcomingMonth} onChange={text('upcomingMonth')}>
+            <option value="">Not set yet (In progress)</option>
+            {MONTHS.map((m, i) => <option key={m} value={String(i + 1)}>{m}</option>)}
+          </ASelect>
+        </FieldRow>
+      ) : null}      <FieldRow label="Instructor" htmlFor="c-inst" required><ASelect id="c-inst" value={c.instructorId} onChange={text('instructorId')}><option value="">Select…</option>{instructors.map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}</ASelect></FieldRow>
       <FieldRow label="Custom URL slug" htmlFor="c-slug" help="Leave empty to generate from the title." className="md:col-span-2"><AInput id="c-slug" value={c.slug} onChange={text('slug')} /></FieldRow>
       <fieldset className="mb-4 md:col-span-2">
         <legend className="mb-1.5 text-sm font-semibold">Categories <span className="font-normal text-slate-500">(select all that apply, then choose the primary one)</span></legend>

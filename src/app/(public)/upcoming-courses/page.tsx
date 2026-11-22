@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Clock } from 'lucide-react'
+import { CalendarDays, Clock } from 'lucide-react'
 import { PageHero } from '@/components/shared/PageHero'
 import { PlaceholderArt } from '@/components/shared/PlaceholderArt'
 import { getUpcomingCourses, type UpcomingCourseDTO } from '@/lib/data/events'
@@ -47,6 +47,32 @@ function CourseCard({ c }: { c: UpcomingCourseDTO }) {
   )
 }
 
+/**
+ * Shown when a tab has no course yet, so every month keeps the same card layout.
+ * It disappears by itself as soon as a course is set to Upcoming with that month in Admin.
+ */
+function PlaceholderCard({ label }: { label: string }) {
+  const isMonth = label !== 'In progress'
+  return (
+    <article className="reveal flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card" data-testid="upcoming-placeholder">
+      <div className="relative flex aspect-[16/9] items-center justify-center bg-muted">
+        <CalendarDays className="h-12 w-12 text-muted-foreground/60" aria-hidden="true" />
+        <span className="absolute left-3 top-3 rounded-full bg-amber-500 px-3 py-1 text-xs font-semibold text-white">In progress</span>
+      </div>
+      <div className="flex flex-1 flex-col gap-2 p-5">
+        <h3 className="font-display text-lg font-bold leading-snug">Course to be announced</h3>
+        <p className="text-sm text-muted-foreground">{isMonth ? label : 'Coming soon'}</p>
+        <p className="line-clamp-3 text-sm">
+          {isMonth
+            ? `A new course is being planned for ${label}. Details will be added here soon.`
+            : 'New courses are being planned. Details will be added here soon.'}
+        </p>
+        <span className="mt-auto inline-flex min-h-11 items-center font-semibold text-muted-foreground">Details coming soon</span>
+      </div>
+    </article>
+  )
+}
+
 /** Server-rendered tabs: the open tab is the `month` query value ("1".."12" or "in-progress"). */
 export default async function UpcomingCoursesPage({ searchParams }: { searchParams: Promise<{ month?: string }> }) {
   const [courses, { month }] = await Promise.all([getUpcomingCourses(), searchParams])
@@ -81,15 +107,9 @@ export default async function UpcomingCoursesPage({ searchParams }: { searchPara
         </nav>
         <section aria-labelledby="month-heading">
           <h2 id="month-heading" className="mb-6 text-2xl">{label}</h2>
-          {shown.length > 0 ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {shown.map((c) => <CourseCard key={c.id} c={c} />)}
-            </div>
-          ) : (
-            <p className="rounded-xl border border-dashed border-border bg-muted/40 p-8 text-center font-semibold text-muted-foreground">
-              In progress
-            </p>
-          )}
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {shown.length > 0 ? shown.map((c) => <CourseCard key={c.id} c={c} />) : <PlaceholderCard label={label ?? 'In progress'} />}
+          </div>
         </section>
       </div>
     </>

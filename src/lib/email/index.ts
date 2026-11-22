@@ -5,6 +5,8 @@ export interface EmailMessage {
   to: string
   subject: string
   text: string
+  /** Where a plain "Reply" goes (e.g. the person who filled in the contact form) */
+  replyTo?: string
 }
 
 export interface EmailProvider {

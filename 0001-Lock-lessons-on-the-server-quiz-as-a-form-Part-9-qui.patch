@@ -1,0 +1,2087 @@
+From 6f8ea470c60b06c9e42ed13fae640bb92ef4c5fd Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 22 Nov 2026 12:11:07 +0000
+Subject: [PATCH] Lock lessons on the server, quiz as a form, Part 9 quizzes
+
+- Lesson page, signed-URL route and /api/progress now enforce the sequential
+  lock: previous video watched (90%) and quiz passed (80%). Locked lessons
+  redirect to the video still to finish; the sidebar shows locks.
+- Quiz opens on its own page as a form with all questions; graded on Submit
+  with score, mistakes and correct answers; retake allowed; 80% unlocks next.
+- Remove the one-question /quiz/check endpoint and the KBC panel.
+- Add scripts/quizzes.part9.json and unit + integration tests.
+- .gitignore: storage/ -> /storage/ (it also hid src/lib/storage).
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01NYuoaXXW66g9Emcrt3s3jd
+---
+ .gitignore                                    |   2 +-
+ CHANGES.md                                    |  14 +
+ scripts/quizzes.part9.json                    | 359 ++++++++++++++++++
+ .../learn/[courseSlug]/[lessonId]/page.tsx    |  27 +-
+ .../[courseSlug]/[lessonId]/quiz/page.tsx     |  38 ++
+ .../[slug]/lessons/[lessonId]/url/route.ts    |  13 +-
+ .../lessons/[lessonId]/quiz/check/route.ts    |  25 --
+ src/app/api/progress/route.ts                 |  21 +-
+ src/components/player/KbcQuizPanel.tsx        | 285 --------------
+ src/components/player/LessonPlayer.tsx        | 122 ++++--
+ src/components/player/QuizForm.tsx            | 284 ++++++++++++++
+ src/lib/data/progress.ts                      |  69 +++-
+ src/lib/progress-service.ts                   |  44 ++-
+ src/lib/quiz-check.ts                         |  30 --
+ src/lib/quiz-grading.ts                       |  29 ++
+ tests/integration/part9-student-flow.test.ts  | 233 ++++++++++++
+ tests/unit/check-answer.test.ts               |   2 +-
+ tests/unit/part9-rules.test.ts                | 117 ++++++
+ 18 files changed, 1306 insertions(+), 408 deletions(-)
+ create mode 100644 scripts/quizzes.part9.json
+ create mode 100644 src/app/(student)/learn/[courseSlug]/[lessonId]/quiz/page.tsx
+ delete mode 100644 src/app/api/lessons/[lessonId]/quiz/check/route.ts
+ delete mode 100644 src/components/player/KbcQuizPanel.tsx
+ create mode 100644 src/components/player/QuizForm.tsx
+ delete mode 100644 src/lib/quiz-check.ts
+ create mode 100644 tests/integration/part9-student-flow.test.ts
+ create mode 100644 tests/unit/part9-rules.test.ts
+
+diff --git a/.gitignore b/.gitignore
+index c00dd22..9cf1a1f 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -18,7 +18,7 @@ playwright-report
+ test-results
+ 
+ # local storage
+-storage/
++/storage/
+ public/uploads/avatars/*
+ !public/uploads/avatars/.gitkeep
+ 
+diff --git a/CHANGES.md b/CHANGES.md
+index ad240f7..d7bbc75 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -1,3 +1,17 @@
++# Lesson locks + quiz form – 22 Nov 2026
++
++Students now go through Part 9 one video at a time, enforced on the server.
++
++- A lesson opens only after the previous video is watched (90% of the playing time; skipping ahead does not count) and, where the video has a quiz, the quiz is passed (80%). Typing a locked lesson's address sends the student back to the video they still have to finish. Slides never block anything. Admins and instructors skip all locks.
++- Course content list shows a lock on locked lessons and they cannot be clicked. The Next lesson button works only once the next lesson is unlocked.
++- The quiz is no longer shown under the video. After the video is complete a "Take quiz" button opens the quiz as a form (`/learn/<course>/<lesson>/quiz`) with all questions on one page. Nothing is marked until Submit; then the student sees the score, which answers were wrong and the correct answers. 80% or more passes and unlocks the next video; below that the quiz can be retaken.
++- Closed loopholes: the signed video/file URL of a locked lesson is refused, a student cannot mark a video complete by hand (`/api/progress`), and the one-question `/quiz/check` endpoint (which gave instant right/wrong) is removed.
++- `scripts/quizzes.part9.json`: the four Part 9 quizzes (8, 5, 4 and 8 questions). Load with
++  `pnpm exec tsx scripts/import-quizzes.ts scripts/quizzes.part9.json` (dry run), then add `--apply`.
++  Note: this replaces the 25-question quiz currently on "Branched & Multiple Flaws – Part 2" with the 8-question Section D quiz.
++- `.gitignore`: `storage/` also hid `src/lib/storage/`, so that folder was never in git and a build from GitHub fails ("Cannot find module '@/lib/storage'"). The rule is now `/storage/`. Run `git add src/lib/storage` and commit it.
++- Tests: `tests/unit/part9-rules.test.ts` (lock sequence, 90% rule, pass marks) and `tests/integration/part9-student-flow.test.ts` (the same rules against a real database).
++
+ # Website updates – 12 Nov 2026 (overlay on pythagoras-lms)
+ 
+ Copy these files over the project (paths preserved), then:
+diff --git a/scripts/quizzes.part9.json b/scripts/quizzes.part9.json
+new file mode 100644
+index 0000000..a953b2c
+--- /dev/null
++++ b/scripts/quizzes.part9.json
+@@ -0,0 +1,359 @@
++[
++ {
++  "courseSlug": "api-579-1-asme-ffs-1-part-9",
++  "lessonTitle": "Crack-Like Flaws – Part 2",
++  "title": "Quiz: Section A – Part 9 framework, crack types and stresses",
++  "passPercent": 80,
++  "questions": [
++   {
++    "prompt": "The three stages of a fracture mechanics fitness-for-service assessment, in the correct order, are:",
++    "options": [
++     "Inspection → flaw characterization → fracture assessment",
++     "Flaw characterization → inspection → remaining-life estimate",
++     "Inspection → stress analysis → repair",
++     "Fracture assessment → inspection → flaw characterization"
++    ],
++    "correct": [
++     0
++    ],
++    "explanation": "Inspection finds and sizes the flaw, characterization idealizes it, fracture assessment checks acceptance."
++   },
++   {
++    "prompt": "In a Part 9 Level 2 assessment, a crack-like flaw is judged acceptable by plotting its assessment point on:",
++    "options": [
++     "An S–N fatigue curve",
++     "A Larson–Miller creep-rupture curve",
++     "A Failure Assessment Diagram of toughness ratio Kr against load ratio Lr",
++     "A Charpy ductile-to-brittle transition curve"
++    ],
++    "correct": [
++     2
++    ],
++    "explanation": "Level 2 plots the point (Lr, Kr) on the Failure Assessment Diagram."
++   },
++   {
++    "prompt": "Inspection reports a 50 mm long crack in a pressure vessel. Is this enough information to carry out a fracture assessment?",
++    "options": [
++     "Yes, provided the length was measured by ultrasonic testing",
++     "Yes, for surface cracks only",
++     "No; only the material fracture toughness is still missing",
++     "No; crack type, location, orientation and depth, component geometry, loads and material properties are also needed"
++    ],
++    "correct": [
++     3
++    ],
++    "explanation": "Length alone is insufficient; type, location, orientation, depth, geometry, loads and material data are all required."
++   },
++   {
++    "prompt": "A surface crack has t = 20 mm, a = 5 mm and 2c = 60 mm. What is the crack shape ratio a/c?",
++    "options": [
++     "0.083",
++     "0.167",
++     "0.25",
++     "0.333"
++    ],
++    "correct": [
++     1
++    ],
++    "explanation": "c = 30 mm, so a/c = 5/30 = 0.167."
++   },
++   {
++    "prompt": "An embedded flaw has a = 4 mm and a ligament d = 6 mm to the nearest surface. Applying the d ≥ 0.4a check from class, the flaw:",
++    "options": [
++     "Must be recategorized as a surface flaw, because d < 1.6 mm",
++     "Remains an embedded flaw, because 6 mm ≥ 1.6 mm",
++     "Must be treated as a through-wall flaw",
++     "Cannot be assessed until its depth is re-measured"
++    ],
++    "correct": [
++     1
++    ],
++    "explanation": "0.4a = 1.6 mm; d = 6 mm ≥ 1.6 mm, so the flaw stays embedded."
++   },
++   {
++    "prompt": "At a crack location σ1 = 120 MPa and σ2 = 60 MPa. The biaxial stress ratio B and the stress state are:",
++    "options": [
++     "B = 2.0, uniaxial tension",
++     "B = 0.5, uniaxial tension",
++     "B = 0.5, biaxial tension (σ2 is 50% of σ1)",
++     "B = 0, biaxial tension"
++    ],
++    "correct": [
++     2
++    ],
++    "explanation": "B = 60/120 = 0.5; both stresses tensile, so biaxial tension."
++   },
++   {
++    "prompt": "A crack inclination angle α = 0° means the crack:",
++    "options": [
++     "Lies in the plane normal to σ1",
++     "Lies in the plane normal to σ2",
++     "Is inclined at 45° to both principal stresses",
++     "Runs parallel to σ1"
++    ],
++    "correct": [
++     0
++    ],
++    "explanation": "α = 0° puts the crack in the plane normal to σ1; α = 90° in the plane normal to σ2."
++   },
++   {
++    "prompt": "Why must an irregular crack found in the field be converted into an idealized geometry before assessment?",
++    "options": [
++     "To make the reported crack smaller and easier to accept",
++     "Because the inspection code requires all cracks to be drawn as rectangles",
++     "Because stress intensity factor and reference stress solutions exist only for defined crack geometries",
++     "So that the crack depth no longer needs to be measured"
++    ],
++    "correct": [
++     2
++    ],
++    "explanation": "Codified SIF and reference stress solutions exist only for idealized shapes."
++   }
++  ]
++ },
++ {
++  "courseSlug": "api-579-1-asme-ffs-1-part-9",
++  "lessonTitle": "Flaw Characterization – Part 2",
++  "title": "Quiz: Section B – Equivalent crack length (Eqs 9.1, 9.2, 9.4)",
++  "passPercent": 80,
++  "questions": [
++   {
++    "prompt": "An inclined crack has a measured total length 2cm = 80 mm, α = 30°, σ1 = 120 MPa and σ2 = 60 MPa. Using Eq 9.1, the equivalent total crack length 2c in the plane normal to σ1 is closest to:",
++    "options": [
++     "80.00 mm",
++     "73.66 mm",
++     "60.00 mm",
++     "43.66 mm"
++    ],
++    "correct": [
++     1
++    ],
++    "explanation": "B = 0.5, α = 30° → c/cm = 0.9207; c = 0.9207 × 40 = 36.83 mm, so 2c = 73.66 mm."
++   },
++   {
++    "prompt": "With B = 0.5 held constant and 2cm = 80 mm, how does the equivalent length 2c from Eq 9.1 change as α increases from 0° to 90°?",
++    "options": [
++     "It stays at 80 mm for every angle",
++     "It increases above 80 mm",
++     "It first falls, then rises again",
++     "It falls overall, from 80 mm at 0° to 20 mm at 90°"
++    ],
++    "correct": [
++     3
++    ],
++    "explanation": "At B = 0.5: 80, 73.66, 60.00, 43.66 and 20 mm for α = 0°, 30°, 45°, 60° and 90°."
++   },
++   {
++    "prompt": "For equal biaxial tension (σ1 = σ2, so B = 1), Eq 9.1 gives:",
++    "options": [
++     "c = cm for any inclination angle α",
++     "c = 0.5 cm for any α",
++     "c = cm only when α = 0°",
++     "c = cm · cos α"
++    ],
++    "correct": [
++     0
++    ],
++    "explanation": "At B = 1, Eq 9.1 reduces to cos²α + sin²α = 1, so c = cm."
++   },
++   {
++    "prompt": "σ1 = 200 MPa, σ2 = 150 MPa, α = 45° and 2cm = 40 mm. The crack is characterized in the plane normal to the second principal stress, using Eq 9.2 (c/cm = 1.5). The equivalent total length is:",
++    "options": [
++     "30 mm",
++     "40 mm",
++     "60 mm",
++     "80 mm"
++    ],
++    "correct": [
++     2
++    ],
++    "explanation": "B = 0.75; c = 1.5 × 20 = 30 mm, so 2c = 60 mm. The crack has not grown; this is a representation in the σ2 plane."
++   },
++   {
++    "prompt": "σ1 = 150 MPa (tension), σ2 = −30 MPa (compression), α = 45° and 2cm = 40 mm. Which approach and result are correct?",
++    "options": [
++     "Eq 9.1 with B = −0.2, giving 2c ≈ 41 mm",
++     "Eq 9.4 (B taken as 0), giving 2c = 30 mm",
++     "Eq 9.2, giving 2c = 60 mm",
++     "No correction, because σ2 is compressive; 2c = 40 mm"
++    ],
++    "correct": [
++     1
++    ],
++    "explanation": "σ2 ≤ 0 → Eq 9.4 with B = 0: c/cm = 0.75, c = 15 mm, 2c = 30 mm."
++   }
++  ]
++ },
++ {
++  "courseSlug": "api-579-1-asme-ffs-1-part-9",
++  "lessonTitle": "Flaw Depth Characterization",
++  "title": "Quiz: Section C – Flaw depth characterization",
++  "passPercent": 80,
++  "questions": [
++   {
++    "prompt": "Penetrant (PT) and magnetic particle (MT) testing reveal surface-breaking indications. Their main limitation for flaw characterization is that they:",
++    "options": [
++     "Cannot detect surface-breaking cracks",
++     "Always over-estimate crack length",
++     "Can be used only while the vessel is pressurized",
++     "Do not reliably establish crack depth, so UT or the default depth rules are needed"
++    ],
++    "correct": [
++     3
++    ],
++    "explanation": "PT and MT show surface extent only; depth needs UT or the default rules."
++   },
++   {
++    "prompt": "A surface flaw has t = 20 mm and 2c = 16 mm, and its depth is unknown. Using the default rule a = min(t, c), the characterized depth, depth ratio and remaining ligament are:",
++    "options": [
++     "a = 8 mm, a/t = 0.4, t − a = 12 mm",
++     "a = 20 mm, a/t = 1.0, t − a = 0 mm",
++     "a = 16 mm, a/t = 0.8, t − a = 4 mm",
++     "a = 10 mm, a/t = 0.5, t − a = 10 mm"
++    ],
++    "correct": [
++     0
++    ],
++    "explanation": "min(20, 8) = 8 mm; a/t = 0.4; t − a = 12 mm. The a = t default leaves no ligament (a leak path in pressurized equipment)."
++   },
++   {
++    "prompt": "For a flaw inclined through the wall, a = W · am with W = max(Wθ, 1). If the measured projected depth am = 5 mm and Wθ = 0.85, the characterized depth is:",
++    "options": [
++     "4.25 mm",
++     "5.85 mm",
++     "5.00 mm",
++     "5.90 mm"
++    ],
++    "correct": [
++     2
++    ],
++    "explanation": "W = max(0.85, 1) = 1, so a = am = 5 mm."
++   },
++   {
++    "prompt": "A flaw inclined at θ = 30° has a measured projected depth am = 5 mm. Eq 9.7 gives Wθ = 1.185. The characterized depth is closest to:",
++    "options": [
++     "4.22 mm",
++     "5.92 mm (about 18.5% deeper than measured)",
++     "6.85 mm",
++     "5.00 mm, because inclination never changes the depth"
++    ],
++    "correct": [
++     1
++    ],
++    "explanation": "a = 1.185 × 5 = 5.92 mm, about 18.5% deeper than measured."
++   }
++  ]
++ },
++ {
++  "courseSlug": "api-579-1-asme-ffs-1-part-9",
++  "lessonTitle": "Branched & Multiple Flaws – Part 2",
++  "title": "Quiz: Section D – Branched cracks, multiple flaws and recategorization",
++  "passPercent": 80,
++  "questions": [
++   {
++    "prompt": "Which mapping of Part 9 paragraphs to topics is correct?",
++    "options": [
++     "9.3.6.4 branched cracks; 9.3.6.5 multiple flaws; 9.3.6.6 recategorization of embedded and deep surface flaws",
++     "9.3.6.4 multiple flaws; 9.3.6.5 branched cracks; 9.3.6.6 flaw depth",
++     "9.3.6.2 branched cracks; 9.3.6.3 multiple flaws; 9.3.6.4 recategorization",
++     "9.3.6.5 branched cracks; 9.3.6.6 multiple flaws; 9.3.6.4 recategorization"
++    ],
++    "correct": [
++     0
++    ],
++    "explanation": "9.3.6.4 branched, 9.3.6.5 multiple, 9.3.6.6 recategorization (9.3.6.2 length, 9.3.6.3 depth)."
++   },
++   {
++    "prompt": "A branched crack network is enclosed by a rectangle 80 mm long and 45 mm wide. UT gives a maximum through-wall depth of 4 mm. The 45 mm width is:",
++    "options": [
++     "The crack depth to be used in the assessment",
++     "The half-length c of the idealized flaw",
++     "Not the crack depth; depth is the separately measured through-wall penetration",
++     "Added to the 80 mm to give the total crack length"
++    ],
++    "correct": [
++     2
++    ],
++    "explanation": "The rectangle sets the length; depth is the separately measured penetration (4 mm)."
++   },
++   {
++    "prompt": "For the same branched network (t = 20 mm, maximum measured depth a0 = 4 mm), the effective depth a = 1.2 a0. The effective depth, depth ratio and remaining ligament are:",
++    "options": [
++     "a = 4.0 mm, a/t = 0.20, t − a = 16.0 mm",
++     "a = 5.0 mm, a/t = 0.25, t − a = 15.0 mm",
++     "a = 8.0 mm, a/t = 0.40, t − a = 12.0 mm",
++     "a = 4.8 mm, a/t = 0.24, t − a = 15.2 mm"
++    ],
++    "correct": [
++     3
++    ],
++    "explanation": "a = 1.2 × 4 = 4.8 mm; a/t = 0.24; t − a = 15.2 mm."
++   },
++   {
++    "prompt": "For the branched network, the orientation correction (Eq 9.1) gives 2c = 73.66 mm. What conservative alternative does 9.3.6.4 permit for the length?",
++    "options": [
++     "Half the bounding-rectangle length, 40 mm",
++     "The bounding-rectangle length used directly, 2c = 80 mm",
++     "The sum of every individual branch length",
++     "The rectangle diagonal, about 92 mm"
++    ],
++    "correct": [
++     1
++    ],
++    "explanation": "The bounding-rectangle length (80 mm) may be used directly as the conservative option."
++   },
++   {
++    "prompt": "Four flaws lie on parallel planes. Their separations from flaw F1 are F3 = 6 mm, F2 = 8 mm and F4 = 20 mm. Flaws within H ≤ 13 mm (0.5 in.) are treated as coplanar. The correct treatment is:",
++    "options": [
++     "Project F2 and F3 onto F1's plane; assess F4 separately",
++     "Project all four flaws onto one common plane",
++     "Assess all four flaws separately",
++     "Project only F4 onto F1's plane"
++    ],
++    "correct": [
++     0
++    ],
++    "explanation": "6 mm and 8 mm ≤ 13 mm, so coplanar; 20 mm > 13 mm, so F4 is assessed on its own."
++   },
++   {
++    "prompt": "Two coplanar surface flaws: F1 has 2c = 30 mm and a = 5 mm; F2 has 2c = 20 mm and a = 8 mm; spacing s = 5 mm. With the combination rule s ≤ max(a1, a2), the combined flaw is:",
++    "options": [
++     "2c = 50 mm, a = 8 mm",
++     "2c = 55 mm, a = 13 mm",
++     "Not combined, because the flaws do not touch",
++     "2c = 55 mm, a = 8 mm"
++    ],
++    "correct": [
++     3
++    ],
++    "explanation": "s = 5 ≤ max(5, 8) = 8, so combine: 2c = 30 + 5 + 20 = 55 mm; a = deepest = 8 mm."
++   },
++   {
++    "prompt": "An embedded flaw lies close to the surface: t = 20 mm, 2cb = 40 mm, 2ab = 8 mm, ligament d = 1 mm. It meets the recategorization criterion. The equivalent surface flaw (2c = 2cb + 2d; a = 2ab + d) is:",
++    "options": [
++     "2c = 40 mm, a = 8 mm",
++     "2c = 42 mm, a = 9 mm",
++     "2c = 41 mm, a = 9 mm",
++     "2c = 42 mm, a = 10 mm"
++    ],
++    "correct": [
++     1
++    ],
++    "explanation": "2c = 40 + 2 × 1 = 42 mm; a = 8 + 1 = 9 mm."
++   },
++   {
++    "prompt": "A surface flaw has t = 20 mm, as = 18 mm and 2cs = 60 mm. Because as/t exceeds 0.8, it is recategorized. The result is:",
++    "options": [
++     "A surface flaw with 2c = 60 mm, a = 18 mm",
++     "A through-wall flaw with 2c = 60 mm, a = 20 mm",
++     "A through-wall flaw with 2c = 2cs + 2(t − as) = 64 mm, a = t = 20 mm",
++     "An embedded flaw with 2c = 64 mm, a = 18 mm"
++    ],
++    "correct": [
++     2
++    ],
++    "explanation": "as/t = 0.9 > 0.8 → through-wall: 2c = 60 + 2 × (20 − 18) = 64 mm, a = t = 20 mm."
++   }
++  ]
++ }
++]
+\ No newline at end of file
+diff --git a/src/app/(student)/learn/[courseSlug]/[lessonId]/page.tsx b/src/app/(student)/learn/[courseSlug]/[lessonId]/page.tsx
+index dffa6a8..63ac7f2 100644
+--- a/src/app/(student)/learn/[courseSlug]/[lessonId]/page.tsx
++++ b/src/app/(student)/learn/[courseSlug]/[lessonId]/page.tsx
+@@ -7,12 +7,23 @@ import { getPlayerData } from '@/lib/data/progress'
+ export const dynamic = 'force-dynamic'
+ export const metadata: Metadata = { title: 'Lesson', robots: { index: false, follow: false } }
+ 
+-/** REQ-180: the player is for enrolled students only. */
+-export default async function LessonPage({ params }: { params: Promise<{ courseSlug: string; lessonId: string }> }) {
++/**
++ * REQ-180: the player is for enrolled students only.
++ * Sequential lock (enforced here on the server, so typing a locked lesson's address does not work):
++ * a lesson opens only after the previous video is watched (90%) and its quiz is passed (80%).
++ */
++export default async function LessonPage({
++  params,
++  searchParams,
++}: {
++  params: Promise<{ courseSlug: string; lessonId: string }>
++  searchParams: Promise<{ locked?: string }>
++}) {
+   const { courseSlug, lessonId } = await params
++  const { locked } = await searchParams
+   const user = await getFreshUser()
+   if (!user) redirect(`/login?redirect=/learn/${courseSlug}/${lessonId}`)
+-  const data = await getPlayerData(user.id, courseSlug, lessonId)
++  const data = await getPlayerData({ id: user.id, role: user.role }, courseSlug, lessonId)
+   if (!data) notFound()
+   if (!data.enrolled) redirect(`/courses/${courseSlug}`)
+   if (data.missingLesson) {
+@@ -20,6 +31,10 @@ export default async function LessonPage({ params }: { params: Promise<{ courseS
+     if (!first) redirect(`/courses/${courseSlug}`)
+     redirect(`/learn/${courseSlug}/${first.id}`)
+   }
++  if (data.locked) {
++    // locked lesson: send the student back to the video they still have to finish
++    redirect(data.resumeLessonId ? `/learn/${courseSlug}/${data.resumeLessonId}?locked=1` : `/courses/${courseSlug}`)
++  }
+   return (
+     <LessonPlayer
+       course={{ slug: data.course.slug, title: data.course.title }}
+@@ -27,6 +42,12 @@ export default async function LessonPage({ params }: { params: Promise<{ courseS
+       lesson={data.lesson}
+       prevId={data.prevId}
+       nextId={data.nextId}
++      nextLocked={data.nextLocked}
++      hasQuiz={data.hasQuiz}
++      quizPassed={data.quizPassed}
++      videoCompleted={data.videoCompleted}
++      canTakeQuiz={data.canTakeQuiz}
++      showLockedNotice={locked === '1'}
+       percent={data.percent}
+     />
+   )
+diff --git a/src/app/(student)/learn/[courseSlug]/[lessonId]/quiz/page.tsx b/src/app/(student)/learn/[courseSlug]/[lessonId]/quiz/page.tsx
+new file mode 100644
+index 0000000..c240ceb
+--- /dev/null
++++ b/src/app/(student)/learn/[courseSlug]/[lessonId]/quiz/page.tsx
+@@ -0,0 +1,38 @@
++import type { Metadata } from 'next'
++import { notFound, redirect } from 'next/navigation'
++import Link from 'next/link'
++import { QuizForm } from '@/components/player/QuizForm'
++import { getFreshUser } from '@/lib/auth/guards'
++import { getPlayerData } from '@/lib/data/progress'
++
++export const dynamic = 'force-dynamic'
++export const metadata: Metadata = { title: 'Quiz', robots: { index: false, follow: false } }
++
++/**
++ * The quiz opens as its own page (a form with all questions), not under the video.
++ * Server-side checks: enrolled, lesson not locked, lesson has a quiz, and the video is complete
++ * (students only; admins skip it).
++ */
++export default async function QuizPage({ params }: { params: Promise<{ courseSlug: string; lessonId: string }> }) {
++  const { courseSlug, lessonId } = await params
++  const user = await getFreshUser()
++  if (!user) redirect(`/login?redirect=/learn/${courseSlug}/${lessonId}/quiz`)
++  const data = await getPlayerData({ id: user.id, role: user.role }, courseSlug, lessonId)
++  if (!data) notFound()
++  if (!data.enrolled) redirect(`/courses/${courseSlug}`)
++  if (data.missingLesson) redirect(`/learn/${courseSlug}`)
++  if (data.locked) redirect(data.resumeLessonId ? `/learn/${courseSlug}/${data.resumeLessonId}?locked=1` : `/courses/${courseSlug}`)
++  // no quiz on this lesson, or the video is not finished yet → back to the video
++  if (!data.hasQuiz || !data.canTakeQuiz) redirect(`/learn/${courseSlug}/${lessonId}`)
++
++  return (
++    <div className="container-page max-w-3xl py-6">
++      <Link href={`/learn/${courseSlug}/${lessonId}`} className="text-sm text-link underline-offset-4 hover:underline">
++        ← Back to video
++      </Link>
++      <h1 className="mt-3 mb-1 text-2xl md:text-3xl">{data.lesson.title}</h1>
++      <p className="mb-5 text-sm text-muted-foreground">{data.course.title}</p>
++      <QuizForm lessonId={lessonId} courseSlug={courseSlug} />
++    </div>
++  )
++}
+diff --git a/src/app/api/courses/[slug]/lessons/[lessonId]/url/route.ts b/src/app/api/courses/[slug]/lessons/[lessonId]/url/route.ts
+index a483095..32a8091 100644
+--- a/src/app/api/courses/[slug]/lessons/[lessonId]/url/route.ts
++++ b/src/app/api/courses/[slug]/lessons/[lessonId]/url/route.ts
+@@ -1,6 +1,7 @@
+-import { fail, forbidden, ok, unauthenticated } from '@/lib/api/http'
++import { ApiError, fail, forbidden, ok, unauthenticated } from '@/lib/api/http'
+ import { getFreshUser } from '@/lib/auth/guards'
+ import { getLessonAccess, touchEnrollment } from '@/lib/data/progress'
++import { assertLessonAccess } from '@/lib/progress-service'
+ import { videoProvider } from '@/lib/video'
+ import { storage } from '@/lib/storage'
+ import { isPlaceholder } from '@/lib/placeholder'
+@@ -21,6 +22,16 @@ export async function GET(_req: Request, ctx: { params: Promise<{ slug: string;
+   if (!access) return fail('NOT_FOUND', 'Lesson not found.', 404)
+   if (!access.allowed) return forbidden('Enrol in this course to watch this lesson.')
+ 
++  // sequential lock: the video/file of a locked lesson is never handed out
++  if (access.enrolled && !access.isFreePreview) {
++    try {
++      await assertLessonAccess({ id: user.id, role: user.role }, lessonId)
++    } catch (e) {
++      if (e instanceof ApiError) return fail(e.code, e.message, e.status)
++      throw e
++    }
++  }
++
+   if (access.enrolled) await touchEnrollment(user.id, access.courseId, access.lessonId)
+ 
+   const expiresAt = Math.floor(Date.now() / 1000) + 300
+diff --git a/src/app/api/lessons/[lessonId]/quiz/check/route.ts b/src/app/api/lessons/[lessonId]/quiz/check/route.ts
+deleted file mode 100644
+index bc3d03e..0000000
+--- a/src/app/api/lessons/[lessonId]/quiz/check/route.ts
++++ /dev/null
+@@ -1,25 +0,0 @@
+-import { NextResponse } from 'next/server'
+-import { apiError, ApiError } from '@/lib/api/http'
+-import { requireUser } from '@/lib/progress-service'
+-import { checkQuizQuestion } from '@/lib/quiz-check'
+-
+-type Ctx = { params: Promise<{ lessonId: string }> }
+-
+-/** POST { questionId, optionIds: string[] } → { correct } (no answer key is ever returned) */
+-export async function POST(req: Request, ctx: Ctx) {
+-  try {
+-    const user = await requireUser()
+-    const { lessonId } = await ctx.params
+-    const body = await req.json().catch(() => null) as { questionId?: string; optionIds?: unknown } | null
+-    if (!body || typeof body.questionId !== 'string' || !Array.isArray(body.optionIds)) {
+-      throw new ApiError(400, 'BAD_REQUEST', 'questionId and optionIds required')
+-    }
+-    const optionIds = body.optionIds.map(String).slice(0, 20)
+-    return NextResponse.json(
+-      await checkQuizQuestion(user, lessonId, body.questionId, optionIds),
+-      { headers: { 'Cache-Control': 'no-store' } },
+-    )
+-  } catch (e) {
+-    return apiError(e)
+-  }
+-}
+diff --git a/src/app/api/progress/route.ts b/src/app/api/progress/route.ts
+index e0254e6..3f866ae 100644
+--- a/src/app/api/progress/route.ts
++++ b/src/app/api/progress/route.ts
+@@ -1,17 +1,32 @@
+-import { forbidden, ok, parseBody, unauthenticated } from '@/lib/api/http'
++import { apiError, ApiError, ok, parseBody, unauthenticated } from '@/lib/api/http'
+ import { getFreshUser } from '@/lib/auth/guards'
+ import { setLessonProgress } from '@/lib/data/progress'
++import { assertLessonAccess, isStaff } from '@/lib/progress-service'
+ import { progressSchema } from '@/lib/utils/validation'
+ 
+ export const dynamic = 'force-dynamic'
+ 
+-/** REQ-288 / REQ-184: upsert LessonProgress, return the updated completion %. */
++/**
++ * REQ-288 / REQ-184: upsert LessonProgress, return the updated completion %.
++ * Only for the manual "mark complete" on document/slide lessons. A video is complete only through
++ * the watch tracking (90%) and the quiz pass, so a student cannot mark it done from here, and a
++ * locked lesson cannot be touched at all.
++ */
+ export async function POST(req: Request) {
+   const user = await getFreshUser()
+   if (!user) return unauthenticated()
+   const parsed = await parseBody(req, progressSchema)
+   if (parsed.error) return parsed.error
++  const who = { id: user.id, role: user.role }
++  try {
++    const { lesson } = await assertLessonAccess(who, parsed.data.lessonId)
++    if (lesson.type === 'VIDEO' && !isStaff(who)) {
++      throw new ApiError(403, 'VIDEO_AUTO', 'A video is completed by watching it (90%) and passing its quiz')
++    }
++  } catch (e) {
++    return apiError(e)
++  }
+   const res = await setLessonProgress(user.id, parsed.data.lessonId, parsed.data.completed ?? true)
+-  if (!res) return forbidden('You are not enrolled in this course.')
++  if (!res) return apiError(new ApiError(403, 'NOT_ENROLLED', 'You are not enrolled in this course.'))
+   return ok({ percent: res.percent, completedLessonIds: res.completedLessonIds })
+ }
+diff --git a/src/components/player/KbcQuizPanel.tsx b/src/components/player/KbcQuizPanel.tsx
+deleted file mode 100644
+index a7bb866..0000000
+--- a/src/components/player/KbcQuizPanel.tsx
++++ /dev/null
+@@ -1,285 +0,0 @@
+-'use client'
+-
+-import { useCallback, useEffect, useRef, useState } from 'react'
+-
+-/**
+- * KBC-style quiz: ONE question per screen → pick → "Lock answer" → "Final answer?" → Confirm →
+- * right/wrong shown → Next. No going back. After the last question the whole attempt is graded
+- * by the server (pass mark 80%); a failed attempt can be retaken with a fresh order.
+- * Drop-in replacement for QuizPanel: same props.
+- */
+-interface QuizData {
+-  title: string
+-  passPercent: number
+-  alreadyPassed: boolean
+-  lastAttempt: { scorePercent: number; passed: boolean } | null
+-  questions: Array<{ id: string; prompt: string; multiple: boolean; options: Array<{ id: string; text: string }> }>
+-}
+-interface Result {
+-  passed: boolean
+-  scorePercent: number
+-  correct: number
+-  total: number
+-  passPercent: number
+-  explanations?: Record<string, string>
+-  nextLessonId: string | null
+-}
+-type Phase = 'intro' | 'question' | 'result'
+-const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F']
+-
+-export function KbcQuizPanel({
+-  lessonId,
+-  onPassed,
+-}: {
+-  lessonId: string
+-  onPassed?: (nextLessonId: string | null) => void
+-}) {
+-  const [quiz, setQuiz] = useState<QuizData | null>(null)
+-  const [phase, setPhase] = useState<Phase>('intro')
+-  const [index, setIndex] = useState(0)
+-  const [selected, setSelected] = useState<string[]>([])
+-  const [confirming, setConfirming] = useState(false)
+-  const [feedback, setFeedback] = useState<null | boolean>(null)
+-  const [locked, setLocked] = useState<Record<string, string[]>>({})
+-  const [result, setResult] = useState<Result | null>(null)
+-  const [error, setError] = useState<string | null>(null)
+-  const [busy, setBusy] = useState(false)
+-  const [liveScore, setLiveScore] = useState(0)
+-  const headingRef = useRef<HTMLHeadingElement>(null)
+-
+-  const load = useCallback(async () => {
+-    setError(null)
+-    setResult(null)
+-    setLocked({})
+-    setIndex(0)
+-    setSelected([])
+-    setConfirming(false)
+-    setFeedback(null)
+-    setLiveScore(0)
+-    setPhase('intro')
+-    const res = await fetch(`/api/lessons/${lessonId}/quiz`, { cache: 'no-store' })
+-    const j = (await res.json().catch(() => null)) as QuizData & { error?: { message?: string } }
+-    if (!res.ok) {
+-      setQuiz(null)
+-      setError(j?.error?.message ?? 'Could not load the quiz')
+-      return
+-    }
+-    setQuiz(j)
+-  }, [lessonId])
+-
+-  useEffect(() => {
+-    void load()
+-  }, [load])
+-  useEffect(() => {
+-    headingRef.current?.focus()
+-  }, [index, phase])
+-
+-  const q = quiz?.questions[index]
+-  const total = quiz?.questions.length ?? 0
+-  const isLast = index === total - 1
+-
+-  const toggle = useCallback(
+-    (oid: string) => {
+-      if (!q || feedback !== null || busy) return
+-      setConfirming(false)
+-      setSelected((cur) =>
+-        q.multiple ? (cur.includes(oid) ? cur.filter((x) => x !== oid) : [...cur, oid]) : [oid],
+-      )
+-    },
+-    [q, feedback, busy],
+-  )
+-
+-  // keyboard: pressing A–F picks that option
+-  useEffect(() => {
+-    if (phase !== 'question' || !q) return
+-    const onKey = (e: KeyboardEvent) => {
+-      if (e.ctrlKey || e.metaKey || e.altKey) return
+-      const i = LETTERS.indexOf(e.key.toUpperCase())
+-      if (e.key.length === 1 && i >= 0 && i < q.options.length) {
+-        e.preventDefault()
+-        toggle(q.options[i].id)
+-      }
+-    }
+-    window.addEventListener('keydown', onKey)
+-    return () => window.removeEventListener('keydown', onKey)
+-  }, [phase, q, toggle])
+-
+-  async function confirmLock() {
+-    if (!q || selected.length === 0) return
+-    setBusy(true)
+-    setError(null)
+-    try {
+-      const res = await fetch(`/api/lessons/${lessonId}/quiz/check`, {
+-        method: 'POST',
+-        headers: { 'Content-Type': 'application/json' },
+-        body: JSON.stringify({ questionId: q.id, optionIds: selected }),
+-      })
+-      const j = (await res.json().catch(() => null)) as { correct?: boolean; error?: { message?: string } }
+-      if (!res.ok) throw new Error(j?.error?.message ?? 'Could not check the answer. Please try again.')
+-      setLocked((l) => ({ ...l, [q.id]: selected }))
+-      setFeedback(!!j.correct)
+-      if (j.correct) setLiveScore((s) => s + 1)
+-      setConfirming(false)
+-    } catch (e) {
+-      setError((e as Error).message)
+-    } finally {
+-      setBusy(false)
+-    }
+-  }
+-
+-  async function next() {
+-    if (!quiz) return
+-    if (!isLast) {
+-      setIndex((i) => i + 1)
+-      setSelected([])
+-      setFeedback(null)
+-      setConfirming(false)
+-      return
+-    }
+-    setBusy(true)
+-    setError(null)
+-    try {
+-      const res = await fetch(`/api/lessons/${lessonId}/quiz/submit`, {
+-        method: 'POST',
+-        headers: { 'Content-Type': 'application/json' },
+-        body: JSON.stringify({ answers: locked }),
+-      })
+-      const j = (await res.json().catch(() => null)) as Result & { error?: { message?: string } }
+-      if (!res.ok) throw new Error(j?.error?.message ?? 'Submit failed. Please try again.')
+-      setResult(j)
+-      setPhase('result')
+-      if (j.passed) onPassed?.(j.nextLessonId)
+-    } catch (e) {
+-      setError((e as Error).message)
+-    } finally {
+-      setBusy(false)
+-    }
+-  }
+-
+-  if (!quiz) {
+-    return error
+-      ? <p role="alert" className="rounded-lg border border-border p-4 text-sm">{error}</p>
+-      : <p className="p-4 text-sm text-muted-foreground">Loading quiz…</p>
+-  }
+-
+-  return (
+-    <section aria-labelledby="quiz-h" className="rounded-xl border border-border bg-card p-5 md:p-8" data-testid="kbc-quiz">
+-      {phase === 'intro' && (
+-        <div>
+-          <h2 id="quiz-h" ref={headingRef} tabIndex={-1} className="text-xl font-semibold">{quiz.title}</h2>
+-          <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+-            <li>{total} questions, one at a time.</li>
+-            <li>Pick an option, then lock it in. Once locked you cannot change it.</li>
+-            <li>You need <strong>{quiz.passPercent}%</strong> to unlock the next video. If you miss it, you can retake the quiz.</li>
+-          </ul>
+-          {quiz.alreadyPassed && <p className="mt-3 text-sm font-medium text-success-text">✓ You have already passed this quiz.</p>}
+-          {quiz.lastAttempt && !quiz.alreadyPassed && (
+-            <p className="mt-3 text-sm">Last attempt: {quiz.lastAttempt.scorePercent}% — {quiz.lastAttempt.passed ? 'passed' : 'not passed'}.</p>
+-          )}
+-          {total === 0
+-            ? <p className="mt-4 text-sm">This quiz has no questions yet.</p>
+-            : <button type="button" data-testid="kbc-start" onClick={() => setPhase('question')}
+-                className="mt-5 min-h-11 rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground">
+-                {quiz.alreadyPassed ? 'Take it again' : 'Start quiz'}
+-              </button>}
+-        </div>
+-      )}
+-
+-      {phase === 'question' && q && (
+-        <div>
+-          <div className="flex items-center justify-between text-sm">
+-            <span className="font-semibold" data-testid="kbc-counter">Question {index + 1} of {total}</span>
+-            <span className="text-muted-foreground">Correct so far: {liveScore}</span>
+-          </div>
+-          <div role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={index + (feedback !== null ? 1 : 0)}
+-               aria-label="Quiz progress" className="mt-2 h-2 overflow-hidden rounded-full bg-muted">
+-            <div className="h-full bg-primary transition-all" style={{ width: `${((index + (feedback !== null ? 1 : 0)) / total) * 100}%` }} />
+-          </div>
+-
+-          <h2 id="quiz-h" ref={headingRef} tabIndex={-1} className="mt-6 text-lg font-semibold leading-snug md:text-xl">{q.prompt}</h2>
+-          {q.multiple && <p className="mt-1 text-xs text-muted-foreground">Select all that apply</p>}
+-
+-          <div className="mt-5 grid gap-3 md:grid-cols-2" role={q.multiple ? 'group' : 'radiogroup'} aria-labelledby="quiz-h">
+-            {q.options.map((o, i) => {
+-              const on = selected.includes(o.id)
+-              const done = feedback !== null
+-              const tone = !done
+-                ? on ? 'border-primary bg-muted ring-2 ring-primary' : 'border-border bg-card hover:bg-muted'
+-                : on
+-                  ? feedback ? 'border-green-700 bg-green-50 ring-2 ring-green-700' : 'border-red-700 bg-red-50 ring-2 ring-red-700'
+-                  : 'border-border bg-card opacity-60'
+-              return (
+-                <button key={o.id} type="button" data-testid={`kbc-option-${i}`}
+-                  role={q.multiple ? 'checkbox' : 'radio'} aria-checked={on} disabled={done || busy}
+-                  onClick={() => toggle(o.id)}
+-                  className={`flex min-h-14 items-center gap-3 rounded-lg border px-4 py-3 text-left text-sm transition ${tone}`}>
+-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border text-xs font-bold">{LETTERS[i]}</span>
+-                  <span>{o.text}</span>
+-                </button>
+-              )
+-            })}
+-          </div>
+-
+-          <div className="mt-6 min-h-12" aria-live="polite">
+-            {feedback === true && <p data-testid="kbc-feedback" className="font-semibold text-success-text">✓ Correct!</p>}
+-            {feedback === false && <p data-testid="kbc-feedback" className="font-semibold text-danger-text">✗ Not correct. Move on to the next question.</p>}
+-            {error && <p role="alert" className="text-sm text-danger-text">{error}</p>}
+-          </div>
+-
+-          <div className="mt-2 flex flex-wrap items-center gap-3">
+-            {feedback === null && !confirming && (
+-              <button type="button" data-testid="kbc-lock" disabled={selected.length === 0 || busy} onClick={() => setConfirming(true)}
+-                className="min-h-11 rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground disabled:opacity-50">
+-                Lock answer
+-              </button>
+-            )}
+-            {feedback === null && confirming && (
+-              <>
+-                <span className="text-sm font-semibold">Final answer?</span>
+-                <button type="button" data-testid="kbc-confirm" disabled={busy} onClick={() => void confirmLock()}
+-                  className="min-h-11 rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground disabled:opacity-50">
+-                  {busy ? 'Checking…' : 'Yes, lock it'}
+-                </button>
+-                <button type="button" disabled={busy} onClick={() => setConfirming(false)}
+-                  className="min-h-11 rounded-md border border-border px-5 text-sm font-semibold hover:bg-muted">Change</button>
+-              </>
+-            )}
+-            {feedback !== null && (
+-              <button type="button" data-testid="kbc-next" disabled={busy} onClick={() => void next()}
+-                className="min-h-11 rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground disabled:opacity-50">
+-                {busy ? 'Submitting…' : isLast ? 'Finish quiz' : 'Next question'}
+-              </button>
+-            )}
+-          </div>
+-        </div>
+-      )}
+-
+-      {phase === 'result' && result && (
+-        <div role="status" data-testid="kbc-result">
+-          <h2 id="quiz-h" ref={headingRef} tabIndex={-1} className="text-xl font-semibold">
+-            {result.passed ? 'You passed!' : 'Not passed yet'}
+-          </h2>
+-          <p className={`mt-2 text-3xl font-bold ${result.passed ? 'text-success-text' : 'text-danger-text'}`}>
+-            {result.scorePercent}% <span className="text-base font-medium text-muted-foreground">({result.correct} of {result.total} correct)</span>
+-          </p>
+-          {result.passed
+-            ? <p className="mt-2 text-sm">The next video is now unlocked.</p>
+-            : <p className="mt-2 text-sm">You need {result.passPercent}% to continue. Rewatch the video if you need to, then retake the quiz.</p>}
+-          {result.passed && result.explanations && Object.keys(result.explanations).length > 0 && (
+-            <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm text-muted-foreground">
+-              {quiz.questions.filter((x) => result.explanations?.[x.id]).map((x) => (
+-                <li key={x.id}><span className="font-medium text-foreground">{x.prompt}</span> — {result.explanations?.[x.id]}</li>
+-              ))}
+-            </ol>
+-          )}
+-          {!result.passed && (
+-            <button type="button" data-testid="kbc-retake" onClick={() => void load()}
+-              className="mt-5 min-h-11 rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground">
+-              Retake quiz (new question order)
+-            </button>
+-          )}
+-        </div>
+-      )}
+-    </section>
+-  )
+-}
+diff --git a/src/components/player/LessonPlayer.tsx b/src/components/player/LessonPlayer.tsx
+index db1186d..3266117 100644
+--- a/src/components/player/LessonPlayer.tsx
++++ b/src/components/player/LessonPlayer.tsx
+@@ -4,7 +4,7 @@ import * as React from 'react'
+ import Link from 'next/link'
+ import { useRouter } from 'next/navigation'
+ import { toast } from 'sonner'
+-import { CheckCircle2, Circle, ChevronLeft, ChevronRight, ListVideo } from 'lucide-react'
++import { CheckCircle2, Circle, ChevronLeft, ChevronRight, ListVideo, Lock } from 'lucide-react'
+ import type { PlayerSectionDTO, PlayerLessonDTO } from '@/lib/types'
+ import { Button } from '@/components/ui/button'
+ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+@@ -14,7 +14,6 @@ import { useMediaQuery } from '@/hooks/useMediaQuery'
+ import { formatDuration } from '@/lib/utils/pricing'
+ import { messages } from '@/lib/messages'
+ 
+-import { KbcQuizPanel } from './KbcQuizPanel'
+ 
+ interface Props {
+   course: { slug: string; title: string }
+@@ -22,6 +21,15 @@ interface Props {
+   lesson: PlayerLessonDTO
+   prevId: string | null
+   nextId: string | null
++  /** the next lesson exists but is still locked */
++  nextLocked: boolean
++  hasQuiz: boolean
++  quizPassed: boolean
++  /** the video reached 90% watched (server-side fact) */
++  videoCompleted: boolean
++  canTakeQuiz: boolean
++  /** redirected here because a locked lesson was opened */
++  showLockedNotice?: boolean
+   percent: number
+ }
+ 
+@@ -46,6 +54,24 @@ function Sidebar({
+           <ul>
+             {s.lessons.map((l) => {
+               const current = l.id === currentId
++              if (l.locked) {
++                return (
++                  <li key={l.id}>
++                    <span
++                      aria-disabled="true"
++                      title="Finish the previous video and pass its quiz (80%) to unlock this lesson"
++                      className="flex min-h-11 cursor-not-allowed items-start gap-2 rounded-md px-2 py-2 text-sm opacity-60"
++                    >
++                      <Lock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
++                      <span className="min-w-0 flex-1">
++                        <span className="block">{l.title}</span>
++                        <span className="text-xs text-muted-foreground">{formatDuration(l.durationSeconds)}</span>
++                      </span>
++                      <span className="sr-only">Locked</span>
++                    </span>
++                  </li>
++                )
++              }
+               return (
+                 <li key={l.id}>
+                   <Link
+@@ -76,7 +102,20 @@ function Sidebar({
+   )
+ }
+ 
+-export function LessonPlayer({ course, sections, lesson, prevId, nextId, percent: initialPercent }: Props) {
++export function LessonPlayer({
++  course,
++  sections,
++  lesson,
++  prevId,
++  nextId,
++  nextLocked,
++  hasQuiz,
++  quizPassed,
++  videoCompleted: videoCompletedServer,
++  canTakeQuiz,
++  showLockedNotice,
++  percent: initialPercent,
++}: Props) {
+   const router = useRouter()
+   const isDesktop = useMediaQuery('(min-width: 1024px)')
+   const [drawer, setDrawer] = React.useState(false)
+@@ -105,9 +144,9 @@ export function LessonPlayer({ course, sections, lesson, prevId, nextId, percent
+   }, [course.slug, lesson.id])
+ 
+   const done = completed.has(lesson.id)
+-  const [videoCompleted, setVideoCompleted] = React.useState(false)
+-  // Reset videoCompleted when lesson changes
+-  React.useEffect(() => setVideoCompleted(false), [lesson.id])
++  // completion is decided by the server (90% watched); this only mirrors it for a smooth UI
++  const [videoCompleted, setVideoCompleted] = React.useState(videoCompletedServer)
++  React.useEffect(() => setVideoCompleted(videoCompletedServer), [lesson.id, videoCompletedServer])
+ 
+   async function toggleComplete() {
+     setBusy(true)
+@@ -164,6 +203,12 @@ export function LessonPlayer({ course, sections, lesson, prevId, nextId, percent
+         </div>
+       </div>
+ 
++      {showLockedNotice ? (
++        <p role="status" className="mb-4 rounded-lg border border-border bg-muted p-3 text-sm">
++          That lesson is locked. Finish this video{hasQuiz ? ' and pass its quiz (80%)' : ''} to unlock the next one.
++        </p>
++      ) : null}
++
+       <div className="grid gap-6 lg:grid-cols-[1fr_20rem]">
+         <div className="min-w-0">
+           <h1 className="mb-4 text-2xl md:text-3xl">{lesson.title}</h1>
+@@ -172,31 +217,48 @@ export function LessonPlayer({ course, sections, lesson, prevId, nextId, percent
+               {messages.player.loadError}
+             </p>
+           ) : data ? (
+-            <>
+-              <LessonViewer
+-                type={lesson.type}
+-                title={lesson.title}
+-                data={data}
+-                lessonId={lesson.id}
+-                alreadyCompleted={done}
+-                onVideoCompleted={() => setVideoCompleted(true)}
+-              />
+-              {lesson.type === 'VIDEO' && videoCompleted && (
+-                <div className="mt-6">
+-                  <KbcQuizPanel
+-                    lessonId={lesson.id}
+-                    onPassed={() => {
+-                      // Mark the lesson complete on the server via the existing progress API
+-                      void toggleComplete()
+-                    }}
+-                  />
+-                </div>
+-              )}
+-            </>
++            <LessonViewer
++              type={lesson.type}
++              title={lesson.title}
++              data={data}
++              lessonId={lesson.id}
++              alreadyCompleted={videoCompleted}
++              onVideoCompleted={() => {
++                setVideoCompleted(true)
++                // re-read the lock state from the server so Next / the quiz button update
++                router.refresh()
++              }}
++            />
+           ) : (
+             <Skeleton className="aspect-video w-full" />
+           )}
+ 
++          {lesson.type === 'VIDEO' && hasQuiz && (
++            <div className="mt-6 rounded-xl border border-border bg-card p-5" data-testid="quiz-entry">
++              <h2 className="text-lg font-semibold">Quiz</h2>
++              {videoCompleted || canTakeQuiz ? (
++                <>
++                  <p className="mt-1 text-sm text-muted-foreground">
++                    {quizPassed
++                      ? 'You have passed this quiz. You can take it again.'
++                      : 'Pass the quiz (80%) to unlock the next video.'}
++                  </p>
++                  <Link
++                    href={`/learn/${course.slug}/${lesson.id}/quiz`}
++                    data-testid="take-quiz"
++                    className="mt-3 inline-flex min-h-11 items-center rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground"
++                  >
++                    {quizPassed ? 'Take quiz again' : 'Take quiz'}
++                  </Link>
++                </>
++              ) : (
++                <p className="mt-1 text-sm text-muted-foreground" data-testid="quiz-locked">
++                  The quiz opens after you watch at least 90% of this video.
++                </p>
++              )}
++              </div>
++            )}
++
+           <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+             {/* For non-VIDEO lessons keep the manual complete toggle; VIDEO completion is tracked automatically */}
+             {lesson.type !== 'VIDEO' ? (
+@@ -216,8 +278,8 @@ export function LessonPlayer({ course, sections, lesson, prevId, nextId, percent
+                   <ChevronLeft className="h-4 w-4" aria-hidden="true" /> {messages.player.previousLesson}
+                 </Link>
+               ) : null}
+-              {nextId ? (
+-                done ? (
++              {nextId || nextLocked ? (
++                nextId ? (
+                   <Link
+                     href={`/learn/${course.slug}/${nextId}`}
+                     className="inline-flex min-h-11 items-center gap-1 rounded-md border border-border px-4 text-sm font-semibold hover:bg-muted"
+@@ -228,7 +290,7 @@ export function LessonPlayer({ course, sections, lesson, prevId, nextId, percent
+                   <span
+                     className="inline-flex min-h-11 cursor-not-allowed items-center gap-1 rounded-md border border-border px-4 text-sm font-semibold opacity-40"
+                     aria-disabled="true"
+-                    title={lesson.type === 'VIDEO' ? 'Complete this video (and its quiz) to continue' : undefined}
++                    title="Complete this video (and pass its quiz) to unlock the next lesson"
+                   >
+                     {messages.player.nextLesson} <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                   </span>
+diff --git a/src/components/player/QuizForm.tsx b/src/components/player/QuizForm.tsx
+new file mode 100644
+index 0000000..c817867
+--- /dev/null
++++ b/src/components/player/QuizForm.tsx
+@@ -0,0 +1,284 @@
++'use client'
++
++import { useCallback, useEffect, useRef, useState } from 'react'
++import Link from 'next/link'
++
++/**
++ * Quiz as a form: every question on one page, the student answers all of them and presses Submit.
++ * Nothing is marked until Submit. The server then returns the score, which answers were wrong and
++ * the correct answers. 80% or more passes and unlocks the next video; below that the quiz can be retaken.
++ */
++interface QuizData {
++  title: string
++  passPercent: number
++  alreadyPassed: boolean
++  lastAttempt: { scorePercent: number; passed: boolean } | null
++  questions: Array<{ id: string; prompt: string; multiple: boolean; options: Array<{ id: string; text: string }> }>
++}
++interface ReviewItem {
++  questionId: string
++  correct: boolean
++  selectedOptionIds: string[]
++  correctOptionIds: string[]
++  explanation: string | null
++}
++interface Result {
++  passed: boolean
++  scorePercent: number
++  correct: number
++  total: number
++  passPercent: number
++  review: ReviewItem[]
++  nextLessonId: string | null
++}
++const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F']
++
++export function QuizForm({ lessonId, courseSlug }: { lessonId: string; courseSlug: string }) {
++  const [quiz, setQuiz] = useState<QuizData | null>(null)
++  const [answers, setAnswers] = useState<Record<string, string[]>>({})
++  const [result, setResult] = useState<Result | null>(null)
++  const [error, setError] = useState<string | null>(null)
++  const [busy, setBusy] = useState(false)
++  const resultRef = useRef<HTMLHeadingElement>(null)
++
++  const load = useCallback(async () => {
++    setError(null)
++    setResult(null)
++    setAnswers({})
++    const res = await fetch(`/api/lessons/${lessonId}/quiz`, { cache: 'no-store' })
++    const j = (await res.json().catch(() => null)) as QuizData & { error?: { message?: string } }
++    if (!res.ok) {
++      setQuiz(null)
++      setError(j?.error?.message ?? 'Could not load the quiz')
++      return
++    }
++    setQuiz(j)
++  }, [lessonId])
++
++  useEffect(() => {
++    void load()
++  }, [load])
++  useEffect(() => {
++    if (result) {
++      resultRef.current?.focus()
++      window.scrollTo({ top: 0, behavior: 'smooth' })
++    }
++  }, [result])
++
++  if (!quiz) {
++    return error ? (
++      <p role="alert" className="rounded-lg border border-border p-4 text-sm">
++        {error}
++      </p>
++    ) : (
++      <p className="p-4 text-sm text-muted-foreground">Loading quiz…</p>
++    )
++  }
++
++  const total = quiz.questions.length
++  const answered = quiz.questions.filter((q) => (answers[q.id]?.length ?? 0) > 0).length
++  const allAnswered = total > 0 && answered === total
++
++  function pick(qid: string, oid: string, multiple: boolean) {
++    setAnswers((cur) => {
++      const had = cur[qid] ?? []
++      const next = multiple ? (had.includes(oid) ? had.filter((x) => x !== oid) : [...had, oid]) : [oid]
++      return { ...cur, [qid]: next }
++    })
++  }
++
++  async function submit(e: React.FormEvent) {
++    e.preventDefault()
++    if (!allAnswered || busy) return
++    setBusy(true)
++    setError(null)
++    try {
++      const res = await fetch(`/api/lessons/${lessonId}/quiz/submit`, {
++        method: 'POST',
++        headers: { 'Content-Type': 'application/json' },
++        body: JSON.stringify({ answers }),
++      })
++      const j = (await res.json().catch(() => null)) as Result & { error?: { message?: string } }
++      if (!res.ok) throw new Error(j?.error?.message ?? 'Submit failed. Please try again.')
++      setResult(j)
++    } catch (err) {
++      setError((err as Error).message)
++    } finally {
++      setBusy(false)
++    }
++  }
++
++  // ── Result: score, mistakes and correct answers ──
++  if (result) {
++    const byId = new Map(result.review.map((r) => [r.questionId, r]))
++    const wrong = result.review.filter((r) => !r.correct).length
++    return (
++      <section data-testid="quiz-result" aria-live="polite" className="space-y-6">
++        <div className="rounded-xl border border-border bg-card p-5 md:p-8">
++          <h2 ref={resultRef} tabIndex={-1} className="text-xl font-semibold">
++            {result.passed ? 'You passed!' : 'Not passed yet'}
++          </h2>
++          <p className={`mt-2 text-3xl font-bold ${result.passed ? 'text-success-text' : 'text-danger-text'}`}>
++            {result.scorePercent}%{' '}
++            <span className="text-base font-medium text-muted-foreground">
++              ({result.correct} of {result.total} correct)
++            </span>
++          </p>
++          <p className="mt-2 text-sm">
++            {result.passed
++              ? 'The next video is now unlocked.'
++              : `You need ${result.passPercent}% to continue. Check the mistakes below, rewatch the video if you need to, then retake the quiz.`}
++          </p>
++          <div className="mt-5 flex flex-wrap gap-3">
++            {result.passed ? (
++              <Link
++                href={result.nextLessonId ? `/learn/${courseSlug}/${result.nextLessonId}` : `/courses/${courseSlug}`}
++                data-testid="quiz-continue"
++                className="inline-flex min-h-11 items-center rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground"
++              >
++                {result.nextLessonId ? 'Continue to next video' : 'Back to course'}
++              </Link>
++            ) : (
++              <button
++                type="button"
++                data-testid="quiz-retake"
++                onClick={() => void load()}
++                className="min-h-11 rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground"
++              >
++                Retake quiz
++              </button>
++            )}
++            <Link
++              href={`/learn/${courseSlug}/${lessonId}`}
++              className="inline-flex min-h-11 items-center rounded-md border border-border px-5 text-sm font-semibold hover:bg-muted"
++            >
++              Back to video
++            </Link>
++          </div>
++        </div>
++
++        <h3 className="text-lg font-semibold">
++          Review {wrong > 0 ? `· ${wrong} mistake${wrong === 1 ? '' : 's'}` : '· no mistakes'}
++        </h3>
++        <ol className="space-y-4">
++          {quiz.questions.map((q, qi) => {
++            const r = byId.get(q.id)
++            if (!r) return null
++            return (
++              <li
++                key={q.id}
++                data-testid="review-item"
++                data-correct={r.correct}
++                className={`rounded-xl border p-4 md:p-5 ${r.correct ? 'border-green-700/50 bg-green-50/40' : 'border-red-700/50 bg-red-50/40'}`}
++              >
++                <p className="font-semibold">
++                  {qi + 1}. {q.prompt}
++                </p>
++                <p className={`mt-1 text-sm font-semibold ${r.correct ? 'text-success-text' : 'text-danger-text'}`}>
++                  {r.correct ? '✓ Correct' : '✗ Wrong'}
++                </p>
++                <ul className="mt-3 space-y-2">
++                  {q.options.map((o, oi) => {
++                    const isRight = r.correctOptionIds.includes(o.id)
++                    const isMine = r.selectedOptionIds.includes(o.id)
++                    const tone = isRight
++                      ? 'border-green-700 bg-green-50'
++                      : isMine
++                        ? 'border-red-700 bg-red-50'
++                        : 'border-border bg-card opacity-70'
++                    return (
++                      <li key={o.id} className={`flex items-start gap-3 rounded-lg border px-3 py-2 text-sm ${tone}`}>
++                        <span className="font-bold">{LETTERS[oi]}</span>
++                        <span className="flex-1">{o.text}</span>
++                        {isRight && <span className="shrink-0 font-semibold text-success-text">Correct answer</span>}
++                        {isMine && !isRight && <span className="shrink-0 font-semibold text-danger-text">Your answer</span>}
++                        {isMine && isRight && <span className="shrink-0 text-xs text-muted-foreground">(your answer)</span>}
++                      </li>
++                    )
++                  })}
++                </ul>
++                {r.explanation && <p className="mt-3 text-sm text-muted-foreground">{r.explanation}</p>}
++              </li>
++            )
++          })}
++        </ol>
++      </section>
++    )
++  }
++
++  // ── The form ──
++  return (
++    <form onSubmit={submit} data-testid="quiz-form" className="space-y-6" noValidate>
++      <div className="rounded-xl border border-border bg-card p-5 md:p-6">
++        <h2 className="text-xl font-semibold">{quiz.title}</h2>
++        <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
++          <li>{total} questions. Answer all of them, then press Submit.</li>
++          <li>You see your score, your mistakes and the correct answers after you submit.</li>
++          <li>
++            You need <strong>{quiz.passPercent}%</strong> to unlock the next video. If you miss it, you can retake the quiz.
++          </li>
++        </ul>
++        {quiz.alreadyPassed && <p className="mt-3 text-sm font-medium text-success-text">✓ You have already passed this quiz.</p>}
++        {quiz.lastAttempt && !quiz.alreadyPassed && (
++          <p className="mt-3 text-sm">
++            Last attempt: {quiz.lastAttempt.scorePercent}% — {quiz.lastAttempt.passed ? 'passed' : 'not passed'}.
++          </p>
++        )}
++        {total === 0 && <p className="mt-4 text-sm">This quiz has no questions yet.</p>}
++      </div>
++
++      {quiz.questions.map((q, qi) => (
++        <fieldset key={q.id} data-testid="quiz-question" className="rounded-xl border border-border bg-card p-4 md:p-5">
++          <legend className="px-1 text-base font-semibold leading-snug">
++            {qi + 1}. {q.prompt}
++          </legend>
++          {q.multiple && <p className="mt-1 text-xs text-muted-foreground">Select all that apply</p>}
++          <div className="mt-3 space-y-2">
++            {q.options.map((o, oi) => {
++              const on = (answers[q.id] ?? []).includes(o.id)
++              return (
++                <label
++                  key={o.id}
++                  className={`flex min-h-12 cursor-pointer items-start gap-3 rounded-lg border px-3 py-2 text-sm ${
++                    on ? 'border-primary bg-muted ring-2 ring-primary' : 'border-border hover:bg-muted'
++                  }`}
++                >
++                  <input
++                    type={q.multiple ? 'checkbox' : 'radio'}
++                    name={q.id}
++                    checked={on}
++                    onChange={() => pick(q.id, o.id, q.multiple)}
++                    className="mt-1 h-4 w-4"
++                  />
++                  <span className="font-bold">{LETTERS[oi]}</span>
++                  <span className="flex-1">{o.text}</span>
++                </label>
++              )
++            })}
++          </div>
++        </fieldset>
++      ))}
++
++      <div className="sticky bottom-0 -mx-1 flex flex-wrap items-center justify-between gap-3 border-t border-border bg-background/95 px-1 py-3 backdrop-blur">
++        <span className="text-sm text-muted-foreground" aria-live="polite">
++          {answered} of {total} answered
++        </span>
++        <div className="flex items-center gap-3">
++          {error && (
++            <span role="alert" className="text-sm text-danger-text">
++              {error}
++            </span>
++          )}
++          <button
++            type="submit"
++            data-testid="quiz-submit"
++            disabled={!allAnswered || busy}
++            className="min-h-11 rounded-md bg-primary px-8 text-sm font-semibold text-primary-foreground disabled:opacity-50"
++          >
++            {busy ? 'Submitting…' : 'Submit'}
++          </button>
++        </div>
++      </div>
++    </form>
++  )
++}
+diff --git a/src/lib/data/progress.ts b/src/lib/data/progress.ts
+index 7b50501..8e9446c 100644
+--- a/src/lib/data/progress.ts
++++ b/src/lib/data/progress.ts
+@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
+ import { computeProgress } from '@/lib/utils/progress'
+ import type { CourseCardDTO, EnrolledCourseDTO, PlayerSectionDTO } from '@/lib/types'
+ import { getCourseCardsByIds } from './courses'
++import { getCourseGates, isStaff } from '@/lib/progress-service'
+ 
+ export async function isEnrolled(userId: string, courseId: string): Promise<boolean> {
+   const e = await db.enrollment.findUnique({
+@@ -199,7 +200,17 @@ export async function getLessonAccess(userId: string, courseSlug: string, lesson
+   }
+ }
+ 
+-export async function getPlayerData(userId: string, courseSlug: string, lessonId: string) {
++/**
++ * Everything the lesson page needs, with the sequential lock applied on the server:
++ * a student can only open a lesson once the previous video (and its quiz, if any) is done.
++ * Staff (admin / instructor) skip every lock.
++ */
++export async function getPlayerData(
++  user: { id: string; role: string },
++  courseSlug: string,
++  lessonId: string,
++) {
++  const userId = user.id
+   const course = await db.course.findUnique({
+     where: { slug: courseSlug },
+     include: {
+@@ -212,33 +223,65 @@ export async function getPlayerData(userId: string, courseSlug: string, lessonId
+   if (!course || course.status === 'DRAFT') return null
+   const enrolled = await isEnrolled(userId, course.id)
+   if (!enrolled) return { enrolled: false as const, courseSlug }
++
+   const progress = await getCourseProgress(userId, course.id)
+   const done = new Set(progress.completedLessonIds)
++  const { gates } = await getCourseGates(user, course.id)
++  const gateById = new Map(gates.map((g) => [g.lessonId, g]))
++
+   const sections: PlayerSectionDTO[] = course.sections.map((s) => ({
+     id: s.id,
+     title: s.title,
+-    lessons: s.lessons.map((l) => ({
+-      id: l.id,
+-      title: l.title,
+-      type: l.type,
+-      durationSeconds: l.durationSeconds,
+-      isFreePreview: l.isFreePreview,
+-      completed: done.has(l.id),
+-      locked: false,
+-    })),
++    lessons: s.lessons.map((l) => {
++      const g = gateById.get(l.id)
++      return {
++        id: l.id,
++        title: l.title,
++        type: l.type,
++        durationSeconds: l.durationSeconds,
++        isFreePreview: l.isFreePreview,
++        // a video is complete only after the 90% watch (and the quiz pass); documents use the manual mark
++        completed: l.type === 'VIDEO' ? g?.state === 'completed' : done.has(l.id),
++        locked: g?.locked ?? false,
++      }
++    }),
+   }))
+   const flat = sections.flatMap((s) => s.lessons)
+   const index = flat.findIndex((l) => l.id === lessonId)
+   if (index === -1) return { enrolled: true as const, missingLesson: true as const, courseSlug, flat }
++
++  const current = flat[index]
++  if (current.locked) {
++    // Refuse a locked lesson: send the student to the video they still have to finish.
++    const blocker = gates.find((g) => g.isVideo && !g.locked && g.state !== 'completed')
++    return {
++      enrolled: true as const,
++      missingLesson: false as const,
++      locked: true as const,
++      courseSlug,
++      resumeLessonId: blocker?.lessonId ?? flat[0]?.id ?? null,
++    }
++  }
++
++  const next = index < flat.length - 1 ? flat[index + 1] : null
++  const currentGate = gateById.get(lessonId)
++  const completedCount = flat.filter((l) => l.completed).length
+   return {
+     enrolled: true as const,
+     missingLesson: false as const,
++    locked: false as const,
+     course: { id: course.id, slug: course.slug, title: course.title },
+     sections,
+-    lesson: flat[index],
++    lesson: current,
+     prevId: index > 0 ? flat[index - 1].id : null,
+-    nextId: index < flat.length - 1 ? flat[index + 1].id : null,
+-    percent: progress.percent,
++    nextId: next && !next.locked ? next.id : null,
++    nextLocked: !!next && next.locked,
++    hasQuiz: !!currentGate?.quizRequired,
++    quizPassed: !!currentGate?.quizPassed,
++    videoCompleted: !!currentGate?.videoCompleted,
++    /** staff may open any quiz; students only after the video is complete */
++    canTakeQuiz: isStaff(user) || !!currentGate?.videoCompleted,
++    percent: computeProgress(completedCount, flat.length),
+   }
+ }
+ 
+diff --git a/src/lib/progress-service.ts b/src/lib/progress-service.ts
+index c0f64c9..32dceee 100644
+--- a/src/lib/progress-service.ts
++++ b/src/lib/progress-service.ts
+@@ -5,7 +5,6 @@
+ import type { Prisma } from '@prisma/client'
+ import { db } from '@/lib/db'
+ import { ApiError } from '@/lib/api/http'
+-import { getFreshUser } from '@/lib/auth/guards'
+ import {
+   PASS_PERCENT_DEFAULT,
+   computeGates,
+@@ -15,13 +14,15 @@ import {
+   type CurriculumLesson,
+   type LessonGate,
+ } from '@/lib/course-gating'
+-import { gradeQuiz } from '@/lib/quiz-grading'
++import { buildReview, gradeQuiz, unansweredQuestionIds } from '@/lib/quiz-grading'
+ import { coverage, coveredSeconds, mergeRanges, normalizeRanges, type Range } from '@/lib/watch-ranges'
+ 
+ export type SessionUser = { id: string; role: string }
+ export const isStaff = (u: SessionUser) => u.role === 'ADMIN' || u.role === 'INSTRUCTOR'
+ 
+ export async function requireUser(): Promise<SessionUser> {
++  // loaded lazily so the lock/quiz logic below can be imported (and tested) without the auth stack
++  const { getFreshUser } = await import('@/lib/auth/guards')
+   const u = await getFreshUser()
+   if (!u) throw new ApiError(401, 'UNAUTHENTICATED', 'Please log in')
+   return { id: u.id, role: u.role }
+@@ -162,10 +163,15 @@ export async function recordWatch(
+     ...(done && !existing?.videoCompletedAt ? { videoCompletedAt: now } : {}),
+   }
+ 
++  // A video with no quiz is complete as soon as the 90% watch is reached; with a quiz it waits for the pass.
++  const hasQuiz = (await db.quiz.count({ where: { lessonId } })) > 0
++  const finishNow = done && !hasQuiz && !existing?.completed
++  const completionData = finishNow ? { completed: true, completedAt: now } : {}
++
+   await db.lessonProgress.upsert({
+     where: { userId_lessonId: { userId: user.id, lessonId } },
+-    create: { userId: user.id, lessonId, courseId, completed: false, ...sharedData },
+-    update: sharedData,
++    create: { userId: user.id, lessonId, courseId, completed: false, ...sharedData, ...completionData },
++    update: { ...sharedData, ...completionData },
+   })
+   return { videoCompleted: done || !!existing?.videoCompletedAt, coverage: coverage(merged, duration) }
+ }
+@@ -240,14 +246,19 @@ export async function submitQuiz(
+     throw new ApiError(403, 'VIDEO_NOT_COMPLETED', 'Finish watching the video first')
+   }
+ 
+-  const result = gradeQuiz(
+-    quiz.questions.map((q) => ({
++  const gradeInput = [...quiz.questions]
++    .sort((a, b) => a.order - b.order)
++    .map((q) => ({
+       id: q.id,
++      explanation: q.explanation,
+       correctOptionIds: q.options.filter((o) => o.isCorrect).map((o) => o.id),
+-    })),
+-    answers,
+-    quiz.passPercent ?? PASS_PERCENT_DEFAULT,
+-  )
++    }))
++  // The form is graded only when every question is answered.
++  const missing = unansweredQuestionIds(gradeInput, answers)
++  if (missing.length > 0) {
++    throw new ApiError(400, 'INCOMPLETE', `Answer every question before submitting (${missing.length} left)`)
++  }
++  const result = gradeQuiz(gradeInput, answers, quiz.passPercent ?? PASS_PERCENT_DEFAULT)
+ 
+   await db.quizAttempt.create({
+     data: {
+@@ -265,7 +276,11 @@ export async function submitQuiz(
+   if (result.passed && !isStaff(user)) {
+     await db.lessonProgress.update({
+       where: { userId_lessonId: { userId: user.id, lessonId } },
+-      data: { quizPassedAt: progress?.quizPassedAt ?? new Date() },
++      data: {
++        quizPassedAt: progress?.quizPassedAt ?? new Date(),
++        completed: true,
++        completedAt: progress?.completedAt ?? new Date(),
++      },
+     })
+   }
+ 
+@@ -274,11 +289,8 @@ export async function submitQuiz(
+   return {
+     ...result,
+     passPercent: quiz.passPercent,
+-    explanations: result.passed
+-      ? Object.fromEntries(
+-          quiz.questions.filter((q) => q.explanation).map((q) => [q.id, q.explanation]),
+-        )
+-      : undefined,
++    // Score, mistakes and the correct answers are shown after Submit, pass or fail.
++    review: buildReview(gradeInput, answers),
+     nextLessonId: result.passed ? nextLessonId(lessons, lessonId) : null,
+   }
+ }
+diff --git a/src/lib/quiz-check.ts b/src/lib/quiz-check.ts
+deleted file mode 100644
+index 6b10998..0000000
+--- a/src/lib/quiz-check.ts
++++ /dev/null
+@@ -1,30 +0,0 @@
+-/**
+- * One-question-at-a-time check for the KBC-style quiz player.
+- * Returns ONLY { correct: boolean } — never which option is right — so a wrong answer
+- * can't be used to harvest the key. The final grade/unlock still comes from submitQuiz().
+- */
+-import { db } from '@/lib/db'
+-import { ApiError } from '@/lib/api/http'
+-import { isStaff, assertLessonAccess, type SessionUser } from '@/lib/progress-service'
+-import { checkAnswer } from '@/lib/quiz-grading'
+-
+-export async function checkQuizQuestion(
+-  user: SessionUser,
+-  lessonId: string,
+-  questionId: string,
+-  optionIds: string[],
+-): Promise<{ correct: boolean }> {
+-  await assertLessonAccess(user, lessonId)
+-  const question = await db.quizQuestion.findFirst({
+-    where: { id: questionId, quiz: { lessonId } },
+-    include: { options: true },
+-  })
+-  if (!question) throw new ApiError(404, 'NOT_FOUND', 'Question not found')
+-  const progress = await db.lessonProgress.findUnique({
+-    where: { userId_lessonId: { userId: user.id, lessonId } },
+-  })
+-  if (!isStaff(user) && !progress?.videoCompletedAt) {
+-    throw new ApiError(403, 'VIDEO_NOT_COMPLETED', 'Finish watching the video first')
+-  }
+-  return { correct: checkAnswer(question.options.filter((o) => o.isCorrect).map((o) => o.id), optionIds) }
+-}
+diff --git a/src/lib/quiz-grading.ts b/src/lib/quiz-grading.ts
+index bd45809..13ccccb 100644
+--- a/src/lib/quiz-grading.ts
++++ b/src/lib/quiz-grading.ts
+@@ -38,3 +38,32 @@ export function gradeQuiz(
+     perQuestion,
+   }
+ }
++
++/** Ids of questions that have no option chosen. The form must be fully answered before it is graded. */
++export function unansweredQuestionIds(
++  questions: GradeQuestion[],
++  answers: Record<string, string[] | undefined>,
++): string[] {
++  return questions.filter((q) => !(answers[q.id]?.length)).map((q) => q.id)
++}
++
++/** What the student sees after Submit: per question, their pick, the right answer and whether they got it. */
++export interface ReviewItem {
++  questionId: string
++  correct: boolean
++  selectedOptionIds: string[]
++  correctOptionIds: string[]
++  explanation: string | null
++}
++export function buildReview(
++  questions: Array<GradeQuestion & { explanation?: string | null }>,
++  answers: Record<string, string[] | undefined>,
++): ReviewItem[] {
++  return questions.map((q) => ({
++    questionId: q.id,
++    correct: checkAnswer(q.correctOptionIds, answers[q.id]),
++    selectedOptionIds: answers[q.id] ?? [],
++    correctOptionIds: q.correctOptionIds,
++    explanation: q.explanation ?? null,
++  }))
++}
+diff --git a/tests/integration/part9-student-flow.test.ts b/tests/integration/part9-student-flow.test.ts
+new file mode 100644
+index 0000000..ddafe85
+--- /dev/null
++++ b/tests/integration/part9-student-flow.test.ts
+@@ -0,0 +1,233 @@
++import { describe, expect, it } from 'vitest'
++import { readFileSync } from 'node:fs'
++import { db } from '@/lib/db'
++import { getPlayerData } from '@/lib/data/progress'
++import { assertLessonAccess, getQuizForStudent, recordWatch, submitQuiz } from '@/lib/progress-service'
++import { makeCourse, makeUser } from './factories'
++
++/**
++ * The Part 9 rules, run against the real server code and a real database:
++ * 90% watch → quiz opens → 80% pass → next video unlocks; locked lessons are refused by address.
++ * Layout: 7 videos (quizzes on 2, 4, 5, 7) and 3 slide files, in the order students see them.
++ */
++const LAYOUT = [
++  ['v1', 'Crack-Like Flaws – Part 1', 'VIDEO'],
++  ['v2', 'Crack-Like Flaws – Part 2', 'VIDEO'],
++  ['v3', 'Flaw Characterization – Part 1', 'VIDEO'],
++  ['v4', 'Flaw Characterization – Part 2', 'VIDEO'],
++  ['s1', 'Lecture slides 1', 'DOCUMENT'],
++  ['v5', 'Flaw Depth Characterization', 'VIDEO'],
++  ['s2', 'Lecture slides 2', 'DOCUMENT'],
++  ['v6', 'Branched & Multiple Flaws – Part 1', 'VIDEO'],
++  ['v7', 'Branched & Multiple Flaws – Part 2', 'VIDEO'],
++  ['s3', 'Lecture slides 3', 'DOCUMENT'],
++] as const
++const DURATION = 1200
++
++interface QuizJson {
++  lessonTitle: string
++  title: string
++  passPercent: number
++  questions: Array<{ prompt: string; options: string[]; correct: number[]; explanation?: string }>
++}
++
++async function fixture() {
++  const teacher = await makeUser({ role: 'INSTRUCTOR' })
++  const student = await makeUser()
++  const admin = await makeUser({ role: 'ADMIN' })
++  const course = await makeCourse({ instructorId: teacher.id })
++  const section = await db.section.create({ data: { courseId: course.id, title: 'Part 9', order: 1 } })
++  const L: Record<string, { id: string }> = {}
++  for (const [i, [key, title, type]] of LAYOUT.entries()) {
++    L[key] = await db.lesson.create({
++      data: {
++        sectionId: section.id,
++        title,
++        type,
++        order: i + 1,
++        durationSeconds: type === 'VIDEO' ? DURATION : 0,
++        isFreePreview: false,
++      },
++    })
++  }
++  // the same quizzes the import script writes
++  const quizzes = JSON.parse(readFileSync('scripts/quizzes.part9.json', 'utf8')) as QuizJson[]
++  for (const q of quizzes) {
++    const lesson = await db.lesson.findFirstOrThrow({ where: { title: q.lessonTitle, section: { courseId: course.id } } })
++    const quiz = await db.quiz.create({ data: { lessonId: lesson.id, title: q.title, passPercent: q.passPercent } })
++    for (const [qi, x] of q.questions.entries()) {
++      await db.quizQuestion.create({
++        data: {
++          quizId: quiz.id,
++          prompt: x.prompt,
++          explanation: x.explanation ?? null,
++          order: qi + 1,
++          options: { create: x.options.map((t, oi) => ({ text: t, isCorrect: x.correct.includes(oi), order: oi + 1 })) },
++        },
++      })
++    }
++  }
++  await db.enrollment.createMany({
++    data: [
++      { userId: student.id, courseId: course.id },
++      { userId: admin.id, courseId: course.id },
++    ],
++  })
++  return {
++    slug: course.slug,
++    L,
++    student: { id: student.id, role: student.role as string },
++    admin: { id: admin.id, role: admin.role as string },
++  }
++}
++type Fx = Awaited<ReturnType<typeof fixture>>
++
++/** a genuine watch: the heartbeat is old enough that covering 95% of the video is plausible */
++async function watch(fx: Fx, key: string, fraction = 0.95) {
++  const lessonId = fx.L[key].id
++  await db.lessonProgress.upsert({
++    where: { userId_lessonId: { userId: fx.student.id, lessonId } },
++    create: { userId: fx.student.id, lessonId, courseId: '', lastHeartbeatAt: new Date(Date.now() - 3600_000) },
++    update: { lastHeartbeatAt: new Date(Date.now() - 3600_000) },
++  })
++  return recordWatch(fx.student, lessonId, [[0, Math.floor(DURATION * fraction)]], DURATION)
++}
++
++/** answers for a quiz with exactly `right` questions correct */
++async function answers(fx: Fx, key: string, right: number) {
++  const quiz = await getQuizForStudent(fx.student, fx.L[key].id)
++  const out: Record<string, string[]> = {}
++  for (const [i, q] of quiz.questions.entries()) {
++    const opts = await db.quizOption.findMany({ where: { questionId: q.id } })
++    const pick = i < right ? opts.filter((o) => o.isCorrect) : opts.filter((o) => !o.isCorrect).slice(0, 1)
++    out[q.id] = pick.map((o) => o.id)
++  }
++  return out
++}
++const view = (fx: Fx, key: string, user = fx.student) => getPlayerData(user, fx.slug, fx.L[key].id)
++const isLocked = async (fx: Fx, key: string) => {
++  const d = await view(fx, key)
++  return !!d && 'locked' in d && d.locked === true
++}
++
++describe('Part 9 student rules on the real server code', () => {
++  it('a fresh student can open only video 1; lessons 2..10 are refused by address', async () => {
++    const fx = await fixture()
++    expect(await isLocked(fx, 'v1')).toBe(false)
++    for (const k of ['v2', 'v3', 'v4', 's1', 'v5', 's2', 'v6', 'v7', 's3']) expect(await isLocked(fx, k), k).toBe(true)
++    await expect(assertLessonAccess(fx.student, fx.L.v7.id)).rejects.toMatchObject({ status: 403, code: 'LESSON_LOCKED' })
++  })
++
++  it('locked lesson redirects to the video the student still has to finish', async () => {
++    const fx = await fixture()
++    const d = await view(fx, 'v7')
++    expect(d).toMatchObject({ locked: true, resumeLessonId: fx.L.v1.id })
++  })
++
++  it('rule 1: skipping to the end does not complete a video; 90% of the playing time does', async () => {
++    const fx = await fixture()
++    // a huge jump with no real playing time is rejected
++    await expect(recordWatch(fx.student, fx.L.v1.id, [[0, DURATION]], DURATION)).rejects.toMatchObject({ code: 'IMPLAUSIBLE_WATCH' })
++    // only the last 10 seconds played → not complete
++    expect((await watch(fx, 'v1', 0.01)).videoCompleted).toBe(false)
++    expect(await isLocked(fx, 'v2')).toBe(true)
++    // 95% played → complete
++    expect((await watch(fx, 'v1')).videoCompleted).toBe(true)
++  })
++
++  it('rule 6: video 1 has no quiz, so the 90% watch alone unlocks video 2', async () => {
++    const fx = await fixture()
++    expect(await isLocked(fx, 'v2')).toBe(true)
++    await watch(fx, 'v1')
++    expect(await isLocked(fx, 'v2')).toBe(false)
++  })
++
++  it('rule 2: the quiz is closed until the video is complete (read and submit both refused)', async () => {
++    const fx = await fixture()
++    await watch(fx, 'v1')
++    await expect(getQuizForStudent(fx.student, fx.L.v2.id)).rejects.toMatchObject({ code: 'VIDEO_NOT_COMPLETED' })
++    await expect(submitQuiz(fx.student, fx.L.v2.id, { x: ['y'] })).rejects.toMatchObject({ code: 'VIDEO_NOT_COMPLETED' })
++    await watch(fx, 'v2', 0.5) // half is not enough
++    await expect(getQuizForStudent(fx.student, fx.L.v2.id)).rejects.toMatchObject({ code: 'VIDEO_NOT_COMPLETED' })
++    await watch(fx, 'v2')
++    const quiz = await getQuizForStudent(fx.student, fx.L.v2.id)
++    expect(quiz.questions).toHaveLength(8)
++    // the answer key is never sent to the student
++    expect(JSON.stringify(quiz)).not.toContain('isCorrect')
++  })
++
++  it('rule 5: finishing the video is not enough on its own; video 3 stays locked until the quiz is passed', async () => {
++    const fx = await fixture()
++    await watch(fx, 'v1')
++    await watch(fx, 'v2')
++    expect(await isLocked(fx, 'v3')).toBe(true)
++  })
++
++  it('rule 3/4: the form must be fully answered; 6/8 fails and can be retaken; 7/8 passes and unlocks video 3', async () => {
++    const fx = await fixture()
++    await watch(fx, 'v1')
++    await watch(fx, 'v2')
++
++    // unanswered questions → refused, not graded
++    const partial = await answers(fx, 'v2', 8)
++    delete partial[Object.keys(partial)[0]]
++    await expect(submitQuiz(fx.student, fx.L.v2.id, partial)).rejects.toMatchObject({ status: 400, code: 'INCOMPLETE' })
++
++    // 6 of 8 = 75% → not passed, next video still locked, mistakes and correct answers are shown
++    const fail = await submitQuiz(fx.student, fx.L.v2.id, await answers(fx, 'v2', 6))
++    expect(fail).toMatchObject({ passed: false, correct: 6, total: 8, scorePercent: 75 })
++    expect(fail.review.filter((r) => !r.correct)).toHaveLength(2)
++    for (const r of fail.review) expect(r.correctOptionIds.length).toBeGreaterThan(0)
++    expect(await isLocked(fx, 'v3')).toBe(true)
++
++    // retake allowed; 7 of 8 = 87.5% → passed
++    const pass = await submitQuiz(fx.student, fx.L.v2.id, await answers(fx, 'v2', 7))
++    expect(pass).toMatchObject({ passed: true, correct: 7, nextLessonId: fx.L.v3.id })
++    expect(await isLocked(fx, 'v3')).toBe(false)
++    // every attempt is kept
++    expect(await db.quizAttempt.count({ where: { userId: fx.student.id, lessonId: fx.L.v2.id } })).toBe(2)
++  })
++
++  it('pass marks per quiz: 7/8, 4/5, 4/4, 7/8 (one question fewer fails)', async () => {
++    const fx = await fixture()
++    const plan: Array<[string, number, number]> = [['v2', 8, 7], ['v4', 5, 4], ['v5', 4, 4], ['v7', 8, 7]]
++    await watch(fx, 'v1')
++    for (const [key, total, need] of plan) {
++      // unlock path: finish whatever precedes this video so it is reachable
++      if (key === 'v4') { await watch(fx, 'v3') }
++      if (key === 'v5') { /* slides never block */ }
++      if (key === 'v7') { await watch(fx, 'v6') }
++      await watch(fx, key)
++      const below = await submitQuiz(fx.student, fx.L[key].id, await answers(fx, key, need - 1))
++      expect(below.passed, `${key} ${need - 1}/${total}`).toBe(false)
++      const ok = await submitQuiz(fx.student, fx.L[key].id, await answers(fx, key, need))
++      expect(ok.passed, `${key} ${need}/${total}`).toBe(true)
++      expect(ok.total).toBe(total)
++    }
++  })
++
++  it('rule 7: slide files never block; they open after video 4 and video 5 opens without touching them', async () => {
++    const fx = await fixture()
++    await watch(fx, 'v1'); await watch(fx, 'v2'); await submitQuiz(fx.student, fx.L.v2.id, await answers(fx, 'v2', 8))
++    await watch(fx, 'v3'); await watch(fx, 'v4'); await submitQuiz(fx.student, fx.L.v4.id, await answers(fx, 'v4', 5))
++    expect(await isLocked(fx, 's1')).toBe(false)
++    expect(await isLocked(fx, 'v5')).toBe(false) // slide 1 was never opened or marked
++    expect(await isLocked(fx, 'v6')).toBe(true)
++  })
++
++  it('rule 8: an admin skips every lock and can open any quiz', async () => {
++    const fx = await fixture()
++    for (const k of ['v3', 'v7', 's3']) {
++      const d = await view(fx, k, fx.admin)
++      expect(d && 'locked' in d && d.locked, k).toBe(false)
++    }
++    await expect(getQuizForStudent(fx.admin, fx.L.v7.id)).resolves.toBeDefined()
++  })
++
++  it('a quiz pass for a video that was never watched cannot be forged by submitting', async () => {
++    const fx = await fixture()
++    await watch(fx, 'v1')
++    await expect(submitQuiz(fx.student, fx.L.v2.id, { fake: ['x'] })).rejects.toMatchObject({ code: 'VIDEO_NOT_COMPLETED' })
++    expect(await isLocked(fx, 'v3')).toBe(true)
++  })
++})
+diff --git a/tests/unit/check-answer.test.ts b/tests/unit/check-answer.test.ts
+index 2209b44..5368e07 100644
+--- a/tests/unit/check-answer.test.ts
++++ b/tests/unit/check-answer.test.ts
+@@ -1,7 +1,7 @@
+ import { describe, expect, it } from 'vitest'
+ import { checkAnswer } from '@/lib/quiz-grading'
+ 
+-describe('checkAnswer (per-question check used by the KBC quiz)', () => {
++describe('checkAnswer (used when the quiz form is graded)', () => {
+   it('single answer needs an exact match', () => {
+     expect(checkAnswer(['a'], ['a'])).toBe(true)
+     expect(checkAnswer(['a'], ['b'])).toBe(false)
+diff --git a/tests/unit/part9-rules.test.ts b/tests/unit/part9-rules.test.ts
+new file mode 100644
+index 0000000..632431c
+--- /dev/null
++++ b/tests/unit/part9-rules.test.ts
+@@ -0,0 +1,117 @@
++import { describe, expect, it } from 'vitest'
++import { readFileSync } from 'node:fs'
++import { computeGates, flattenCurriculum, type CurriculumSection } from '@/lib/course-gating'
++import { buildReview, gradeQuiz, unansweredQuestionIds } from '@/lib/quiz-grading'
++import { coverage } from '@/lib/watch-ranges'
++
++/** Part 9: 7 videos (quizzes on 2, 4, 5, 7) and 3 slide files, in the order students see them. */
++const lessons = [
++  { id: 'v1', type: 'VIDEO', hasQuiz: false },
++  { id: 'v2', type: 'VIDEO', hasQuiz: true },
++  { id: 'v3', type: 'VIDEO', hasQuiz: false },
++  { id: 'v4', type: 'VIDEO', hasQuiz: true },
++  { id: 's1', type: 'DOCUMENT', hasQuiz: false },
++  { id: 'v5', type: 'VIDEO', hasQuiz: true },
++  { id: 's2', type: 'DOCUMENT', hasQuiz: false },
++  { id: 'v6', type: 'VIDEO', hasQuiz: false },
++  { id: 'v7', type: 'VIDEO', hasQuiz: true },
++  { id: 's3', type: 'DOCUMENT', hasQuiz: false },
++] as const
++const sections: CurriculumSection[] = [
++  { order: 1, lessons: lessons.map((l, i) => ({ ...l, order: i + 1, isFreePreview: false })) },
++]
++const flat = flattenCurriculum(sections)
++const gates = (p: Parameters<typeof computeGates>[1]) => computeGates(flat, p)
++const locked = (p: Parameters<typeof computeGates>[1]) => gates(p).filter((g) => g.locked).map((g) => g.lessonId)
++const watched = { videoCompleted: true, quizPassed: false }
++const passed = { videoCompleted: true, quizPassed: true }
++
++describe('Part 9 lock rules (student)', () => {
++  it('fresh student: only video 1 is open, everything after it is locked', () => {
++    expect(locked({})).toEqual(['v2', 'v3', 'v4', 's1', 'v5', 's2', 'v6', 'v7', 's3'])
++  })
++  it('video 1 (no quiz) needs only the watch', () => {
++    expect(locked({ v1: watched })).not.toContain('v2')
++  })
++  it('video 2 has a quiz: watching is not enough, the pass unlocks video 3', () => {
++    expect(locked({ v1: watched, v2: watched })).toContain('v3')
++    expect(locked({ v1: watched, v2: passed })).not.toContain('v3')
++  })
++  it('a quiz pass without the video watched does not unlock anything', () => {
++    expect(locked({ v1: watched, v2: { videoCompleted: false, quizPassed: true } })).toContain('v3')
++  })
++  it('video 3 (no quiz) needs only the watch', () => {
++    expect(locked({ v1: watched, v2: passed, v3: watched })).not.toContain('v4')
++  })
++  it('slide files never hold up the next video', () => {
++    // after video 4 (quiz passed) the slide s1 is open and v5 is open without "completing" s1
++    const l = locked({ v1: watched, v2: passed, v3: watched, v4: passed })
++    expect(l).not.toContain('s1')
++    expect(l).not.toContain('v5')
++  })
++  it('video 7 only opens after video 6 and everything before it', () => {
++    const upTo6 = { v1: watched, v2: passed, v3: watched, v4: passed, v5: passed, v6: watched }
++    // v7 is open; only slide 3 (which comes after v7) is still locked
++    expect(locked(upTo6)).toEqual(['s3'])
++    expect(locked({ ...upTo6, v6: undefined })).toContain('v7')
++  })
++})
++
++describe('90% watch rule', () => {
++  it('seeking to the end does not count; 90% of seconds played does', () => {
++    expect(coverage([[1190, 1200]], 1200)).toBeLessThan(0.9)
++    expect(coverage([[0, 1079]], 1200)).toBeLessThan(0.9)
++    expect(coverage([[0, 1080]], 1200)).toBeGreaterThanOrEqual(0.9)
++  })
++})
++
++interface Item {
++  lessonTitle: string
++  passPercent: number
++  questions: Array<{ prompt: string; options: string[]; correct: number[]; explanation?: string }>
++}
++const quizzes = JSON.parse(readFileSync('scripts/quizzes.part9.json', 'utf8')) as Item[]
++const ids = (n: number) => Array.from({ length: n }, (_, i) => ({ id: `q${i}`, correctOptionIds: ['right'] }))
++const answersWithRight = (n: number, right: number) =>
++  Object.fromEntries(Array.from({ length: n }, (_, i) => [`q${i}`, [i < right ? 'right' : 'wrong']]))
++
++describe('Part 9 quizzes (80% pass mark)', () => {
++  const expected: Array<[string, number, number]> = [
++    ['Crack-Like Flaws – Part 2', 8, 7],
++    ['Flaw Characterization – Part 2', 5, 4],
++    ['Flaw Depth Characterization', 4, 4],
++    ['Branched & Multiple Flaws – Part 2', 8, 7],
++  ]
++  it.each(expected)('%s: %i questions, %i needed to pass', (title, n, need) => {
++    const q = quizzes.find((x) => x.lessonTitle === title)
++    expect(q, title).toBeDefined()
++    expect(q!.questions).toHaveLength(n)
++    expect(q!.passPercent).toBe(80)
++    expect(gradeQuiz(ids(n), answersWithRight(n, need), 80).passed).toBe(true)
++    expect(gradeQuiz(ids(n), answersWithRight(n, need - 1), 80).passed).toBe(false)
++  })
++  it('every question has valid options and at least one correct answer', () => {
++    for (const q of quizzes) for (const x of q.questions) {
++      expect(x.options.length).toBeGreaterThanOrEqual(2)
++      expect(x.correct.length).toBeGreaterThan(0)
++      expect(x.correct.every((c) => c >= 0 && c < x.options.length)).toBe(true)
++    }
++  })
++})
++
++describe('quiz form: graded only when fully answered, then reviewed', () => {
++  const qs = [
++    { id: 'a', correctOptionIds: ['a1'], explanation: 'because' },
++    { id: 'b', correctOptionIds: ['b2'], explanation: null },
++  ]
++  it('reports questions left unanswered', () => {
++    expect(unansweredQuestionIds(qs, { a: ['a1'] })).toEqual(['b'])
++    expect(unansweredQuestionIds(qs, { a: ['a1'], b: [] })).toEqual(['b'])
++    expect(unansweredQuestionIds(qs, { a: ['a1'], b: ['b1'] })).toEqual([])
++  })
++  it('review shows the mistake, the student pick and the correct answer', () => {
++    const r = buildReview(qs, { a: ['a1'], b: ['b1'] })
++    expect(r[0]).toMatchObject({ questionId: 'a', correct: true, explanation: 'because' })
++    expect(r[1]).toMatchObject({ questionId: 'b', correct: false, selectedOptionIds: ['b1'], correctOptionIds: ['b2'] })
++  })
++})
+-- 
+2.43.0
+

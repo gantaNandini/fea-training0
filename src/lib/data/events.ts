@@ -43,6 +43,8 @@ export interface UpcomingCourseDTO {
   level: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED'
   thumbnail: string | null
   durationHours: number | null
+  /** 1-12, or null = shown under "In progress" */
+  upcomingMonth: number | null
 }
 
 /** Courses with status UPCOMING ("coming soon"). */
@@ -51,11 +53,11 @@ export const getUpcomingCourses = unstable_cache(
     const rows = await db.course.findMany({
       where: { status: 'UPCOMING' },
       orderBy: { createdAt: 'desc' },
-      select: { id: true, slug: true, title: true, shortDescription: true, level: true, thumbnail: true, durationHours: true },
+      select: { id: true, slug: true, title: true, shortDescription: true, level: true, thumbnail: true, durationHours: true, upcomingMonth: true },
     })
     return rows
   },
-  ['upcoming-courses-v2'],
+  ['upcoming-courses-v3'],
   { tags: ['courses', 'content'], revalidate: 300 },
 )
 

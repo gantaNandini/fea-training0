@@ -21,7 +21,7 @@ export interface CourseState {
   price: string; discountPrice: string; isFree: boolean; featured: boolean; featuredOrder: string
   thumbnail: string; previewVideoUrl: string; instructorId: string
   categoryIds: string[]; primaryCategoryId: string
-  requirements: string; outcomes: string; tags: string; eligibility: string; syllabusUrl: string; durationHours: string; seoTitle: string; seoDescription: string
+  requirements: string; outcomes: string; tags: string; eligibility: string; syllabusUrl: string; durationHours: string; upcomingMonth: string; seoTitle: string; seoDescription: string
   sections: SectionState[]
 }
 
@@ -98,6 +98,7 @@ export function CourseEditor({
       eligibility: lines(c.eligibility),
       syllabusUrl: c.syllabusUrl || null,
       durationHours: c.durationHours.trim() === '' ? null : Math.max(0, Math.round(Number(c.durationHours) || 0)),
+      upcomingMonth: c.upcomingMonth === '' ? null : Math.min(12, Math.max(1, Math.round(Number(c.upcomingMonth) || 1))),
       seoTitle: c.seoTitle || null, seoDescription: c.seoDescription || null,
       categoryIds: c.categoryIds, primaryCategoryId: c.primaryCategoryId || null,
       sections: c.sections.map((s) => ({

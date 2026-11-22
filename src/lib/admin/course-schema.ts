@@ -48,6 +48,7 @@ export const courseInput = z.object({
   tags: z.array(z.string().trim().min(1).max(40)).max(20),
   syllabusUrl: optionalText(1000),
   durationHours: z.number().int().min(0).max(10_000).nullable(),
+  upcomingMonth: z.number().int().min(1).max(12).nullable(),
   eligibility: z.array(z.string().trim().min(1).max(300)).max(30),
   seoTitle: optionalText(120),
   seoDescription: optionalText(300),

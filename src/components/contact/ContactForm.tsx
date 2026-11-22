@@ -8,7 +8,7 @@ import { contactSchema } from '@/lib/utils/validation'
 import { messages } from '@/lib/messages'
 
 export function ContactForm() {
-  const [values, setValues] = React.useState({ name: '', email: '', subject: '', message: '' })
+  const [values, setValues] = React.useState({ name: '', email: '', subject: '', message: '', website: '' })
   const [errors, setErrors] = React.useState<Record<string, string>>({})
   const [busy, setBusy] = React.useState(false)
   const [sent, setSent] = React.useState(false)
@@ -31,7 +31,7 @@ export function ContactForm() {
     setBusy(false)
     if (res.ok) {
       setSent(true)
-      setValues({ name: '', email: '', subject: '', message: '' })
+      setValues({ name: '', email: '', subject: '', message: '', website: '' })
       toast.success(messages.contact.sent)
     } else toast.error(res.status === 429 ? messages.errors.network : messages.common.somethingWrong)
   }
@@ -45,6 +45,13 @@ export function ContactForm() {
   }
   return (
     <form onSubmit={submit} noValidate className="space-y-4">
+      {/* Honeypot: invisible to people and screen readers; bots fill it in and are ignored. */}
+      <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+        <label>
+          Leave this empty
+          <input type="text" name="website" tabIndex={-1} autoComplete="off" value={values.website} onChange={(e) => setValues({ ...values, website: e.target.value })} />
+        </label>
+      </div>
       <FormField id="ct-name" label={messages.contact.name} error={errors.name}>
         {(p) => <Input {...p} autoComplete="name" value={values.name} onChange={(e) => setValues({ ...values, name: e.target.value })} />}
       </FormField>

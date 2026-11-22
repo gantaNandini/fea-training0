@@ -4,7 +4,7 @@ import type { EmailMessage, EmailProvider } from './index'
 export class ConsoleEmailProvider implements EmailProvider {
   async send(message: EmailMessage): Promise<void> {
     console.log(
-      `\n[email:console] To: ${message.to}\n[email:console] Subject: ${message.subject}\n${message.text}\n`,
+      `\n[email:console] To: ${message.to}\n${message.replyTo ? `[email:console] Reply-To: ${message.replyTo}\n` : ''}[email:console] Subject: ${message.subject}\n${message.text}\n`,
     )
   }
 }

@@ -36,6 +36,8 @@ export const contactSchema = z.object({
   email: emailSchema,
   subject: z.string().trim().min(3, 'Enter a subject').max(150),
   message: z.string().trim().min(20, 'Message must be at least 20 characters').max(5000),
+  /** Honeypot: hidden from people, so only bots fill it in. */
+  website: z.string().max(200).optional(),
 })
 
 export const newsletterSchema = z.object({ email: emailSchema })

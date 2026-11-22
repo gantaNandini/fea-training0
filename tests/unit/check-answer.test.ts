@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { checkAnswer } from '@/lib/quiz-grading'
 
-describe('checkAnswer (per-question check used by the KBC quiz)', () => {
+describe('checkAnswer (used when the quiz form is graded)', () => {
   it('single answer needs an exact match', () => {
     expect(checkAnswer(['a'], ['a'])).toBe(true)
     expect(checkAnswer(['a'], ['b'])).toBe(false)

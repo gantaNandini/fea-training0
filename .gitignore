@@ -18,7 +18,7 @@ playwright-report
 test-results
 
 # local storage
-storage/
+/storage/
 public/uploads/avatars/*
 !public/uploads/avatars/.gitkeep
 

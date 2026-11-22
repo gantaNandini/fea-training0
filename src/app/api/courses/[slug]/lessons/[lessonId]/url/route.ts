@@ -1,6 +1,7 @@
-import { fail, forbidden, ok, unauthenticated } from '@/lib/api/http'
+import { ApiError, fail, forbidden, ok, unauthenticated } from '@/lib/api/http'
 import { getFreshUser } from '@/lib/auth/guards'
 import { getLessonAccess, touchEnrollment } from '@/lib/data/progress'
+import { assertLessonAccess } from '@/lib/progress-service'
 import { videoProvider } from '@/lib/video'
 import { storage } from '@/lib/storage'
 import { isPlaceholder } from '@/lib/placeholder'
@@ -20,6 +21,16 @@ export async function GET(_req: Request, ctx: { params: Promise<{ slug: string; 
   const access = await getLessonAccess(user.id, slug, lessonId)
   if (!access) return fail('NOT_FOUND', 'Lesson not found.', 404)
   if (!access.allowed) return forbidden('Enrol in this course to watch this lesson.')
+
+  // sequential lock: the video/file of a locked lesson is never handed out
+  if (access.enrolled && !access.isFreePreview) {
+    try {
+      await assertLessonAccess({ id: user.id, role: user.role }, lessonId)
+    } catch (e) {
+      if (e instanceof ApiError) return fail(e.code, e.message, e.status)
+      throw e
+    }
+  }
 
   if (access.enrolled) await touchEnrollment(user.id, access.courseId, access.lessonId)
 

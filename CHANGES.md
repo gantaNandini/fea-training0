@@ -1,3 +1,17 @@
+# Lesson locks + quiz form – 22 Nov 2026
+
+Students now go through Part 9 one video at a time, enforced on the server.
+
+- A lesson opens only after the previous video is watched (90% of the playing time; skipping ahead does not count) and, where the video has a quiz, the quiz is passed (80%). Typing a locked lesson's address sends the student back to the video they still have to finish. Slides never block anything. Admins and instructors skip all locks.
+- Course content list shows a lock on locked lessons and they cannot be clicked. The Next lesson button works only once the next lesson is unlocked.
+- The quiz is no longer shown under the video. After the video is complete a "Take quiz" button opens the quiz as a form (`/learn/<course>/<lesson>/quiz`) with all questions on one page. Nothing is marked until Submit; then the student sees the score, which answers were wrong and the correct answers. 80% or more passes and unlocks the next video; below that the quiz can be retaken.
+- Closed loopholes: the signed video/file URL of a locked lesson is refused, a student cannot mark a video complete by hand (`/api/progress`), and the one-question `/quiz/check` endpoint (which gave instant right/wrong) is removed.
+- `scripts/quizzes.part9.json`: the four Part 9 quizzes (8, 5, 4 and 8 questions). Load with
+  `pnpm exec tsx scripts/import-quizzes.ts scripts/quizzes.part9.json` (dry run), then add `--apply`.
+  Note: this replaces the 25-question quiz currently on "Branched & Multiple Flaws – Part 2" with the 8-question Section D quiz.
+- `.gitignore`: `storage/` also hid `src/lib/storage/`, so that folder was never in git and a build from GitHub fails ("Cannot find module '@/lib/storage'"). The rule is now `/storage/`. Run `git add src/lib/storage` and commit it.
+- Tests: `tests/unit/part9-rules.test.ts` (lock sequence, 90% rule, pass marks) and `tests/integration/part9-student-flow.test.ts` (the same rules against a real database).
+
 # Website updates – 12 Nov 2026 (overlay on pythagoras-lms)
 
 Copy these files over the project (paths preserved), then:

@@ -38,3 +38,32 @@ export function gradeQuiz(
     perQuestion,
   }
 }
+
+/** Ids of questions that have no option chosen. The form must be fully answered before it is graded. */
+export function unansweredQuestionIds(
+  questions: GradeQuestion[],
+  answers: Record<string, string[] | undefined>,
+): string[] {
+  return questions.filter((q) => !(answers[q.id]?.length)).map((q) => q.id)
+}
+
+/** What the student sees after Submit: per question, their pick, the right answer and whether they got it. */
+export interface ReviewItem {
+  questionId: string
+  correct: boolean
+  selectedOptionIds: string[]
+  correctOptionIds: string[]
+  explanation: string | null
+}
+export function buildReview(
+  questions: Array<GradeQuestion & { explanation?: string | null }>,
+  answers: Record<string, string[] | undefined>,
+): ReviewItem[] {
+  return questions.map((q) => ({
+    questionId: q.id,
+    correct: checkAnswer(q.correctOptionIds, answers[q.id]),
+    selectedOptionIds: answers[q.id] ?? [],
+    correctOptionIds: q.correctOptionIds,
+    explanation: q.explanation ?? null,
+  }))
+}

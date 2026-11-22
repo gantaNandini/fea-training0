@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { computeProgress } from '@/lib/utils/progress'
 import type { CourseCardDTO, EnrolledCourseDTO, PlayerSectionDTO } from '@/lib/types'
 import { getCourseCardsByIds } from './courses'
+import { getCourseGates, isStaff } from '@/lib/progress-service'
 
 export async function isEnrolled(userId: string, courseId: string): Promise<boolean> {
   const e = await db.enrollment.findUnique({
@@ -199,7 +200,17 @@ export async function getLessonAccess(userId: string, courseSlug: string, lesson
   }
 }
 
-export async function getPlayerData(userId: string, courseSlug: string, lessonId: string) {
+/**
+ * Everything the lesson page needs, with the sequential lock applied on the server:
+ * a student can only open a lesson once the previous video (and its quiz, if any) is done.
+ * Staff (admin / instructor) skip every lock.
+ */
+export async function getPlayerData(
+  user: { id: string; role: string },
+  courseSlug: string,
+  lessonId: string,
+) {
+  const userId = user.id
   const course = await db.course.findUnique({
     where: { slug: courseSlug },
     include: {
@@ -212,33 +223,65 @@ export async function getPlayerData(userId: string, courseSlug: string, lessonId
   if (!course || course.status === 'DRAFT') return null
   const enrolled = await isEnrolled(userId, course.id)
   if (!enrolled) return { enrolled: false as const, courseSlug }
+
   const progress = await getCourseProgress(userId, course.id)
   const done = new Set(progress.completedLessonIds)
+  const { gates } = await getCourseGates(user, course.id)
+  const gateById = new Map(gates.map((g) => [g.lessonId, g]))
+
   const sections: PlayerSectionDTO[] = course.sections.map((s) => ({
     id: s.id,
     title: s.title,
-    lessons: s.lessons.map((l) => ({
-      id: l.id,
-      title: l.title,
-      type: l.type,
-      durationSeconds: l.durationSeconds,
-      isFreePreview: l.isFreePreview,
-      completed: done.has(l.id),
-      locked: false,
-    })),
+    lessons: s.lessons.map((l) => {
+      const g = gateById.get(l.id)
+      return {
+        id: l.id,
+        title: l.title,
+        type: l.type,
+        durationSeconds: l.durationSeconds,
+        isFreePreview: l.isFreePreview,
+        // a video is complete only after the 90% watch (and the quiz pass); documents use the manual mark
+        completed: l.type === 'VIDEO' ? g?.state === 'completed' : done.has(l.id),
+        locked: g?.locked ?? false,
+      }
+    }),
   }))
   const flat = sections.flatMap((s) => s.lessons)
   const index = flat.findIndex((l) => l.id === lessonId)
   if (index === -1) return { enrolled: true as const, missingLesson: true as const, courseSlug, flat }
+
+  const current = flat[index]
+  if (current.locked) {
+    // Refuse a locked lesson: send the student to the video they still have to finish.
+    const blocker = gates.find((g) => g.isVideo && !g.locked && g.state !== 'completed')
+    return {
+      enrolled: true as const,
+      missingLesson: false as const,
+      locked: true as const,
+      courseSlug,
+      resumeLessonId: blocker?.lessonId ?? flat[0]?.id ?? null,
+    }
+  }
+
+  const next = index < flat.length - 1 ? flat[index + 1] : null
+  const currentGate = gateById.get(lessonId)
+  const completedCount = flat.filter((l) => l.completed).length
   return {
     enrolled: true as const,
     missingLesson: false as const,
+    locked: false as const,
     course: { id: course.id, slug: course.slug, title: course.title },
     sections,
-    lesson: flat[index],
+    lesson: current,
     prevId: index > 0 ? flat[index - 1].id : null,
-    nextId: index < flat.length - 1 ? flat[index + 1].id : null,
-    percent: progress.percent,
+    nextId: next && !next.locked ? next.id : null,
+    nextLocked: !!next && next.locked,
+    hasQuiz: !!currentGate?.quizRequired,
+    quizPassed: !!currentGate?.quizPassed,
+    videoCompleted: !!currentGate?.videoCompleted,
+    /** staff may open any quiz; students only after the video is complete */
+    canTakeQuiz: isStaff(user) || !!currentGate?.videoCompleted,
+    percent: computeProgress(completedCount, flat.length),
   }
 }
 

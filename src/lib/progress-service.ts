@@ -5,7 +5,6 @@
 import type { Prisma } from '@prisma/client'
 import { db } from '@/lib/db'
 import { ApiError } from '@/lib/api/http'
-import { getFreshUser } from '@/lib/auth/guards'
 import {
   PASS_PERCENT_DEFAULT,
   computeGates,
@@ -15,13 +14,15 @@ import {
   type CurriculumLesson,
   type LessonGate,
 } from '@/lib/course-gating'
-import { gradeQuiz } from '@/lib/quiz-grading'
+import { buildReview, gradeQuiz, unansweredQuestionIds } from '@/lib/quiz-grading'
 import { coverage, coveredSeconds, mergeRanges, normalizeRanges, type Range } from '@/lib/watch-ranges'
 
 export type SessionUser = { id: string; role: string }
 export const isStaff = (u: SessionUser) => u.role === 'ADMIN' || u.role === 'INSTRUCTOR'
 
 export async function requireUser(): Promise<SessionUser> {
+  // loaded lazily so the lock/quiz logic below can be imported (and tested) without the auth stack
+  const { getFreshUser } = await import('@/lib/auth/guards')
   const u = await getFreshUser()
   if (!u) throw new ApiError(401, 'UNAUTHENTICATED', 'Please log in')
   return { id: u.id, role: u.role }
@@ -162,10 +163,15 @@ export async function recordWatch(
     ...(done && !existing?.videoCompletedAt ? { videoCompletedAt: now } : {}),
   }
 
+  // A video with no quiz is complete as soon as the 90% watch is reached; with a quiz it waits for the pass.
+  const hasQuiz = (await db.quiz.count({ where: { lessonId } })) > 0
+  const finishNow = done && !hasQuiz && !existing?.completed
+  const completionData = finishNow ? { completed: true, completedAt: now } : {}
+
   await db.lessonProgress.upsert({
     where: { userId_lessonId: { userId: user.id, lessonId } },
-    create: { userId: user.id, lessonId, courseId, completed: false, ...sharedData },
-    update: sharedData,
+    create: { userId: user.id, lessonId, courseId, completed: false, ...sharedData, ...completionData },
+    update: { ...sharedData, ...completionData },
   })
   return { videoCompleted: done || !!existing?.videoCompletedAt, coverage: coverage(merged, duration) }
 }
@@ -240,14 +246,19 @@ export async function submitQuiz(
     throw new ApiError(403, 'VIDEO_NOT_COMPLETED', 'Finish watching the video first')
   }
 
-  const result = gradeQuiz(
-    quiz.questions.map((q) => ({
+  const gradeInput = [...quiz.questions]
+    .sort((a, b) => a.order - b.order)
+    .map((q) => ({
       id: q.id,
+      explanation: q.explanation,
       correctOptionIds: q.options.filter((o) => o.isCorrect).map((o) => o.id),
-    })),
-    answers,
-    quiz.passPercent ?? PASS_PERCENT_DEFAULT,
-  )
+    }))
+  // The form is graded only when every question is answered.
+  const missing = unansweredQuestionIds(gradeInput, answers)
+  if (missing.length > 0) {
+    throw new ApiError(400, 'INCOMPLETE', `Answer every question before submitting (${missing.length} left)`)
+  }
+  const result = gradeQuiz(gradeInput, answers, quiz.passPercent ?? PASS_PERCENT_DEFAULT)
 
   await db.quizAttempt.create({
     data: {
@@ -265,7 +276,11 @@ export async function submitQuiz(
   if (result.passed && !isStaff(user)) {
     await db.lessonProgress.update({
       where: { userId_lessonId: { userId: user.id, lessonId } },
-      data: { quizPassedAt: progress?.quizPassedAt ?? new Date() },
+      data: {
+        quizPassedAt: progress?.quizPassedAt ?? new Date(),
+        completed: true,
+        completedAt: progress?.completedAt ?? new Date(),
+      },
     })
   }
 
@@ -274,11 +289,8 @@ export async function submitQuiz(
   return {
     ...result,
     passPercent: quiz.passPercent,
-    explanations: result.passed
-      ? Object.fromEntries(
-          quiz.questions.filter((q) => q.explanation).map((q) => [q.id, q.explanation]),
-        )
-      : undefined,
+    // Score, mistakes and the correct answers are shown after Submit, pass or fail.
+    review: buildReview(gradeInput, answers),
     nextLessonId: result.passed ? nextLessonId(lessons, lessonId) : null,
   }
 }

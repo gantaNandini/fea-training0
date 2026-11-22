@@ -41,6 +41,7 @@ function csp(): string {
 }
 
 function withHeaders(res: NextResponse): NextResponse {
+  res.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains')
   // REQ-316: CSP is Report-Only (allow-list based, no nonce) so it never breaks the demo.
   res.headers.set('Content-Security-Policy-Report-Only', csp())
   res.headers.set('X-Frame-Options', 'DENY')

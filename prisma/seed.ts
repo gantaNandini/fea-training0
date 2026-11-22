@@ -245,7 +245,7 @@ const REVIEW_TEXT: [number, string][] = [
 async function main() {
   const demo = process.env.SEED_DEMO_ACCOUNTS === 'true'
   if (process.env.NODE_ENV === 'production' && demo && process.env.ALLOW_DEMO_IN_PRODUCTION !== 'true') {
-    console.warn('SEED_DEMO_ACCOUNTS=true with NODE_ENV=production: demo accounts are only for the hosted demo.')
+    throw new Error('Refusing to create demo accounts with NODE_ENV=production. Unset SEED_DEMO_ACCOUNTS.')
   }
 
   // categories

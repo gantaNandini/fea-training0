@@ -420,44 +420,45 @@ async function main() {
     },
   })
 
-  // coupons (REQ-354) — always seeded
-  await db.coupon.upsert({ where: { code: 'WELCOME10' }, update: {}, create: { code: 'WELCOME10', discountType: 'PERCENT', discountValue: 1000, maxUses: 100 } })
-  await db.coupon.upsert({ where: { code: 'FLAT1000' }, update: {}, create: { code: 'FLAT1000', discountType: 'FLAT', discountValue: 100000, maxUses: 50 } })
-
-  // reviewers (REQ-351): not loginable (passwordHash null), enrolled in what they review
-  const reviewers = await Promise.all(
-    Array.from({ length: 12 }, (_, i) =>
-      db.user.upsert({
-        where: { email: `reviewer${String(i + 1).padStart(2, '0')}@seed.invalid` },
-        update: {},
-        create: { email: `reviewer${String(i + 1).padStart(2, '0')}@seed.invalid`, name: TESTIMONIALS[i][0], role: 'STUDENT' },
-      }),
-    ),
-  )
-  // Use a fixed base date so review dates are deterministic across reseeds and
-  // spread realistically across different calendar days (not all the same date).
-  const REVIEW_BASE_DATE = new Date('2026-07-26T00:00:00Z')
-  const perCourse: Record<number, number> = { 1: 12, 2: 8, 3: 6, 4: 3 }
-  for (const [nStr, count] of Object.entries(perCourse)) {
-    const cid = courseId[Number(nStr)]
-    const courseN = Number(nStr)
-    for (let i = 0; i < count; i++) {
-      const u = reviewers[i]
-      const [rating, comment] = REVIEW_TEXT[(i + courseN) % REVIEW_TEXT.length]
-      // Spread reviews across ~90 days using reviewer index + course number for variety
-      const offsetDays = (i * 7 + courseN * 13) % 90
-      const reviewDate = new Date(REVIEW_BASE_DATE.getTime() + offsetDays * DAY)
-      await db.enrollment.upsert({ where: { userId_courseId: { userId: u.id, courseId: cid } }, update: {}, create: { userId: u.id, courseId: cid } })
-      await db.review.upsert({
-        where: { userId_courseId: { userId: u.id, courseId: cid } },
-        update: { createdAt: reviewDate },
-        create: { userId: u.id, courseId: cid, rating, comment, approved: true, createdAt: reviewDate },
-      })
-    }
-  }
-
-  // demo accounts (REQ-352/353)
+  // coupons, reviewer users, and their fake reviews are only seeded with demo data
   if (demo) {
+    // coupons (REQ-354)
+    await db.coupon.upsert({ where: { code: 'WELCOME10' }, update: {}, create: { code: 'WELCOME10', discountType: 'PERCENT', discountValue: 1000, maxUses: 100 } })
+    await db.coupon.upsert({ where: { code: 'FLAT1000' }, update: {}, create: { code: 'FLAT1000', discountType: 'FLAT', discountValue: 100000, maxUses: 50 } })
+
+    // reviewers (REQ-351): not loginable (passwordHash null), enrolled in what they review
+    const reviewers = await Promise.all(
+      Array.from({ length: 12 }, (_, i) =>
+        db.user.upsert({
+          where: { email: `reviewer${String(i + 1).padStart(2, '0')}@seed.invalid` },
+          update: {},
+          create: { email: `reviewer${String(i + 1).padStart(2, '0')}@seed.invalid`, name: TESTIMONIALS[i][0], role: 'STUDENT' },
+        }),
+      ),
+    )
+    // Use a fixed base date so review dates are deterministic across reseeds and
+    // spread realistically across different calendar days (not all the same date).
+    const REVIEW_BASE_DATE = new Date('2026-07-26T00:00:00Z')
+    const perCourse: Record<number, number> = { 1: 12, 2: 8, 3: 6, 4: 3 }
+    for (const [nStr, count] of Object.entries(perCourse)) {
+      const cid = courseId[Number(nStr)]
+      const courseN = Number(nStr)
+      for (let i = 0; i < count; i++) {
+        const u = reviewers[i]
+        const [rating, comment] = REVIEW_TEXT[(i + courseN) % REVIEW_TEXT.length]
+        // Spread reviews across ~90 days using reviewer index + course number for variety
+        const offsetDays = (i * 7 + courseN * 13) % 90
+        const reviewDate = new Date(REVIEW_BASE_DATE.getTime() + offsetDays * DAY)
+        await db.enrollment.upsert({ where: { userId_courseId: { userId: u.id, courseId: cid } }, update: {}, create: { userId: u.id, courseId: cid } })
+        await db.review.upsert({
+          where: { userId_courseId: { userId: u.id, courseId: cid } },
+          update: { createdAt: reviewDate },
+          create: { userId: u.id, courseId: cid, rating, comment, approved: true, createdAt: reviewDate },
+        })
+      }
+    }
+
+    // demo accounts (REQ-352/353)
     const studentHash = await bcrypt.hash('Demo1234!', 12)
     const adminHash = await bcrypt.hash('Admin1234!', 12)
     const student = await db.user.upsert({

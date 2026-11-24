@@ -3,33 +3,69 @@ import { db } from '@/lib/db'
 import type { EmailMessage, EmailProvider } from './index'
 import { ConsoleEmailProvider } from './console'
 
-/** True when an SMTP host is saved in Admin -> Settings -> SMTP (otherwise mail only goes to the server console). */
-export async function isSmtpConfigured(): Promise<boolean> {
-  const row = await db.siteSetting.findUnique({ where: { key: 'smtp_host' } })
-  return !!row?.value
+interface SmtpConfig {
+  host: string
+  port: number
+  user?: string
+  password?: string
+  from?: string
 }
 
 /**
- * Sends through SMTP using the credentials saved in Admin → Settings → SMTP (SiteSetting rows).
- * With no host configured it falls back to the console provider, so local dev never needs SMTP.
+ * SMTP settings come from environment variables first (SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD,
+ * SMTP_FROM — set them in Vercel, never in the repo), then from Admin → Settings → SMTP (SiteSetting rows).
+ * Returns null when no host is configured anywhere.
  */
+export async function loadSmtpConfig(env: Record<string, string | undefined> = process.env): Promise<SmtpConfig | null> {
+  if (env.SMTP_HOST?.trim()) {
+    return {
+      host: env.SMTP_HOST.trim(),
+      port: Number(env.SMTP_PORT) || 587,
+      user: env.SMTP_USER?.trim() || undefined,
+      password: env.SMTP_PASSWORD ?? '',
+      from: env.SMTP_FROM?.trim() || env.SMTP_USER?.trim() || undefined,
+    }
+  }
+  const rows = await db.siteSetting.findMany({ where: { key: { in: ['smtp_host', 'smtp_port', 'smtp_user', 'smtp_password', 'smtp_from'] } } })
+  const s = Object.fromEntries(rows.map((r) => [r.key, r.value]))
+  if (!s.smtp_host) return null
+  return {
+    host: s.smtp_host,
+    port: Number(s.smtp_port) || 587,
+    user: s.smtp_user || undefined,
+    password: s.smtp_password ?? '',
+    from: s.smtp_from || s.smtp_user || undefined,
+  }
+}
+
+/**
+ * True when SMTP is configured via environment variables OR via Admin → Settings → SMTP.
+ * Used by the sign-up route to gate code-sending in production.
+ * Checks the env-var path without hitting the database when SMTP_HOST is set.
+ */
+export async function isSmtpConfigured(): Promise<boolean> {
+  if (process.env.SMTP_HOST?.trim()) return true
+  const row = await db.siteSetting.findUnique({ where: { key: 'smtp_host' } })
+  return !!row?.value?.trim()
+}
+
+/** With no SMTP host anywhere it falls back to the console provider, so local dev never needs SMTP. */
 export class SmtpEmailProvider implements EmailProvider {
   private fallback = new ConsoleEmailProvider()
 
   async send(message: EmailMessage): Promise<void> {
-    const rows = await db.siteSetting.findMany({ where: { key: { in: ['smtp_host', 'smtp_port', 'smtp_user', 'smtp_password', 'smtp_from'] } } })
-    const s = Object.fromEntries(rows.map((r) => [r.key, r.value]))
-    if (!s.smtp_host) return this.fallback.send(message)
-    const port = Number(s.smtp_port) || 587
+    const cfg = await loadSmtpConfig()
+    if (!cfg) return this.fallback.send(message)
     const transport = nodemailer.createTransport({
-      host: s.smtp_host,
-      port,
-      secure: port === 465,
-      auth: s.smtp_user ? { user: s.smtp_user, pass: s.smtp_password ?? '' } : undefined,
+      host: cfg.host,
+      port: cfg.port,
+      secure: cfg.port === 465,
+      auth: cfg.user ? { user: cfg.user, pass: cfg.password ?? '' } : undefined,
     })
     await transport.sendMail({
-      from: s.smtp_from || s.smtp_user,
+      from: cfg.from,
       to: message.to,
+      replyTo: message.replyTo,
       subject: message.subject,
       text: message.text,
     })

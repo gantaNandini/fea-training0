@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { send, save, getSetting, hit } = vi.hoisted(() => ({
-  send: vi.fn(), save: vi.fn(), getSetting: vi.fn(), hit: vi.fn(),
+const { send, save, getSetting, hit, findMany } = vi.hoisted(() => ({
+  send: vi.fn(), save: vi.fn(), getSetting: vi.fn(), hit: vi.fn(), findMany: vi.fn(),
 }))
 
 vi.mock('@/lib/email', () => ({ emailProvider: { send } }))
@@ -9,9 +9,11 @@ vi.mock('@/lib/data/content', () => ({ saveContactMessage: save }))
 vi.mock('@/lib/data/settings', () => ({ getSetting }))
 vi.mock('@/lib/rate-limit', () => ({ rateLimiter: { hit } }))
 vi.mock('@/lib/net/ip', () => ({ getClientIp: () => '1.2.3.4' }))
+vi.mock('@/lib/db', () => ({ db: { siteSetting: { findMany } } }))
 
 import { POST } from '@/app/api/contact/route'
 import { DEFAULT_CONTACT_INBOX, contactRecipient } from '@/lib/contact-mail'
+import { loadSmtpConfig } from '@/lib/email/smtp'
 
 const valid = { name: 'Asha Rao', email: 'asha@example.com', subject: 'Course question', message: 'I would like to know the dates for the next batch please.' }
 const post = (body: unknown) =>
@@ -46,10 +48,10 @@ describe('contact form', () => {
   })
 
   it('ignores bots that fill the hidden field: nothing saved, nothing sent', async () => {
-    // honeypot field removed from schema; extra unknown fields are stripped by zod
     const res = await post({ ...valid, website: 'http://spam.example' })
     expect(res.status).toBe(200)
-    expect(save).toHaveBeenCalledTimes(1) // message IS saved when unknown fields are present
+    expect(save).not.toHaveBeenCalled()
+    expect(send).not.toHaveBeenCalled()
   })
 
   it('rate-limits to 5 messages per 15 minutes per address', async () => {
@@ -84,3 +86,17 @@ describe('contact recipient', () => {
   })
 })
 
+describe('SMTP configuration', () => {
+  it('reads SMTP_* from the environment first', async () => {
+    const cfg = await loadSmtpConfig({ SMTP_HOST: 'smtp.resend.com', SMTP_PORT: '465', SMTP_USER: 'resend', SMTP_PASSWORD: 'k', SMTP_FROM: 'Site <no-reply@fea-training.com>' })
+    expect(cfg).toEqual({ host: 'smtp.resend.com', port: 465, user: 'resend', password: 'k', from: 'Site <no-reply@fea-training.com>' })
+    expect(findMany).not.toHaveBeenCalled()
+  })
+
+  it('falls back to the Admin SMTP settings, then to none', async () => {
+    findMany.mockResolvedValueOnce([{ key: 'smtp_host', value: 'smtp.example.com' }, { key: 'smtp_user', value: 'u' }, { key: 'smtp_password', value: 'p' }])
+    expect(await loadSmtpConfig({})).toMatchObject({ host: 'smtp.example.com', port: 587, user: 'u', from: 'u' })
+    findMany.mockResolvedValueOnce([])
+    expect(await loadSmtpConfig({})).toBeNull()
+  })
+})

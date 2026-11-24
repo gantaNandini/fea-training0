@@ -11,6 +11,9 @@ export async function POST(req: Request) {
   const parsed = await parseBody(req, contactSchema)
   if (parsed.error) return parsed.error
 
+  // Honeypot: pretend it worked, store nothing, send nothing.
+  if (parsed.data.website?.trim()) return ok({ success: true })
+
   const limit = await rateLimiter.hit(`${getClientIp(req.headers)}:contact:*`, 5, 15 * 60)
   if (!limit.allowed) return tooMany(limit.retryAfterSeconds)
 

@@ -32,3 +32,6 @@ public/uploads/avatars/*
 
 # Local env reference (production env names only, no values)
 .vercel-env-prod
+
+# demo account backups — contain hashed credentials, never commit
+demo-accounts-backup.json

@@ -19,6 +19,7 @@ export default defineConfig({
     { name: 'a11y', testMatch: /a11y\.spec\.ts/, use: { ...devices['Desktop Chrome'] } },
     { name: 'layout', testMatch: /layout\.spec\.ts/, use: { ...devices['Desktop Chrome'] } },
     { name: 'smoke', testMatch: /smoke\.spec\.ts/, use: { ...devices['Desktop Chrome'] } },
+    { name: 'signup', testMatch: /signup\.spec\.ts/, use: { ...devices['Desktop Chrome'] } },
   ],
   webServer: {
     command: 'pnpm dev',

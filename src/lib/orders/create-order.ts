@@ -20,6 +20,7 @@ export type CreateOrderErrorCode =
   | 'CART_EMPTY'
   | 'ALREADY_ENROLLED'
   | 'COURSE_UNAVAILABLE'
+  | 'COURSE_COMING_SOON'
   | 'COUPON_INVALID'
   | 'ORDER_TOO_LARGE'
   | 'PROVIDER_ERROR'
@@ -44,6 +45,11 @@ export type CreateOrderResult =
       provider: 'razorpay' | 'mock'
       mock?: { paymentId: string; signature: string }
     }
+
+/** Returns true when the given course row has zero lessons across all its sections. */
+export function courseHasNoLessons(course: { sections: { _count: { lessons: number } }[] }): boolean {
+  return course.sections.reduce((sum, sec) => sum + sec._count.lessons, 0) === 0
+}
 
 export function cartFingerprint(
   items: { courseId: string; price: number }[],
@@ -77,6 +83,11 @@ export async function createOrderForUser(
   }
   if (courses.length !== courseIds.length || courses.some((c) => c.status !== 'PUBLISHED')) {
     throw new CreateOrderError('COURSE_UNAVAILABLE', 'A course in your cart is no longer available.')
+  }
+
+  // REQ-STEP4: courses with no lessons cannot be purchased yet.
+  if (courses.some((c) => courseHasNoLessons(c))) {
+    throw new CreateOrderError('COURSE_COMING_SOON', 'This course is coming soon.')
   }
 
   const couponCode = rawCouponCode?.trim() ? rawCouponCode.trim().toUpperCase() : null

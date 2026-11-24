@@ -32,14 +32,18 @@ export default async function ReceiptPage({ params }: { params: Promise<{ orderI
           <div>
             <p className="font-display text-xl font-bold">{settings.company_name}</p>
             <p className="text-sm text-muted-foreground">{settings.address}</p>
-            <p className="text-sm text-muted-foreground">
-              {messages.checkout.gstin}: {settings.gstin || '— (to be supplied)'}
-            </p>
+            {settings.gstin ? (
+              <p className="text-sm text-muted-foreground">
+                {messages.checkout.gstin}: {settings.gstin}
+              </p>
+            ) : null}
           </div>
           <dl className="text-sm">
             <div className="flex gap-2"><dt className="text-muted-foreground">{messages.checkout.orderNumber}:</dt><dd className="font-semibold">{order.orderNumber}</dd></div>
             <div className="flex gap-2"><dt className="text-muted-foreground">{messages.checkout.date}:</dt><dd>{date}</dd></div>
-            <div className="flex gap-2"><dt className="text-muted-foreground">Invoice no.:</dt><dd>{settings.invoice_prefix ? `${settings.invoice_prefix}-${order.orderNumber}` : '— (to be supplied)'}</dd></div>
+            {settings.invoice_prefix ? (
+              <div className="flex gap-2"><dt className="text-muted-foreground">Invoice no.:</dt><dd>{settings.invoice_prefix}-{order.orderNumber}</dd></div>
+            ) : null}
           </dl>
         </header>
         <section className="border-b border-border py-5 text-sm">

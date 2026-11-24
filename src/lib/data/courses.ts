@@ -387,6 +387,16 @@ export async function getCourseSlugs(): Promise<string[]> {
 export async function getCoursesForPurchase(ids: string[]) {
   return db.course.findMany({
     where: { id: { in: ids } },
-    select: { id: true, slug: true, title: true, price: true, discountPrice: true, isFree: true, status: true },
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      price: true,
+      discountPrice: true,
+      isFree: true,
+      status: true,
+      _count: { select: { sections: true } },
+      sections: { select: { _count: { select: { lessons: true } } } },
+    },
   })
 }

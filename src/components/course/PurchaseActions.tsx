@@ -20,7 +20,7 @@ export function PurchaseActions({
   course,
   compact,
 }: {
-  course: Pick<CourseDetailDTO, 'id' | 'slug' | 'price' | 'discountPrice' | 'isFree' | 'status'>
+  course: Pick<CourseDetailDTO, 'id' | 'slug' | 'price' | 'discountPrice' | 'isFree' | 'status' | 'lessonCount'>
   compact?: boolean
 }) {
   const router = useRouter()
@@ -31,6 +31,7 @@ export function PurchaseActions({
   const [busy, setBusy] = React.useState(false)
 
   const upcoming = course.status === 'UPCOMING'
+  const noLessons = course.lessonCount === 0
   const enrolled = enrolledIds.includes(course.id)
   const inCart = cart.has(course.id)
   const free = course.isFree || effectivePrice(course.price, course.discountPrice) === 0
@@ -68,7 +69,7 @@ export function PurchaseActions({
     }
   }
 
-  if (upcoming) {
+  if (upcoming || noLessons) {
     return (
       <Button disabled variant="secondary" className="w-full" size="lg">
         {messages.course.comingSoon}

@@ -18,14 +18,12 @@ pnpm db:init                    # creates the migration, applies the raw SQL (se
 pnpm db:seed                    # categories, 13 courses, content; demo accounts when SEED_DEMO_ACCOUNTS=true
 pnpm dev                        # http://localhost:3000
 ```
-Demo logins (only when `SEED_DEMO_ACCOUNTS=true`): `student@demo.test` / `Demo1234!` (enrolled in courses 2 and 3, one pending review) and `admin@demo.test` / `Admin1234!` (opens `/admin`).
-Coupons: `WELCOME10` (10 %), `FLAT1000` (₹1,000).
-With `PAYMENT_PROVIDER=mock` the "Pay now" button completes the order instantly (no gateway).
+New users who register receive a **6-digit email verification code**; they must enter it before the account is activated. SMTP must be configured first (Admin → Settings → SMTP).
 
 **Remove all demo accounts before launch.**
 
 ## Admin console (`/admin`)
-Log in as an ADMIN (demo: `admin@demo.test` / `Admin1234!`). Sections: Dashboard (revenue, KPIs), Courses (add/edit any number of courses with sections and lessons, publish/unpublish, categories, coupons), Enrolment (history, enrol a student), Report (admin / instructor revenue), Users (admins, instructors, students), Message (contact inbox + reply), Settings (system, website, instructor share, SMTP, payment/Google status, About and policy pages, home page content), Manage profile.
+Log in as an ADMIN user (`/admin-login`). Sections: Dashboard (revenue, KPIs), Courses (add/edit any number of courses with sections and lessons, publish/unpublish, categories, coupons), Enrolment (history, enrol a student), Report (admin / instructor revenue), Users (admins, instructors, students), Message (contact inbox + reply), Settings (system, website, instructor share, SMTP, payment/Google status, About and policy pages, home page content), Manage profile.
 * Run `pnpm install` again (new dependency: nodemailer) before starting.
 * Course images are uploaded to `public/uploads/media` (local disk; use S3/R2 on serverless hosts). Lesson PDFs are private and served by signed URL.
 * Lesson videos: paste a YouTube/Vimeo link (watch links are converted to embeds). Unlisted embeds are not content protection.
@@ -45,6 +43,22 @@ This needs `ALLOW_MOCK_IN_PRODUCTION="true"` in `.env` (local use only) so the m
 | `pnpm test:unit` | Vitest, pure functions |
 | `pnpm test:integration` | Vitest against `DATABASE_URL_TEST` (port 5433); applies migrations, truncates between tests |
 | `pnpm test:e2e` | Playwright against `pnpm dev` with the mock provider (seed the dev DB first) |
+
+### Utility scripts
+
+**`scripts/remove-demo-data.ts`** — removes demo accounts and all data seeded under `SEED_DEMO_ACCOUNTS=true`.
+Runs as a **dry run by default** (prints what would be deleted without touching the database).
+Pass `--apply` to execute the deletes:
+```bash
+pnpm tsx scripts/remove-demo-data.ts          # dry run — safe to inspect
+pnpm tsx scripts/remove-demo-data.ts --apply  # actually deletes
+```
+
+**`scripts/set-admin.ts`** — promotes an existing user to the ADMIN role.
+The new password is read from the `ADMIN_PASSWORD` environment variable; it is **never stored in a file** or printed to stdout.
+```bash
+ADMIN_PASSWORD='str0ngP@ss!' pnpm tsx scripts/set-admin.ts --email user@example.com
+```
 
 ### Regenerating screenshot baselines
 ```bash

@@ -26,6 +26,11 @@ export const signupSchema = z
 
 export const forgotPasswordSchema = z.object({ email: emailSchema })
 
+export const verifyCodeSchema = z.object({
+  email: emailSchema,
+  code: z.string().trim().length(6, 'Enter the 6-digit code'),
+})
+
 export const resetPasswordSchema = z.object({
   token: z.string().min(20).max(200),
   password: passwordSchema,

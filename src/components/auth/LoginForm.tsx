@@ -29,7 +29,13 @@ export function LoginForm({ redirect, googleEnabled }: { redirect: string; googl
       const res = await signIn('credentials', { email, password, redirect: false })
       if (!res || res.error) {
         const code = (res as { code?: string } | undefined)?.code
-        setError(code === 'rate_limited' ? messages.auth.rateLimited : messages.auth.invalidCredentials)
+        setError(
+          code === 'rate_limited'
+            ? messages.auth.rateLimited
+            : code === 'email_not_verified'
+              ? messages.auth.emailNotVerified
+              : messages.auth.invalidCredentials,
+        )
         setBusy(false)
         return
       }

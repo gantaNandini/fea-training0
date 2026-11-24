@@ -24,7 +24,7 @@ const PER_IP_EMAIL = 5
  */
 export async function checkAuthRateLimit(
   ip: string,
-  action: 'login' | 'signup' | 'forgot',
+  action: 'login' | 'signup' | 'forgot' | 'verify-code',
   email: string,
 ): Promise<{ allowed: boolean; retryAfterSeconds: number }> {
   const normalised = email.trim().toLowerCase()

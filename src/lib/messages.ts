@@ -315,6 +315,14 @@ export const messages = {
     rateLimited: 'Too many attempts. Please wait a few minutes and try again.',
     signupDone:
       'If this email is not already registered, your account has been created. You can now log in.',
+    signupCodeSent:
+      'We sent a 6-digit code to your email. Enter it below to verify your account.',
+    verifyCodePlaceholder: '6-digit code',
+    verifyCodeLabel: 'Verification code',
+    verifyCodeButton: 'Verify email',
+    verifyCodeDone: 'Email verified! You can now log in.',
+    verifyCodeInvalid: 'The code is incorrect or has expired. Please try again.',
+    emailNotVerified: 'Please verify your email before logging in.',
     forgotDone: 'If an account exists for that email, a reset link is on its way.',
     resetDone: 'Your password has been updated. Please log in.',
     resetInvalid: 'This reset link is invalid or has expired.',

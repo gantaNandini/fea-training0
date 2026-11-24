@@ -1,4 +1,5 @@
 import { createHash, randomBytes } from 'crypto'
+import bcrypt from 'bcryptjs'
 import { db } from '@/lib/db'
 
 export interface AuthState {
@@ -122,4 +123,40 @@ export async function isResetTokenValid(token: string): Promise<boolean> {
     select: { id: true },
   })
   return !!row
+}
+
+// ─── Email verification codes (REQ-123A) ─────────────────────────────────────
+
+/** Generates a 6-digit code, bcrypt-hashes it, persists it, and returns the raw code for emailing. */
+export async function createEmailVerificationCode(userId: string): Promise<string> {
+  const code = String(Math.floor(100000 + Math.random() * 900000))
+  const codeHash = await bcrypt.hash(code, 10)
+  await db.emailVerificationCode.create({
+    data: {
+      userId,
+      codeHash,
+      expiresAt: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
+    },
+  })
+  return code
+}
+
+/** Checks the code, marks it used, sets User.emailVerified. Returns true on success. */
+export async function consumeEmailVerificationCode(
+  userId: string,
+  code: string,
+): Promise<boolean> {
+  // Find the most recent unused, unexpired code for this user.
+  const row = await db.emailVerificationCode.findFirst({
+    where: { userId, used: false, expiresAt: { gt: new Date() } },
+    orderBy: { createdAt: 'desc' },
+  })
+  if (!row) return false
+  const valid = await bcrypt.compare(code, row.codeHash)
+  if (!valid) return false
+  await db.$transaction([
+    db.emailVerificationCode.update({ where: { id: row.id }, data: { used: true } }),
+    db.user.update({ where: { id: userId }, data: { emailVerified: new Date() } }),
+  ])
+  return true
 }

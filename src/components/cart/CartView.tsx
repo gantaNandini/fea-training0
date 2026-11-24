@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { Trash2 } from 'lucide-react'
 import { ButtonLink } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { PlaceholderArt } from '@/components/shared/PlaceholderArt'
 import { PriceTag } from '@/components/shared/PriceTag'
@@ -58,6 +59,11 @@ export function CartView() {
                 <Link href={`/courses/${c.slug}`} className="line-clamp-2 font-display font-bold hover:text-link">
                   {c.title}
                 </Link>
+                {c.lessonCount === 0 ? (
+                  <Badge tone="warning" className="mt-1">
+                    {messages.course.comingSoon}
+                  </Badge>
+                ) : null}
                 <p className="mt-1 truncate text-sm text-muted-foreground">{c.instructorName}</p>
                 <div className="mt-3 flex items-center justify-between gap-3">
                   <PriceTag price={c.price} discountPrice={c.discountPrice} isFree={c.isFree} />

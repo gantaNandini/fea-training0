@@ -6,6 +6,8 @@ const PORT = 3000
 // provider intentionally throws when NODE_ENV=production.
 export default defineConfig({
   testDir: './tests/e2e',
+  globalSetup: './tests/e2e/global-setup.ts',
+  globalTeardown: './tests/e2e/global-teardown.ts',
   timeout: 60_000,
   expect: { timeout: 10_000 },
   fullyParallel: false,

@@ -136,7 +136,7 @@ export default async function CourseDetailPage({ params }: Props) {
                 {course.instructor.name}
               </Link>{' '}
               · {messages.course.lastUpdated} {updated} · {course.language}
-              {course.lessonCount > 0 ? ` · ${course.lessonCount} ${messages.course.lessons} · ${formatHours(course.totalSeconds)}` : ''}
+              {course.lessonCount > 0 ? ` · ${course.lessonCount} ${messages.course.lessons}${course.totalSeconds > 0 ? ` · ${formatHours(course.totalSeconds)}` : ''}` : ''}
             </p>
           </div>
         </div>

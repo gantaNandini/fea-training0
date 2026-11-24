@@ -24,12 +24,14 @@ export const signupSchema = z
     message: 'Passwords do not match',
   })
 
-export const forgotPasswordSchema = z.object({ email: emailSchema })
-
-export const verifyCodeSchema = z.object({
+export const verifySignupSchema = z.object({
   email: emailSchema,
-  code: z.string().trim().length(6, 'Enter the 6-digit code'),
+  code: z.string().trim().regex(/^\d{6}$/, 'Enter the 6-digit code'),
 })
+
+export const resendSignupSchema = z.object({ email: emailSchema })
+
+export const forgotPasswordSchema = z.object({ email: emailSchema })
 
 export const resetPasswordSchema = z.object({
   token: z.string().min(20).max(200),
@@ -41,8 +43,6 @@ export const contactSchema = z.object({
   email: emailSchema,
   subject: z.string().trim().min(3, 'Enter a subject').max(150),
   message: z.string().trim().min(20, 'Message must be at least 20 characters').max(5000),
-  /** Honeypot: hidden from people, so only bots fill it in. */
-  website: z.string().max(200).optional(),
 })
 
 export const newsletterSchema = z.object({ email: emailSchema })

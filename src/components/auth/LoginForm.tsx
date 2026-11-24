@@ -32,9 +32,7 @@ export function LoginForm({ redirect, googleEnabled }: { redirect: string; googl
         setError(
           code === 'rate_limited'
             ? messages.auth.rateLimited
-            : code === 'email_not_verified'
-              ? messages.auth.emailNotVerified
-              : messages.auth.invalidCredentials,
+            : messages.auth.invalidCredentials,
         )
         setBusy(false)
         return

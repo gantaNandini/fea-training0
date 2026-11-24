@@ -48,7 +48,6 @@ export function CourseCard({
   const inCart = cart.has(course.id)
   const wished = wishlist.has(course.id)
   const compared = compare.has(course.id)
-  const noLessons = course.lessonCount === 0
   const list = layout === 'list'
   const href = `/courses/${course.slug}`
 
@@ -135,7 +134,7 @@ export function CourseCard({
           <Badge tone="plum">{levelLabel[course.level]}</Badge>
           {course.lessonCount > 0 ? (
             <span>
-              {course.lessonCount} {messages.course.lessons} · {formatHours(course.totalSeconds)}
+              {course.lessonCount} {messages.course.lessons}{course.totalSeconds > 0 ? ` · ${formatHours(course.totalSeconds)}` : ''}
             </span>
           ) : (
             <span>{messages.course.curriculumSoon}</span>
@@ -149,7 +148,7 @@ export function CourseCard({
         <div className="mt-auto flex h-14 items-center justify-between gap-2 border-t border-border pt-3">
           <PriceTag price={course.price} discountPrice={course.discountPrice} isFree={course.isFree} />
           <div className="relative z-20">
-            {upcoming || noLessons ? (
+            {upcoming ? (
               <Button variant="secondary" size="sm" disabled>
                 {messages.course.comingSoon}
               </Button>

@@ -4,7 +4,7 @@
  * spoof the header to dodge per-IP rate limits.
  */
 export function getClientIp(headers: Headers): string {
-  if (process.env.TRUST_PROXY === 'true') {
+  if (process.env.TRUST_PROXY === 'true' || process.env.VERCEL === '1') {
     const xff = headers.get('x-forwarded-for')
     if (xff) {
       const first = xff.split(',')[0]?.trim()

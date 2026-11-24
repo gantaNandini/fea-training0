@@ -34,8 +34,8 @@ export function CurriculumAccordion({ slug, sections }: { slug: string; sections
   return (
     <div data-testid="curriculum">
       <p className="mb-3 text-sm text-muted-foreground">
-        {sections.length} sections · {totalLessons} {messages.course.lessons} · {formatHours(totalSeconds)}{' '}
-        {messages.course.totalLength}
+        {sections.length} sections · {totalLessons} {messages.course.lessons}
+        {totalSeconds > 0 ? ` · ${formatHours(totalSeconds)} ${messages.course.totalLength}` : ''}
       </p>
       <Accordion
         type="multiple"

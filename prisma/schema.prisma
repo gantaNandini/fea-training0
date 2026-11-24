@@ -89,6 +89,7 @@ model User {
   passwordResets        PasswordResetToken[]
   emailVerificationCodes EmailVerificationCode[]
   instructorProfile     InstructorProfile?
+
   coursesTaught     Course[]             @relation("CourseInstructor")
   cartItems         CartItem[]
   wishlistItems     WishlistItem[]
@@ -128,6 +129,20 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+/// Pending sign-up: the account is created only after the emailed 6-digit code is entered.
+model SignupVerification {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  /// HMAC of the code; the code itself is never stored
+  codeHash     String
+  attempts     Int      @default(0)
+  expiresAt    DateTime
+  lastSentAt   DateTime @default(now())
+  createdAt    DateTime @default(now())
 }
 
 model PasswordResetToken {

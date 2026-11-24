@@ -15,10 +15,6 @@ class RateLimitedError extends CredentialsSignin {
   code = 'rate_limited'
 }
 
-class EmailNotVerifiedError extends CredentialsSignin {
-  code = 'email_not_verified'
-}
-
 // Compared against when the email is unknown so response time does not reveal which emails exist.
 const DUMMY_HASH = bcrypt.hashSync('not-a-real-password', 10)
 
@@ -39,11 +35,6 @@ const providers: Provider[] = [
       const hash = user?.passwordHash ?? DUMMY_HASH
       const valid = await bcrypt.compare(password, hash)
       if (!user || !user.passwordHash || !valid) return null
-
-      // REQ-123A: block login until the sign-up email code has been verified.
-      if (user.emailVerified === null && user.passwordHash) {
-        throw new EmailNotVerifiedError()
-      }
 
       return {
         id: user.id,

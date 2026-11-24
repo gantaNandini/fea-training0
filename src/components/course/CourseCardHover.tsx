@@ -56,7 +56,7 @@ export function CourseCardHover({
         <p className="mt-3 text-xs font-medium text-muted-foreground">
           {course.language}
           {course.lessonCount > 0
-            ? ` · ${course.lessonCount} ${messages.course.lessons} · ${formatHours(course.totalSeconds)}`
+            ? ` · ${course.lessonCount} ${messages.course.lessons}${course.totalSeconds > 0 ? ` · ${formatHours(course.totalSeconds)}` : ''}`
             : ` · ${messages.course.curriculumSoon}`}
         </p>
         {course.outcomes.length > 0 ? (

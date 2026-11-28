@@ -8,6 +8,7 @@ import { MODELS, type ModelKey } from '@/lib/admin/models'
 import { MODEL_TAGS, buildData, createRecord, deleteRecord, updateRecord, slugify, type FormValues } from '@/lib/admin/records.server'
 import { WRITABLE_SETTING_KEYS } from '@/lib/admin/settings-def'
 import { courseInput, type CourseInputRaw } from '@/lib/admin/course-schema'
+import { PASS_PERCENT_DEFAULT } from '@/lib/course-gating'
 import { sanitizeRichText } from '@/lib/utils/sanitize'
 import { emailProvider } from '@/lib/email'
 import { completeOrder } from '@/lib/orders/complete-order'
@@ -117,6 +118,13 @@ export async function saveCourse(raw: CourseInputRaw): Promise<ActionResult<{ id
     if (c.discountPrice != null && c.discountPrice >= c.price && !c.isFree) {
       return { ok: false, error: 'The discount price must be lower than the price.' }
     }
+    for (const [si, s] of c.sections.entries()) {
+      for (const [li, l] of s.lessons.entries()) {
+        if (l.quiz && l.quiz.questions.length > 0 && l.type !== 'VIDEO') {
+          return { ok: false, error: `Section ${si + 1}, lesson ${li + 1}: a quiz can only follow a video lesson.` }
+        }
+      }
+    }
     if (c.primaryCategoryId && !c.categoryIds.includes(c.primaryCategoryId)) c.categoryIds.push(c.primaryCategoryId)
     const instructor = await db.user.findUnique({ where: { id: c.instructorId }, select: { role: true } })
     if (!instructor || instructor.role === 'STUDENT') return { ok: false, error: 'Choose a valid instructor.' }
@@ -196,8 +204,33 @@ export async function saveCourse(raw: CourseInputRaw): Promise<ActionResult<{ id
             fileUrl: l.type === 'DOCUMENT' ? l.fileUrl ?? 'placeholder:document' : null,
             order: li + 1,
           }
-          if (l.id && ownLessons.has(l.id)) await tx.lesson.update({ where: { id: l.id }, data: ld })
-          else await tx.lesson.create({ data: ld })
+          const row = l.id && ownLessons.has(l.id)
+            ? await tx.lesson.update({ where: { id: l.id }, data: ld, select: { id: true, type: true } })
+            : await tx.lesson.create({ data: ld, select: { id: true, type: true } })
+          // Quiz after this video: the next lesson stays locked until it is passed (existing lesson gating).
+          if (l.type !== 'VIDEO') {
+            await tx.quiz.deleteMany({ where: { lessonId: row.id } })
+          } else if (l.quiz !== undefined) {
+            const questions = l.quiz?.questions ?? []
+            if (questions.length === 0) {
+              await tx.quiz.deleteMany({ where: { lessonId: row.id } })
+            } else {
+              const quiz = await tx.quiz.upsert({
+                where: { lessonId: row.id },
+                create: { lessonId: row.id, title: l.title, passPercent: PASS_PERCENT_DEFAULT },
+                update: { title: l.title, passPercent: PASS_PERCENT_DEFAULT },
+              })
+              await tx.quizQuestion.deleteMany({ where: { quizId: quiz.id } })
+              for (const [qi, q] of questions.entries()) {
+                await tx.quizQuestion.create({
+                  data: {
+                    quizId: quiz.id, prompt: q.prompt, explanation: q.explanation, order: qi + 1,
+                    options: { create: q.options.map((o, oi) => ({ text: o.text, isCorrect: o.isCorrect, order: oi + 1 })) },
+                  },
+                })
+              }
+            }
+          }
         }
       }
       return course

@@ -24,7 +24,7 @@ export function emptyCourseState(instructorId: string): CourseState {
 export async function loadCourseState(id: string): Promise<CourseState | null> {
   const c = await db.course.findUnique({
     where: { id },
-    include: { categories: true, sections: { orderBy: { order: 'asc' }, include: { lessons: { orderBy: { order: 'asc' } } } } },
+    include: { categories: true, sections: { orderBy: { order: 'asc' }, include: { lessons: { orderBy: { order: 'asc' }, include: { quiz: { include: { questions: { orderBy: { order: 'asc' }, include: { options: { orderBy: { order: 'asc' } } } } } } } } } } },
   })
   if (!c) return null
   let n = 0
@@ -47,6 +47,8 @@ export async function loadCourseState(id: string): Promise<CourseState | null> {
         isFreePreview: l.isFreePreview,
         videoUrl: l.videoUrl && !l.videoUrl.startsWith('placeholder:') ? l.videoUrl : '',
         fileUrl: l.fileUrl ?? '',
+        quizQuestions: (l.quiz?.questions ?? []).map((x) => ({ prompt: x.prompt, explanation: x.explanation ?? '', options: x.options.map((o) => ({ text: o.text, isCorrect: o.isCorrect })) })),
+        quizDirty: false,
       })),
     })),
   }

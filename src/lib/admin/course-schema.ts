@@ -8,6 +8,28 @@ const optionalText = (max: number) =>
     .nullish()
     .transform((v) => (v ? v : null))
 
+/** Quiz after a video lesson. The pass mark is fixed at 80 % (client decision) and is not an input. */
+export const lessonQuizInput = z.object({
+  questions: z
+    .array(
+      z.object({
+        prompt: z.string().trim().min(1, 'Every quiz question needs text').max(1000),
+        explanation: optionalText(2000),
+        options: z
+          .array(
+            z.object({
+              text: z.string().trim().min(1, 'Every quiz option needs text').max(500),
+              isCorrect: z.boolean(),
+            }),
+          )
+          .min(2, 'Every quiz question needs at least 2 options')
+          .max(8)
+          .refine((o) => o.some((x) => x.isCorrect), 'Mark at least one correct option in every quiz question'),
+      }),
+    )
+    .max(100),
+})
+
 export const lessonInput = z.object({
   id: z.string().optional(),
   title: z.string().trim().min(1, 'Every lesson needs a title').max(200),
@@ -16,6 +38,8 @@ export const lessonInput = z.object({
   isFreePreview: z.boolean(),
   videoUrl: optionalText(1000),
   fileUrl: optionalText(1000),
+  /** undefined = leave the lesson's quiz alone; null or no questions = remove it */
+  quiz: lessonQuizInput.nullish(),
 })
 
 export const sectionInput = z.object({

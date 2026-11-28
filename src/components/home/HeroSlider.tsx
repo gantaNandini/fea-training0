@@ -3,7 +3,6 @@
 import * as React from 'react'
 import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
 import type { HeroSlideDTO } from '@/lib/types'
-import { ButtonLink } from '@/components/ui/button'
 import { PlaceholderArt } from '@/components/shared/PlaceholderArt'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { messages } from '@/lib/messages'
@@ -51,8 +50,8 @@ export function HeroSlider({ slides }: { slides: HeroSlideDTO[] }) {
       }}
       onKeyDown={onKeyDown}
       data-testid="hero"
-      /* Full-bleed: no max-width, overflow-hidden stops any scrollbar */
-      className="relative w-full overflow-hidden min-h-[70svh] lg:min-h-[calc(100svh-6.75rem)]"
+      /* Full-bleed: no max-width, overflow-hidden stops any scrollbar. mb-4 matches the 16px gap on the old site. */
+      className="relative w-full overflow-hidden h-[240px] sm:h-[320px] lg:h-[400px] mb-4"
     >
       {/* Full-bleed image — no overlay, full colour */}
       <PlaceholderArt
@@ -61,33 +60,23 @@ export function HeroSlider({ slides }: { slides: HeroSlideDTO[] }) {
         fill
         priority
         sizes="100vw"
-        className="object-cover object-center"
+        className="object-cover object-top"
       />
 
-      {/* Text card container
-          Mobile:  card pinned to the bottom so image shows above (items-end, pb-20)
-          Desktop: card centred vertically on the left (lg:items-center, lg:pb-0) */}
-      <div className="container-page relative z-10 flex min-h-[70svh] items-end pb-20 lg:min-h-[calc(100svh-6.75rem)] lg:items-center lg:pb-0">
+      {/* Text block — centred vertically at every width, white text directly on the image */}
+      <div className="container-page relative z-10 flex h-[240px] sm:h-[320px] lg:h-[400px] items-center pb-10 lg:pb-0">
         <div
           data-testid="hero-panel"
           aria-roledescription="slide"
           aria-label={`${messages.home.slide} ${index + 1} / ${count}`}
-          className="w-full max-w-xl rounded-2xl border border-neutral-200 bg-white/90 p-6 shadow-lg backdrop-blur-sm md:p-10"
+          className="w-full max-w-[700px]"
         >
-          <Heading className="text-foreground">{s.heading}</Heading>
-          <p data-testid="hero-sub" className="mt-4 text-lg text-muted-foreground">
+          <Heading className="text-white font-semibold text-[28px] leading-tight sm:text-4xl lg:text-[44px] lg:leading-[44px] [text-shadow:0_2px_4px_rgba(41,48,59,0.55)]">
+            {s.heading}
+          </Heading>
+          <p data-testid="hero-sub" className="mt-3 text-base text-white lg:text-lg [text-shadow:0_2px_4px_rgba(41,48,59,0.55)]">
             {s.subheading}
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <ButtonLink href={s.ctaUrl} size="lg">
-              {s.ctaLabel}
-            </ButtonLink>
-            {s.secondaryCtaLabel && s.secondaryCtaUrl ? (
-              <ButtonLink href={s.secondaryCtaUrl} size="lg" variant="outline">
-                {s.secondaryCtaLabel}
-              </ButtonLink>
-            ) : null}
-          </div>
         </div>
       </div>
 

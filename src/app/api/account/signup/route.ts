@@ -3,7 +3,7 @@ import { fail, ok, parseBody, tooMany } from '@/lib/api/http'
 import { signupSchema } from '@/lib/utils/validation'
 import { checkAuthRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/net/ip'
-import { emailExists } from '@/lib/data/users'
+import { emailExists, createStudent } from '@/lib/data/users'
 import { emailProvider } from '@/lib/email'
 import { isSmtpConfigured } from '@/lib/email/smtp'
 import { startSignup, verificationEmail } from '@/lib/auth/signup-verification'
@@ -22,6 +22,18 @@ export async function POST(req: Request) {
   const limit = await checkAuthRateLimit(getClientIp(req.headers), 'signup', email)
   if (!limit.allowed) return tooMany(limit.retryAfterSeconds)
 
+  // SIGNUP_EMAIL_VERIFICATION=off: create the student straight away, no emailed code.
+  if (process.env.SIGNUP_EMAIL_VERIFICATION === 'off') {
+    try {
+      if (!(await emailExists(email))) {
+        await createStudent({ name, email, passwordHash: await bcrypt.hash(password, 12) })
+      }
+    } catch (e) {
+      console.error('[signup]', e)
+      return fail('SERVER_ERROR', messages.common.somethingWrong, 500)
+    }
+    return ok({ success: true, pending: false })
+  }
   // Without SMTP the code would only be printed in the server log and nobody could sign up.
   if (process.env.NODE_ENV === 'production' && !(await isSmtpConfigured())) {
     return fail('EMAIL_NOT_CONFIGURED', 'Sign-up is temporarily unavailable. Please try again later or contact us.', 503)

@@ -8,11 +8,12 @@ import { MONTHS } from '@/lib/upcoming-months'
 import { AInput, ASelect, ATextarea, Card, FieldRow, btn } from './ui'
 import { ImageField } from './ImageField'
 import { Tabs } from './Tabs'
+import { LessonQuizEditor, quizProblem, type QuizQuestionState } from './LessonQuizEditor'
 import { saveCourse } from '@/app/(admin)/admin/actions'
 import { uploadLessonFile } from '@/lib/admin/upload-client'
 import { displayFileName, isHostedFile } from '@/lib/lesson-file'
 
-export interface LessonState { key: string; id?: string; title: string; type: 'VIDEO' | 'DOCUMENT' | 'QUIZ'; minutes: string; isFreePreview: boolean; videoUrl: string; fileUrl: string }
+export interface LessonState { key: string; id?: string; title: string; type: 'VIDEO' | 'DOCUMENT' | 'QUIZ'; minutes: string; isFreePreview: boolean; videoUrl: string; fileUrl: string; quizQuestions: QuizQuestionState[]; quizDirty: boolean }
 export interface SectionState { key: string; id?: string; title: string; lessons: LessonState[] }
 export interface CourseState {
   id?: string
@@ -27,7 +28,7 @@ export interface CourseState {
 
 let counter = 0
 const k = () => `k${++counter}`
-export const newLesson = (title = ''): LessonState => ({ key: k(), title, type: 'VIDEO', minutes: '10', isFreePreview: false, videoUrl: '', fileUrl: '' })
+export const newLesson = (title = ''): LessonState => ({ key: k(), title, type: 'VIDEO', minutes: '10', isFreePreview: false, videoUrl: '', fileUrl: '', quizQuestions: [], quizDirty: false })
 export const newSection = (title = ''): SectionState => ({ key: k(), title, lessons: [] })
 
 function move<T>(arr: T[], i: number, d: -1 | 1): T[] {
@@ -81,6 +82,13 @@ export function CourseEditor({
   }
 
   function submit(status?: CourseState['status']) {
+    for (const [si, s] of c.sections.entries()) {
+      for (const [li, l] of s.lessons.entries()) {
+        const problem = quizProblem(l.quizQuestions)
+        if (problem) { toast.error(`Section ${si + 1}, lesson ${li + 1} quiz: ${problem}.`); return }
+        if (l.quizQuestions.length > 0 && l.type !== 'VIDEO') { toast.error(`Section ${si + 1}, lesson ${li + 1}: a quiz can only follow a video lesson.`); return }
+      }
+    }
     const payload = {
       id: c.id,
       title: c.title, slug: c.slug || null, subtitle: c.subtitle || null,
@@ -109,6 +117,12 @@ export function CourseEditor({
           isFreePreview: l.isFreePreview,
           videoUrl: l.type === 'VIDEO' ? l.videoUrl || null : null,
           fileUrl: l.type === 'DOCUMENT' ? l.fileUrl || null : null,
+          quiz: !l.quizDirty ? undefined : l.quizQuestions.length === 0 ? null : {
+            questions: l.quizQuestions.map((q) => ({
+              prompt: q.prompt, explanation: q.explanation || null,
+              options: q.options.filter((o) => o.text.trim()).map((o) => ({ text: o.text, isCorrect: o.isCorrect })),
+            })),
+          },
         })),
       })),
     }
@@ -197,7 +211,7 @@ export function CourseEditor({
                   <span className="w-6 text-sm text-slate-500">{li + 1}.</span>
                   <AInput aria-label={`Lesson ${li + 1} title`} className="min-w-48 flex-1" value={l.title} onChange={(e) => setLesson(si, li, { title: e.target.value })} placeholder="Lesson title" />
                   <ASelect aria-label="Lesson type" className="w-32" value={l.type} onChange={(e) => setLesson(si, li, { type: e.target.value as LessonState['type'] })}><option value="VIDEO">Video</option><option value="DOCUMENT">Document / file</option><option value="QUIZ">Quiz</option></ASelect>
-                  {l.type !== 'DOCUMENT' ? <AInput aria-label="Duration in minutes" type="number" min={0} step="0.5" className="w-24" value={l.minutes} onChange={(e) => setLesson(si, li, { minutes: e.target.value })} title="Duration (minutes)" /> : null}
+                  {l.type !== 'DOCUMENT' ? <AInput aria-label="Duration in minutes" type="number" min={0} step="any" inputMode="decimal" className="w-24" value={l.minutes} onChange={(e) => setLesson(si, li, { minutes: e.target.value })} title="Duration (minutes)" /> : null}
                   <label className="flex items-center gap-1.5 text-xs"><input type="checkbox" className="h-4 w-4" checked={l.isFreePreview} onChange={(e) => setLesson(si, li, { isFreePreview: e.target.checked })} /> Free preview</label>
                   <button type="button" aria-label="Move lesson up" className={btn('outline', 'sm')} onClick={() => setSection(si, (x) => ({ ...x, lessons: move(x.lessons, li, -1) }))}><ArrowUp className="h-4 w-4" aria-hidden="true" /></button>
                   <button type="button" aria-label="Move lesson down" className={btn('outline', 'sm')} onClick={() => setSection(si, (x) => ({ ...x, lessons: move(x.lessons, li, 1) }))}><ArrowDown className="h-4 w-4" aria-hidden="true" /></button>
@@ -212,6 +226,7 @@ export function CourseEditor({
                     </div>
                   </div>
                 ) : null}
+                {l.type === 'VIDEO' ? <LessonQuizEditor label={l.title.trim() || `lesson ${li + 1}`} questions={l.quizQuestions} onChange={(next) => setLesson(si, li, { quizQuestions: next, quizDirty: true })} /> : null}
                 {l.type === 'DOCUMENT' ? (
                   <div className="mt-2 flex flex-wrap items-center gap-3 text-sm">
                     <label className={`${btn('outline', 'sm')} cursor-pointer`}><FileUp className="h-4 w-4" aria-hidden="true" /> Upload any file<input type="file" className="sr-only" onChange={(e) => { void uploadAny(si, li, e.target.files?.[0], 'fileUrl'); e.target.value = '' }} /></label>

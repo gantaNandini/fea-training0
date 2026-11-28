@@ -96,7 +96,7 @@ export function CertificateView({
               {/* Logo mark inside */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="relative" style={{ width: '42%', height: '42%' }}>
-                  <Image src="/brand/logo-mark.svg" alt="" fill sizes="32px" className="object-contain opacity-80" />
+                  <Image src="/brand/pecs-logo-mark.png" alt="" fill sizes="32px" className="object-contain opacity-80" />
                 </div>
               </div>
             </div>
@@ -186,7 +186,7 @@ export function CertificateView({
               {/* Left: full Pythagoras logo + name */}
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="relative shrink-0" style={{ width: 'clamp(32px,5vw,52px)', height: 'clamp(32px,5vw,52px)' }}>
-                  <Image src="/brand/logo-mark.svg" alt={`${company} logo`} fill sizes="52px" className="object-contain" />
+                  <Image src="/brand/pecs-logo-mark.png" alt={`${company} logo`} fill sizes="52px" className="object-contain" />
                 </div>
                 <div className="leading-tight">
                   <p

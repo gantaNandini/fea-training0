@@ -6,7 +6,7 @@ const POINTS = [
   'Real ANSYS models, built from scratch on screen',
   'ASME, API and DNV methods explained with worked examples',
   'Taught by practising engineers with industry experience',
-  'Lifetime access: revisit any lesson on your next project',
+  '6 months access: revisit any lesson on your next project',
 ]
 
 /** Dark split band: pitch on the left, an illustrative FEA contour on the right. */

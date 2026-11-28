@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { LogoMark } from '@/components/layout/Logo'
+import Image from 'next/image'
 import { PlaceholderArt } from '@/components/shared/PlaceholderArt'
 import { AdminNav } from './AdminNav'
 import { MobileSidebar, QuickActions, UserMenu } from './HeaderMenus'
@@ -40,7 +40,7 @@ export function AdminShell({
             <ProfileCard name={user.name} image={user.image} />
           </MobileSidebar>
           <Link href="/admin/dashboard" className="flex items-center gap-2.5 text-white" aria-label={`${siteName} admin home`}>
-            <LogoMark className="h-9" />
+            <Image src="/brand/pecs-logo-mark.png" alt="" width={414} height={360} className="h-9 w-auto" />
             <span className="hidden leading-tight sm:block">
               <span className="block font-display text-lg font-extrabold tracking-wide">PYTHAGORAS</span>
               <span className="block text-[9px] uppercase tracking-wider text-slate-300">Engineering Consultancy &amp; Services</span>

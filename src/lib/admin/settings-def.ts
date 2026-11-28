@@ -80,6 +80,7 @@ export const SETTING_GROUPS: SettingGroup[] = [
       { key: 'consultancy_points', label: 'Consultancy services (one per line)', type: 'textarea' },
       { key: 'consultancy_cta_label', label: 'Consultancy button text', type: 'text', placeholder: 'Discuss your project' },
       { key: 'consultancy_cta_href', label: 'Consultancy button link', type: 'text', placeholder: '/contact' },
+      { key: 'value_strip_item1_sub', label: 'Highlight 1 sub-text', type: 'text', placeholder: 'Explore a variety of fresh topics' },
       { key: 'value_strip_item2_sub', label: 'Highlight 2 sub-text', type: 'text' },
       { key: 'value_strip_item3_sub', label: 'Highlight 3 sub-text', type: 'text' },
     ],

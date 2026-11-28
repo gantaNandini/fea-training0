@@ -50,7 +50,17 @@ export function SignupForm({ redirect }: { redirect: string }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
       })
-      const body = (await res.json().catch(() => ({}))) as { message?: string; error?: { message?: string } }
+      const body = (await res.json().catch(() => ({}))) as { message?: string; pending?: boolean; error?: { message?: string } }
+      if (res.ok && body.pending === false) {
+        // no emailed code: the account exists now, log the student straight in
+        const login = await signIn('credentials', { email: values.email, password: values.password, redirect: false })
+        if (login && !login.error) {
+          window.location.assign(`/post-login?redirect=${encodeURIComponent(redirect)}`)
+          return
+        }
+        setDone('Your account is ready. Please log in.')
+        return
+      }
       if (res.ok) {
         setNotice(body.message ?? messages.auth.codeSent)
         setCode('')

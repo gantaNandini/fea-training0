@@ -6,7 +6,7 @@ import { SectionHeader } from '@/components/shared/SectionHeader'
 const FAQ = [
   ['How soon can I start after paying?', 'Immediately. As soon as your payment is confirmed you are enrolled automatically and the course opens in My Courses. No one has to approve anything.'],
   ['What if my browser closes during payment?', 'Nothing is lost. The system re-checks with the payment gateway and enrols you automatically; just open My Courses.'],
-  ['How long do I have access?', 'Lifetime. Once you buy a course you can watch it as often as you like.'],
+  ['How long do I have access?', '6 months from the day you enrol. During that time you can watch the course as often as you like.'],
   ['Do I need ANSYS to follow along?', 'It helps. Most courses are taught in ANSYS Mechanical and a student or trial licence is enough to follow the examples.'],
   ['Can I get a receipt for my company?', 'Yes. Every order has a printable receipt under your account, showing GST details.'],
   ['I have a question before buying. Who do I ask?', 'Use the Contact page and our team will get back to you.'],

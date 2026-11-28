@@ -45,7 +45,6 @@ html, body { background: #ffffff; }
    These stop-gap overrides target hooks already in the DOM.
    They are superseded by the component edits below (ValueStrip, CtaBand, Footer). */
 [role="region"][aria-label="Announcement"],
-[data-testid="value-strip"],
 section[aria-labelledby="cta-heading"],
 .site-footer {
   background: #ffffff !important;
@@ -56,14 +55,8 @@ section[aria-labelledby="cta-heading"],
 
 /* text-white / text-white/80 inside those bands → readable foreground */
 [role="region"][aria-label="Announcement"] *,
-[data-testid="value-strip"] *,
 section[aria-labelledby="cta-heading"] *:not(.gradient-brand):not(.gradient-brand *) {
   color: var(--foreground) !important;
-}
-
-/* icon circles inside value-strip */
-[data-testid="value-strip"] .bg-white\/20 {
-  background: var(--muted) !important;
 }
 
 /* CTA band buttons keep white text on the primary fill */

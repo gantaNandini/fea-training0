@@ -4,7 +4,7 @@ import { SectionHeader } from '@/components/shared/SectionHeader'
 const ITEMS = [
   { Icon: Users, title: 'Taught by practitioners', body: 'Learn from engineers who apply these methods on live industrial projects.' },
   { Icon: Wrench, title: 'Hands-on, tool-first', body: 'Follow along in ANSYS with complete, reproducible models for every topic.' },
-  { Icon: Clock, title: 'Lifetime access', body: 'Pay once and keep the course. Return to any lesson whenever a project needs it.' },
+  { Icon: Clock, title: '6 months access', body: 'Pay once and learn at your own pace for six months. Return to any lesson whenever a project needs it.' },
   { Icon: Laptop, title: 'Any device, any time', body: 'Resume exactly where you stopped, on desktop, tablet or phone.' },
   { Icon: ShieldCheck, title: 'Secure checkout', body: 'Payments are processed by a trusted gateway. We never see your card details.' },
   { Icon: Award, title: 'Code-aligned content', body: 'Courses follow the structure of the codes engineers are asked to apply.' },

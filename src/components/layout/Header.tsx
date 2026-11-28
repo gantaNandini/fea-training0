@@ -18,7 +18,7 @@ export function Header({ categories, companyName }: { categories: CategoryDTO[];
       <div className="container-page flex h-16 items-center gap-2 lg:gap-4">
         {/* < 1024: hamburger, logo, search icon, cart */}
         <MobileDrawer categories={categories} companyName={companyName} />
-        <Logo name={companyName} />
+        <Logo name={companyName} className="shrink-0" />
         <div className="hidden max-w-xl flex-1 lg:ml-6 lg:block">
           <SearchBar />
         </div>

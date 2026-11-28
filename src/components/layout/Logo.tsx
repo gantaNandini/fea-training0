@@ -57,7 +57,7 @@ export function Logo({ name, className, href = '/' }: { name: string; className?
     <Link
       href={href}
       aria-label={`${cleanName} — home`}
-      className={cn('inline-flex min-h-11 min-w-0 items-center gap-2.5 font-display tracking-tight md:max-w-[280px] lg:max-w-[320px]', className)}
+      className={cn('inline-flex min-h-11 min-w-0 items-center gap-2.5 font-display tracking-tight md:max-w-sm lg:max-w-md xl:max-w-lg', className)}
     >
       <Image src="/brand/pecs-logo-mark.png" alt="" width={414} height={360} priority className="h-10 w-auto shrink-0 lg:h-12" />
       <span className="hidden min-w-0 truncate text-lg font-extrabold leading-tight text-[#14285A] md:inline lg:text-xl">
